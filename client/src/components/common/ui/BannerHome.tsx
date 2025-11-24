@@ -35,48 +35,76 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
   const imageURL = useAppSelector((state) => state.moviesData.imageURL);
 
   // Dùng size lớn nhất của TMDB để hạn chế mờ
+  // Dùng size lớn nhất của TMDB để hạn chế mờ
   const hiResBase = useMemo(() => {
-    if (!imageURL) return "";
+    // fallback cứng sang TMDB nếu redux chưa có
+    const fallback = "https://image.tmdb.org/t/p/original";
+
+    if (!imageURL) return fallback;
+
     if (imageURL.includes("image.tmdb.org")) {
-      // đổi /w500/, /w780/, ... -> /original/
-      return imageURL.replace(/\/w\d+\//, "/original/");
+      let base = imageURL.trim();
+
+      // nếu đã là original rồi thì thôi
+      if (base.includes("/original")) {
+        return base.endsWith("/") ? base : base + "/";
+      }
+
+      // đổi mọi /w500, /w780, /w1280 ... thành /original/
+      base = base.replace(/\/w\d+\/?/, "/original/");
+
+      // đảm bảo có / ở cuối
+      if (!base.endsWith("/")) base += "/";
+
+      return base;
     }
-    return imageURL;
+
+    // trường hợp xài CDN khác thì cứ dùng như cũ
+    return imageURL.endsWith("/") ? imageURL : imageURL + "/";
   }, [imageURL]);
 
   // convert movie data -> slide cho GSAP
   const slides: Slide[] = useMemo(() => {
-    return data
-      .slice(0, 6) // lấy tối đa 6 phim cho hero
-      .map((m) => {
-        const movie = m as MovieWithOptionalFields;
+    return (
+      data
+        .slice(0, 6) // lấy tối đa 6 phim cho hero
+        .map((m) => {
+          const movie = m as MovieWithOptionalFields;
 
-        const backdrop = movie.backdrop_path;
-        const poster = movie.poster_path;
-        const title = movie.title || movie.name || "Untitled";
-        const originalTitle =
-          movie.original_title || movie.original_name || "";
-        const overview = movie.overview || "";
+          const backdrop = movie.backdrop_path;
+          const poster = movie.poster_path;
+          const title = movie.title || movie.name || "Untitled";
+          const originalTitle =
+            movie.original_title || movie.original_name || "";
+          const overview = movie.overview || "";
 
-        const releaseDate = movie.release_date || movie.first_air_date || "";
-        const year = releaseDate ? releaseDate.slice(0, 4) : "";
+          const releaseDate = movie.release_date || movie.first_air_date || "";
+          const year = releaseDate ? releaseDate.slice(0, 4) : "";
 
-        const lang = movie.original_language
-          ? movie.original_language.toUpperCase()
-          : "MOVIE";
+          const lang = movie.original_language
+            ? movie.original_language.toUpperCase()
+            : "MOVIE";
 
-        return {
-          place: year ? `${lang} • ${year}` : lang,
-          title,
-          title2:
-            originalTitle && originalTitle !== title
-              ? originalTitle
-              : "Now Showing",
-          description: overview,
-          image: hiResBase + (backdrop || poster || ""),
-        };
-      })
-      .filter((s) => !!s.image);
+          // ƯU TIÊN backdrop (ảnh ngang chất lượng cao)
+          const imagePath = backdrop || poster || "";
+          const fullImageUrl = imagePath
+            ? hiResBase + imagePath.replace(/^\//, "")
+            : "";
+
+          return {
+            place: year ? `${lang} • ${year}` : lang,
+            title,
+            title2:
+              originalTitle && originalTitle !== title
+                ? originalTitle
+                : "Now Showing",
+            description: overview,
+            image: fullImageUrl,
+          };
+        })
+        // loại slide nào không có ảnh
+        .filter((s) => !!s.image)
+    );
   }, [data, hiResBase]);
 
   useEffect(() => {
@@ -119,7 +147,9 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
     const slideNumbersHtml = slides
       .map(
         (_, index) =>
-          `<div class="item w-[42px] h-[42px] md:w-[50px] md:h-[50px] absolute top-0 left-0 grid place-items-center text-[22px] md:text-[28px] font-bold text-white" id="slide-item-${index}">${index + 1}</div>`
+          `<div class="item w-[42px] h-[42px] md:w-[50px] md:h-[50px] absolute top-0 left-0 grid place-items-center text-[22px] md:text-[28px] font-bold text-white" id="slide-item-${index}">${
+            index + 1
+          }</div>`
       )
       .join("");
 
@@ -206,8 +236,7 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
 
       // hero full màn hình
       offsetTop = height - cardHeight - 32; // cách bottom 32px
-      offsetLeft =
-        width - (cardWidth + gap) * rest.length - 32; // thumbnail hàng ngang từ phải sang trái
+      offsetLeft = width - (cardWidth + gap) * rest.length - 32; // thumbnail hàng ngang từ phải sang trái
 
       // card active full screen
       set(getCard(active), {
@@ -311,8 +340,7 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
         const { innerWidth: width, innerHeight: height } = window;
 
         const offsetTopLocal = height - cardHeight - 32;
-        const offsetLeftLocal =
-          width - (cardWidth + gap) * rest.length - 32;
+        const offsetLeftLocal = width - (cardWidth + gap) * rest.length - 32;
 
         // card prev zoom lên chút rồi quay về thumbnail
         set(getCard(prv), { zIndex: 10 });
