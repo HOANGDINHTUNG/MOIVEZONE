@@ -1,0 +1,30 @@
+/* src/index.css */
+@import "tailwindcss";
+
+/* Font giống project cũ */
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&display=swap");
+
+/* Plugins (nếu cần sau này)
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+*/
+
+/* Dark mode class-based: dùng prefix `dark:` và thêm class `.dark` vào html/body */
+@custom-variant dark (&:where(.dark, .dark *));
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Nunito Sans", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+/* Ẩn scrollbar giống App.css cũ */
+.scrolbar-none::-webkit-scrollbar {
+  display: none;
+}
