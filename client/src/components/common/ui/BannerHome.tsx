@@ -1,6 +1,7 @@
 // src/components/common/ui/BannerHome.tsx
 import React, { useEffect, useMemo } from "react";
 import gsap from "gsap";
+import { useNavigate } from "react-router-dom";
 
 import type { MovieSummary } from "../../../module/movies/database/interface/movie";
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
@@ -15,10 +16,12 @@ interface Slide {
   title2: string;
   description: string;
   image: string;
+  detailPath: string; // đường dẫn để đi đến chi tiết
 }
 
 // Gom hết field có thể có của movie/tv để khỏi dùng any
 interface MovieWithOptionalFields extends Partial<MovieSummary> {
+  id?: number;
   backdrop_path?: string;
   poster_path?: string;
   title?: string;
@@ -29,16 +32,17 @@ interface MovieWithOptionalFields extends Partial<MovieSummary> {
   release_date?: string;
   first_air_date?: string;
   original_language?: string;
+  media_type?: "movie" | "tv" | string;
 }
 
 const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
   const imageURL = useAppSelector((state) => state.moviesData.imageURL);
+  const navigate = useNavigate();
 
-  // Dùng size lớn nhất của TMDB để hạn chế mờ
   // Dùng size lớn nhất của TMDB để hạn chế mờ
   const hiResBase = useMemo(() => {
     // fallback cứng sang TMDB nếu redux chưa có
-    const fallback = "https://image.tmdb.org/t/p/original";
+    const fallback = "https://image.tmdb.org/t/p/original/";
 
     if (!imageURL) return fallback;
 
@@ -76,7 +80,13 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
           const title = movie.title || movie.name || "Untitled";
           const originalTitle =
             movie.original_title || movie.original_name || "";
-          const overview = movie.overview || "";
+          const overviewRaw = movie.overview?.trim() ?? "";
+
+          // luôn có mô tả
+          const overview =
+            overviewRaw.length > 0
+              ? overviewRaw
+              : "Hiện chưa có mô tả cho phim này.";
 
           const releaseDate = movie.release_date || movie.first_air_date || "";
           const year = releaseDate ? releaseDate.slice(0, 4) : "";
@@ -91,6 +101,20 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
             ? hiResBase + imagePath.replace(/^\//, "")
             : "";
 
+          // Xác định media type & path chi tiết
+          const id = movie.id;
+          const mediaTypeRaw = movie.media_type;
+          const isMovieGuess =
+            !!movie.title || !!movie.original_title || mediaTypeRaw === "movie";
+          let mediaType: "movie" | "tv" = isMovieGuess ? "movie" : "tv";
+
+          if (mediaTypeRaw === "tv" || mediaTypeRaw === "movie") {
+            mediaType = mediaTypeRaw;
+          }
+
+          const detailPath =
+            id !== undefined ? `/${mediaType}/${id.toString()}` : "";
+
           return {
             place: year ? `${lang} • ${year}` : lang,
             title,
@@ -100,10 +124,11 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
                 : "Now Showing",
             description: overview,
             image: fullImageUrl,
+            detailPath,
           };
         })
-        // loại slide nào không có ảnh
-        .filter((s) => !!s.image)
+        // chỉ giữ slide có ảnh & có đường dẫn chi tiết
+        .filter((s) => !!s.image && !!s.detailPath)
     );
   }, [data, hiResBase]);
 
@@ -124,7 +149,7 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
       .map(
         (i, index) => `
       <div 
-        class="card-content absolute inset-0 text-white/90 pointer-events-none" 
+        class="card-content absolute inset-0 text-white/90" 
         id="card-content-${index}"
       >
         <div class="flex h-full w-full items-end">
@@ -132,11 +157,22 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
             <div class="text-[11px] md:text-[13px] font-medium text-white/70">
               ${i.place}
             </div>
-            <div class="mt-1 font-['Oswald',sans-serif] font-semibold text-[15px] md:text-[18px] leading-tight line-clamp-1">
+            <div class="mt-1 font-['Oswald',sans-serif] font-semibold text-[15px] md:text-[18px] leading-tight line-clamp-2">
               ${i.title}
             </div>
-            <div class="font-['Oswald',sans-serif] text-[12px] md:text-[14px] text-white/70 leading-tight line-clamp-1">
+            <div class="font-['Oswald',sans-serif] text-[12px] md:text-[14px] text-white/70 leading-tight line-clamp-2">
               ${i.title2}
+            </div>
+            <div class="mt-3 text-[11px] md:text-[12px] leading-snug text-white/80 line-clamp-2">
+              ${i.description}
+            </div>
+            <div class="cta mt-4 flex items-center max-w-[500px] gap-4 pointer-events-auto">
+              <button class="bookmark w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#ecad29] text-white grid place-items-center border-none shadow-[0_8px_18px_rgba(236,173,41,0.5)]">
+                <span class="text-[16px] md:text-[18px] leading-none">★</span>
+              </button>
+              <button class="discover h-8 md:h-9 px-5 md:px-6 rounded-full border border-white/80 text-[10px] md:text-[11px] uppercase bg-black/30 backdrop-blur tracking-[0.18em] hover:bg-white hover:text-black transition-colors">
+                Xem chi tiết phim
+              </button>
             </div>
           </div>
         </div>
@@ -191,13 +227,39 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
     const order = range(slides.length);
     let detailsEven = true;
 
+    // 👉 GẮN CLICK CHO NÚT "Xem chi tiết phim" TRONG CARD NHỎ
+    {
+      const cardDetailButtons =
+        demoCardsEl.querySelectorAll(".card-content .discover");
+      cardDetailButtons.forEach((btn, index) => {
+        btn.addEventListener("click", () => {
+          const slide = slides[index];
+          if (!slide || !slide.detailPath) return;
+          navigate(slide.detailPath);
+        });
+      });
+
+      // 👉 GẮN CLICK CHO NÚT "Xem chi tiết phim" TRONG DETAILS-EVEN / DETAILS-ODD
+      const detailsButtons = document.querySelectorAll(
+        "#details-even .discover, #details-odd .discover"
+      );
+      detailsButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const activeIndex = order[0]; // slide đang active ở đầu mảng order
+          const slide = slides[activeIndex];
+          if (!slide || !slide.detailPath) return;
+          navigate(slide.detailPath);
+        });
+      });
+    }
+
     // các tham số layout
     let offsetTop = 200;
     let offsetLeft = 700;
 
     // card nhỏ
-    const cardWidth = 160;
-    const cardHeight = 230;
+    const cardWidth = 130;
+    const cardHeight = 200;
     const gap = 16;
     const numberSize = 50;
     const ease = "sine.inOut";
@@ -503,7 +565,7 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
       arrowRight?.removeEventListener("click", handleNext);
       arrowLeft?.removeEventListener("click", handlePrev);
     };
-  }, [slides]);
+  }, [slides, navigate]);
 
   // layout hero full màn hình
   return (
@@ -526,10 +588,10 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
               <span className="absolute w-[26px] h-0.5 md:w-[30px] md:h-[3px] rounded-full bg-[#ecad29] left-0 top-0" />
             </div>
           </div>
-          <div className="title-box-1 mt-1 h-16 md:h-[90px] overflow-hidden">
+          <div className="title-box-1 mt-1 h-[72px] md:h-[110px] overflow-hidden">
             <div className="title-1 font-['Oswald',sans-serif] font-semibold text-[32px] md:text-[60px] leading-none uppercase drop-shadow-[0_8px_20px_rgba(0,0,0,0.7)]" />
           </div>
-          <div className="title-box-2 mt-1 h-[52px] md:h-[70px] overflow-hidden">
+          <div className="title-box-2 mt-1 h-[60px] md:h-20 overflow-hidden">
             <div className="title-2 font-['Oswald',sans-serif] font-medium text-[22px] md:text-[36px] leading-none uppercase text-white/80 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" />
           </div>
           <div className="desc mt-4 max-w-[520px] text-[13px] md:text-[14px] leading-relaxed text-white/80" />
@@ -553,10 +615,10 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
               <span className="absolute w-[26px] h-0.5 md:w-[30px] md:h-[3px] rounded-full bg-[#ecad29] left-0 top-0" />
             </div>
           </div>
-          <div className="title-box-1 mt-1 h-16 md:h-[90px] overflow-hidden">
+          <div className="title-box-1 mt-1 h-[72px] md:h-[110px] overflow-hidden">
             <div className="title-1 font-['Oswald',sans-serif] font-semibold text-[32px] md:text-[60px] leading-none uppercase" />
           </div>
-          <div className="title-box-2 mt-1 h-[52px] md:h-[70px] overflow-hidden">
+          <div className="title-box-2 mt-1 h-[60px] md:h-20 overflow-hidden">
             <div className="title-2 font-['Oswald',sans-serif] font-medium text-[22px] md:text-[36px] leading-none uppercase text-white/80" />
           </div>
           <div className="desc mt-4 max-w-[520px] text-[13px] md:text-[14px] leading-relaxed text-white/80" />

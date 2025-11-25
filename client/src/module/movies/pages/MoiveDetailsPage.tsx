@@ -75,6 +75,9 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
   // Toggle "yêu thích" cho trái tim
   const [liked, setLiked] = useState(false);
 
+  // State mở/đóng trailer
+  const [isTrailerOpen, setIsTrailerOpen] = useState(false);
+
   // Xác định loại media:
   // - Ưu tiên prop mediaType (route mới movie/:id, tv/:id)
   // - Nếu không có prop thì fallback từ explore param (route cũ explore/:explore/:id)
@@ -238,6 +241,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     const movieData = data as MovieDetail;
     const results = movieData.release_dates?.results ?? [];
     if (!results.length) return "";
+
     const preferred =
       results.find((r) => r.iso_3166_1 === "US") ||
       results.find((r) => r.iso_3166_1 === "VN") ||
@@ -385,13 +389,14 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
 
             {/* PLAY TRAILER BUTTON – chỉ hiện nếu có trailer */}
             {trailer && (
-              <a
-                href="#trailer"
+              <button
+                type="button"
+                onClick={() => setIsTrailerOpen(true)}
                 className="flex items-center gap-2 px-3 py-1 rounded-full bg-red-600 text-xs text-white hover:bg-red-700 transition"
               >
                 <span className="text-base">▶</span>
                 <span>Play Trailer</span>
-              </a>
+              </button>
             )}
 
             {/* WHAT'S YOUR VIBE */}
@@ -505,18 +510,32 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
         </div>
       </div>
 
-      {/* Trailer */}
+      {/* Trailer block mô tả (không autoplay video) */}
       {trailer && (
         <>
           <Divider />
-          <div className="mt-4">
-            <h2 className="font-semibold mb-1 text-sm md:text-base">Trailer</h2>
+          <div className="mt-4" id="trailer">
+            <h2 className="font-semibold mb-1 text-sm md:text-base">
+              Trailer
+            </h2>
             <p className="text-xs text-neutral-400 mb-2">{trailer.name}</p>
-            <div className="w-full aspect-video rounded-lg overflow-hidden bg-black">
-              <VideoPlay videoId={trailer.key} />
-            </div>
+            <button
+              type="button"
+              onClick={() => setIsTrailerOpen(true)}
+              className="px-4 py-2 text-sm rounded bg-red-600 text-white hover:bg-red-700 transition"
+            >
+              ▶ Xem trailer
+            </button>
           </div>
         </>
+      )}
+
+      {/* Modal VideoPlay – chỉ render khi mở */}
+      {trailer && isTrailerOpen && (
+        <VideoPlay
+          videoId={trailer.key}
+          onClose={() => setIsTrailerOpen(false)}
+        />
       )}
 
       {/* Cast */}
