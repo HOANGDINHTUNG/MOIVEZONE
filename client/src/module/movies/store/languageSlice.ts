@@ -4,10 +4,11 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 export type AppLanguage = "vi-VN" | "en-US";
 
 export interface LanguageState {
-  current: AppLanguage;
+  current: AppLanguage; // chỉ dùng field này
 }
 
 const getInitialLanguage = (): AppLanguage => {
+  // Phòng trường hợp chạy trên server (SSR / build)
   if (typeof window === "undefined") return "vi-VN";
 
   const stored = localStorage.getItem("appLanguage") as AppLanguage | null;

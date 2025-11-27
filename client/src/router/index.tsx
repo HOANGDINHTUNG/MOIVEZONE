@@ -6,6 +6,8 @@ import DetailsPage from "../module/movies/pages/MoiveDetailsPage";
 import SearchPage from "../module/home/pages/SearchPage";
 import AllMoviesPage from "../module/movies/pages/AllMoviesPage";
 import AllTvShowsPage from "../module/movies/pages/AllTvShowsPage";
+import TmdbLogger from "../test/TmdbLogger";
+import CollectionPage from "../module/collections/pages/CollectionPage";
 
 const router = createBrowserRouter([
   {
@@ -37,8 +39,14 @@ const router = createBrowserRouter([
         path: "search",
         element: <SearchPage />,
       },
+      // src/router/index.tsx
+      {
+        path: "/collection/:id",
+        element: <CollectionPage />,
+      },
     ],
   },
+  { path: "/test", element: <TmdbLogger /> },
 ]);
 
 export default router;

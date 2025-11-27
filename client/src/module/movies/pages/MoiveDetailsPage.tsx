@@ -1,6 +1,6 @@
 // src/pages/DetailsPage.tsx
 import { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import moment from "moment";
 
 import { useFetchDetails } from "../../../hooks/useFetchDetails";
@@ -289,6 +289,12 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return data.external_ids as ExternalIds;
   }, [data]);
 
+  const movieCollection = useMemo(() => {
+    if (!data || resolvedMediaType !== "movie") return null;
+    const movieData = data as MovieDetail;
+    return movieData.belongs_to_collection ?? null;
+  }, [data, resolvedMediaType]);
+
   if (loading || !data) {
     return (
       <section className="max-w-6xl mx-auto px-3 py-6">
@@ -338,6 +344,17 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
 
           {tagline && (
             <p className="italic text-sm text-neutral-400">“{tagline}”</p>
+          )}
+
+          {/* Thuộc bộ sưu tập / series (chỉ movie mới có) */}
+          {movieCollection && (
+            <Link
+              to={`/collection/${movieCollection.id}`}
+              className="mt-1 inline-flex items-center gap-2 text-sm text-red-400 hover:text-red-300"
+            >
+              <span>Thuộc series: {movieCollection.name}</span>
+              <span className="text-xs">Xem toàn bộ bộ sưu tập →</span>
+            </Link>
           )}
 
           <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm text-neutral-300">
@@ -515,9 +532,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
         <>
           <Divider />
           <div className="mt-4" id="trailer">
-            <h2 className="font-semibold mb-1 text-sm md:text-base">
-              Trailer
-            </h2>
+            <h2 className="font-semibold mb-1 text-sm md:text-base">Trailer</h2>
             <p className="text-xs text-neutral-400 mb-2">{trailer.name}</p>
             <button
               type="button"

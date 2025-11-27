@@ -2,10 +2,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import moviesReducer from "../module/movies/store/moviesSlice";
 import languageReducer from "../module/movies/store/languageSlice";
+import collectionReducer from "../module/collections/store/collectionSlice";
 export const store = configureStore({
   reducer: {
     moviesData: moviesReducer,
     language: languageReducer,
+    collection: collectionReducer,
   },
 });
 
