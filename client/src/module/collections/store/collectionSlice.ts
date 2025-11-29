@@ -1,3 +1,5 @@
+// src/module/collections/store/collectionSlice.ts
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "../../../stores";
 import {
@@ -27,24 +29,31 @@ const initialState: CollectionState = {
   error: null,
 };
 
-// thunk
-export const fetchCollectionById = createAsyncThunk(
-  "collection/fetchById",
-  async (id: number, { getState }) => {
-    const state = getState() as RootState;
-    const language = state.language.current;
-    const [detailsRes, imagesRes, translationsRes] = await Promise.all([
-      getCollectionDetails(id, language),
-      getCollectionImages(id),
-      getCollectionTranslations(id),
-    ]);
-    return {
-      details: detailsRes.data,
-      images: imagesRes.data,
-      translations: translationsRes.data,
-    };
-  }
-);
+// thunk: fetch chi tiết + ảnh + translations theo language hiện tại
+export const fetchCollectionById = createAsyncThunk<
+  {
+    details: TMDBCollectionDetailsResponse;
+    images: TMDBCollectionImagesResponse;
+    translations: TMDBCollectionTranslationsResponse;
+  },
+  number,
+  { state: RootState }
+>("collection/fetchById", async (id, { getState }) => {
+  const state = getState();
+  const language = state.language.current || "en";
+
+  const [detailsRes, imagesRes, translationsRes] = await Promise.all([
+    getCollectionDetails(id, language),
+    getCollectionImages(id, language),
+    getCollectionTranslations(id),
+  ]);
+
+  return {
+    details: detailsRes.data,
+    images: imagesRes.data,
+    translations: translationsRes.data,
+  };
+});
 
 const collectionSlice = createSlice({
   name: "collection",

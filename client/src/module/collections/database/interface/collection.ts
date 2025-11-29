@@ -10,11 +10,11 @@ export interface TMDBCollectionPart {
   adult: boolean;
   backdrop_path: string | null;
   id: number;
-  name: string;             // tên phim trong collection
-  original_name: string;    // tên gốc
+  name: string; // tên phim trong collection
+  original_name: string; // tên gốc
   overview: string;
   poster_path: string | null;
-  media_type: string;       // thường là "movie"
+  media_type: string; // thường là "movie"
   original_language: string;
   genre_ids: number[];
   popularity: number;
@@ -65,12 +65,17 @@ export interface TMDBCollectionImagesResponse {
 
 // data bên trong TMDB có thể thay đổi theo loại content,
 // nên để generic nhưng KHÔNG dùng any.
-export type TMDBCollectionTranslationData = Record<string, unknown>;
+export interface TMDBCollectionTranslationData {
+  title?: string | null;
+  overview?: string | null;
+  tagline?: string | null;
+  homepage?: string | null;
+}
 
 export interface TMDBCollectionTranslation {
-  iso_3166_1: string;   // mã quốc gia, ví dụ: "US", "VN"
-  iso_639_1: string;    // mã ngôn ngữ, ví dụ: "en", "vi"
-  name: string;         // tên theo ngôn ngữ đó
+  iso_3166_1: string; // mã quốc gia, ví dụ: "US", "VN"
+  iso_639_1: string; // mã ngôn ngữ, ví dụ: "en", "vi"
+  name: string; // tên theo ngôn ngữ đó
   english_name: string; // tên tiếng Anh của ngôn ngữ
   data: TMDBCollectionTranslationData;
 }

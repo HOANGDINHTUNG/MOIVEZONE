@@ -19,7 +19,7 @@ const CollectionPartsList = ({
 
   if (!sorted.length) {
     return (
-      <div className="text-sm text-neutral-400">
+      <div className="text-sm text-neutral-500 dark:text-neutral-400">
         Chưa có thông tin phim trong bộ sưu tập này.
       </div>
     );
@@ -27,7 +27,7 @@ const CollectionPartsList = ({
 
   return (
     <section className="space-y-3">
-      <h2 className="text-lg font-semibold text-white">
+      <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
         Danh sách phim trong bộ sưu tập
       </h2>
 
@@ -43,15 +43,22 @@ const CollectionPartsList = ({
             <Link
               key={part.id}
               to={`/movie/${part.id}`}
-              className="flex gap-4 items-center bg-neutral-900/70 hover:bg-neutral-800/80 border border-neutral-800/80 hover:border-neutral-700 rounded-xl p-3 transition-colors"
+              className="
+                flex gap-4 items-center
+                bg-white/80 dark:bg-neutral-900/70
+                hover:bg-neutral-100 dark:hover:bg-neutral-800/80
+                border border-neutral-200/80 dark:border-neutral-800/80
+                hover:border-neutral-300 dark:hover:border-neutral-700
+                rounded-xl p-3 transition-colors
+              "
             >
               {/* STT */}
-              <div className="w-8 text-center text-sm text-neutral-400">
+              <div className="w-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
                 #{index + 1}
               </div>
 
               {/* Poster */}
-              <div className="w-16 h-24 rounded-lg overflow-hidden bg-neutral-800 shrink-0">
+              <div className="w-16 h-24 rounded-lg overflow-hidden bg-neutral-200 dark:bg-neutral-800 shrink-0">
                 {poster ? (
                   <img
                     src={imageBaseUrl + poster}
@@ -59,7 +66,7 @@ const CollectionPartsList = ({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-[10px] text-neutral-500">
+                  <div className="w-full h-full flex items-center justify-center text-[10px] text-neutral-500 dark:text-neutral-400">
                     No Image
                   </div>
                 )}
@@ -67,24 +74,28 @@ const CollectionPartsList = ({
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <h3 className="text-sm md:text-base font-semibold text-white line-clamp-2">
+                <h3 className="text-sm md:text-base font-semibold text-neutral-900 dark:text-neutral-100 line-clamp-2">
                   {part.name}
                 </h3>
-                <p className="text-xs text-neutral-400 mt-0.5">{date}</p>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+                  {date}
+                </p>
                 {part.overview && (
-                  <p className="text-xs text-neutral-300 mt-1 line-clamp-2">
+                  <p className="text-xs text-neutral-700 dark:text-neutral-300 mt-1 line-clamp-2">
                     {part.overview}
                   </p>
                 )}
               </div>
 
               {/* Rating */}
-              <div className="hidden sm:flex flex-col items-end text-xs text-neutral-300">
-                <span className="text-neutral-400">Điểm TMDB</span>
-                <span className="text-sm font-semibold text-yellow-400">
+              <div className="hidden sm:flex flex-col items-end text-xs text-neutral-700 dark:text-neutral-300">
+                <span className="text-neutral-500 dark:text-neutral-400">
+                  Điểm TMDB
+                </span>
+                <span className="text-sm font-semibold text-yellow-500">
                   {part.vote_average?.toFixed(1) ?? "–"}
                 </span>
-                <span className="text-[10px] text-neutral-500">
+                <span className="text-[10px] text-neutral-500 dark:text-neutral-500">
                   {part.vote_count} votes
                 </span>
               </div>

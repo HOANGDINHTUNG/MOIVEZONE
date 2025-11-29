@@ -1,21 +1,9 @@
-// src/module/discover/interface/discover.ts
-
-/**
- * Paginated response chung
- */
 export interface TMDBPaginatedResponse<T> {
   page: number;
   results: T[];
   total_pages: number;
   total_results: number;
 }
-
-/**
- * =========================
- *  DISCOVER MOVIE
- * =========================
- * GET /discover/movie
- */
 
 export interface TMDBDiscoverMovieItem {
   adult: boolean;
@@ -37,13 +25,6 @@ export interface TMDBDiscoverMovieItem {
 export type TMDBDiscoverMovieResponse =
   TMDBPaginatedResponse<TMDBDiscoverMovieItem>;
 
-/**
- * =========================
- *  DISCOVER TV
- * =========================
- * GET /discover/tv
- */
-
 export interface TMDBDiscoverTvItem {
   backdrop_path: string | null;
   first_air_date: string;
@@ -60,5 +41,4 @@ export interface TMDBDiscoverTvItem {
   vote_count: number;
 }
 
-export type TMDBDiscoverTvResponse =
-  TMDBPaginatedResponse<TMDBDiscoverTvItem>;
+export type TMDBDiscoverTvResponse = TMDBPaginatedResponse<TMDBDiscoverTvItem>;

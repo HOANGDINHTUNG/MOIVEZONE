@@ -9,15 +9,12 @@ interface Props {
 }
 
 const PAGE_SIZE = 20;
-
-// Mỗi lần hiển thị tối đa 5 backdrops và 6 posters
 const BACKDROP_WINDOW = 5;
 const POSTER_WINDOW = 6;
 
 const CollectionImagesGallery = ({ images, imageBaseUrl }: Props) => {
   const { backdrops, posters } = images;
 
-  // Số ảnh đã "load" vào carousel (ban đầu: tối đa 20)
   const [loadedBackdropCount, setLoadedBackdropCount] = useState(
     Math.min(PAGE_SIZE, backdrops.length)
   );
@@ -25,18 +22,15 @@ const CollectionImagesGallery = ({ images, imageBaseUrl }: Props) => {
     Math.min(PAGE_SIZE, posters.length)
   );
 
-  // Vị trí bắt đầu của "cửa sổ" hiển thị
   const [backdropStartIndex, setBackdropStartIndex] = useState(0);
   const [posterStartIndex, setPosterStartIndex] = useState(0);
 
-  // Clamp để tránh vượt độ dài mảng nếu images thay đổi
   const safeLoadedBackdropCount = Math.min(
     loadedBackdropCount,
     backdrops.length
   );
   const safeLoadedPosterCount = Math.min(loadedPosterCount, posters.length);
 
-  // BACKDROPS: tính ra subset đang load + subset đang hiển thị (window)
   const {
     loadedBackdrops,
     visibleBackdrops,
@@ -68,7 +62,6 @@ const CollectionImagesGallery = ({ images, imageBaseUrl }: Props) => {
     };
   }, [backdrops, safeLoadedBackdropCount, backdropStartIndex]);
 
-  // POSTERS
   const {
     loadedPosters,
     visiblePosters,
@@ -100,14 +93,12 @@ const CollectionImagesGallery = ({ images, imageBaseUrl }: Props) => {
     };
   }, [posters, safeLoadedPosterCount, posterStartIndex]);
 
-  // ===== HANDLER: BACKDROPS =====
   const handleBackdropPrev = () => {
     if (atBackdropStart) return;
     setBackdropStartIndex((prev) => Math.max(prev - BACKDROP_WINDOW, 0));
   };
 
   const handleBackdropNext = () => {
-    // Còn cửa sổ phía sau trong phần đã load → trượt
     if (!atBackdropEndOfLoaded) {
       setBackdropStartIndex((prev) =>
         Math.min(
@@ -118,7 +109,6 @@ const CollectionImagesGallery = ({ images, imageBaseUrl }: Props) => {
       return;
     }
 
-    // Đã tới cuối phần load nhưng còn ảnh chưa load → load thêm 20
     if (canLoadMoreBackdrops) {
       setLoadedBackdropCount((prev) =>
         Math.min(prev + PAGE_SIZE, backdrops.length)
@@ -126,7 +116,6 @@ const CollectionImagesGallery = ({ images, imageBaseUrl }: Props) => {
     }
   };
 
-  // ===== HANDLER: POSTERS =====
   const handlePosterPrev = () => {
     if (atPosterStart) return;
     setPosterStartIndex((prev) => Math.max(prev - POSTER_WINDOW, 0));
@@ -155,27 +144,33 @@ const CollectionImagesGallery = ({ images, imageBaseUrl }: Props) => {
 
   return (
     <section className="space-y-6">
-      <h2 className="text-lg font-semibold text-white">Hình ảnh bộ sưu tập</h2>
+      <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+        Hình ảnh bộ sưu tập
+      </h2>
 
       {/* BACKDROPS */}
       {backdrops.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center justify-between mb-1">
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">
               Backdrops ({backdrops.length})
             </p>
 
             {showBackdropNav && (
-              <div className="flex items-center gap-2 text-xs text-neutral-300">
+              <div className="flex items-center gap-2 text-xs text-neutral-700 dark:text-neutral-300">
                 <button
                   type="button"
                   onClick={handleBackdropPrev}
                   disabled={atBackdropStart}
-                  className={`px-2 py-1 rounded-full border border-neutral-600 transition ${
-                    atBackdropStart
-                      ? "opacity-30 cursor-default"
-                      : "hover:bg-neutral-700 cursor-pointer"
-                  }`}
+                  className={`
+                    px-2 py-1 rounded-full border transition
+                    border-neutral-300 dark:border-neutral-600
+                    ${
+                      atBackdropStart
+                        ? "opacity-30 cursor-default"
+                        : "hover:bg-neutral-200 dark:hover:bg-neutral-700 cursor-pointer"
+                    }
+                  `}
                 >
                   ←
                 </button>
@@ -184,11 +179,15 @@ const CollectionImagesGallery = ({ images, imageBaseUrl }: Props) => {
                   type="button"
                   onClick={handleBackdropNext}
                   disabled={!canLoadMoreBackdrops && atBackdropEndOfLoaded}
-                  className={`px-2 py-1 rounded-full border border-neutral-600 transition ${
-                    !canLoadMoreBackdrops && atBackdropEndOfLoaded
-                      ? "opacity-30 cursor-default"
-                      : "hover:bg-neutral-700 cursor-pointer"
-                  }`}
+                  className={`
+                    px-2 py-1 rounded-full border transition
+                    border-neutral-300 dark:border-neutral-600
+                    ${
+                      !canLoadMoreBackdrops && atBackdropEndOfLoaded
+                        ? "opacity-30 cursor-default"
+                        : "hover:bg-neutral-200 dark:hover:bg-neutral-700 cursor-pointer"
+                    }
+                  `}
                 >
                   {atBackdropEndOfLoaded && canLoadMoreBackdrops
                     ? "+ 20 ảnh nữa →"
@@ -198,12 +197,14 @@ const CollectionImagesGallery = ({ images, imageBaseUrl }: Props) => {
             )}
           </div>
 
-          {/* grid 5 cột (tuỳ theo màn hình) */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
             {visibleBackdrops.map((img) => (
               <div
                 key={img.file_path}
-                className="aspect-video rounded-xl overflow-hidden bg-neutral-800"
+                className="
+                  aspect-video rounded-xl overflow-hidden
+                  bg-neutral-200 dark:bg-neutral-800
+                "
               >
                 <img
                   src={imageBaseUrl + img.file_path}
@@ -220,21 +221,25 @@ const CollectionImagesGallery = ({ images, imageBaseUrl }: Props) => {
       {posters.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center justify-between mb-1">
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">
               Posters ({posters.length})
             </p>
 
             {showPosterNav && (
-              <div className="flex items-center gap-2 text-xs text-neutral-300">
+              <div className="flex items-center gap-2 text-xs text-neutral-700 dark:text-neutral-300">
                 <button
                   type="button"
                   onClick={handlePosterPrev}
                   disabled={atPosterStart}
-                  className={`px-2 py-1 rounded-full border border-neutral-600 transition ${
-                    atPosterStart
-                      ? "opacity-30 cursor-default"
-                      : "hover:bg-neutral-700 cursor-pointer"
-                  }`}
+                  className={`
+                    px-2 py-1 rounded-full border transition
+                    border-neutral-300 dark:border-neutral-600
+                    ${
+                      atPosterStart
+                        ? "opacity-30 cursor-default"
+                        : "hover:bg-neutral-200 dark:hover:bg-neutral-700 cursor-pointer"
+                    }
+                  `}
                 >
                   ←
                 </button>
@@ -243,11 +248,15 @@ const CollectionImagesGallery = ({ images, imageBaseUrl }: Props) => {
                   type="button"
                   onClick={handlePosterNext}
                   disabled={!canLoadMorePosters && atPosterEndOfLoaded}
-                  className={`px-2 py-1 rounded-full border border-neutral-600 transition ${
-                    !canLoadMorePosters && atPosterEndOfLoaded
-                      ? "opacity-30 cursor-default"
-                      : "hover:bg-neutral-700 cursor-pointer"
-                  }`}
+                  className={`
+                    px-2 py-1 rounded-full border transition
+                    border-neutral-300 dark:border-neutral-600
+                    ${
+                      !canLoadMorePosters && atPosterEndOfLoaded
+                        ? "opacity-30 cursor-default"
+                        : "hover:bg-neutral-200 dark:hover:bg-neutral-700 cursor-pointer"
+                    }
+                  `}
                 >
                   {atPosterEndOfLoaded && canLoadMorePosters
                     ? "+ 20 ảnh nữa →"
@@ -257,12 +266,14 @@ const CollectionImagesGallery = ({ images, imageBaseUrl }: Props) => {
             )}
           </div>
 
-          {/* grid 6 cột (tuỳ theo màn hình) */}
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
             {visiblePosters.map((img) => (
               <div
                 key={img.file_path}
-                className="aspect-2/3 rounded-xl overflow-hidden bg-neutral-800"
+                className="
+                  aspect-2/3 rounded-xl overflow-hidden
+                  bg-neutral-200 dark:bg-neutral-800
+                "
               >
                 <img
                   src={imageBaseUrl + img.file_path}

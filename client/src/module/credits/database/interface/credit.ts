@@ -1,13 +1,3 @@
-// src/module/credits/interface/credit.ts
-
-/**
- * =========================
- *  MEDIA INSIDE CREDIT
- * =========================
- * Media có thể là MOVIE hoặc TV. 
- * TMDB trả chung một format nên gom vào kiểu tổng quát.
- */
-
 export interface TMDBCreditMediaSeason {
   air_date: string | null;
   episode_count: number;
@@ -32,7 +22,7 @@ export interface TMDBCreditMedia {
   overview: string;
   poster_path: string | null;
 
-  media_type: string;      // "movie" | "tv"
+  media_type: string; // "movie" | "tv"
   genre_ids: number[];
   popularity: number;
 
@@ -46,41 +36,29 @@ export interface TMDBCreditMedia {
 
   // Extra fields if credit belongs to a TV series
   character?: string;
-  episodes?: unknown[];           // TMDB để rỗng
+  episodes?: unknown[]; // TMDB để rỗng
   seasons?: TMDBCreditMediaSeason[];
 }
-
-/**
- * =========================
- *  PERSON INSIDE CREDIT
- * =========================
- */
 
 export interface TMDBCreditPerson {
   adult: boolean;
   id: number;
   name: string;
   original_name: string;
-  media_type: string;           // "person"
+  media_type: string; // "person"
   popularity: number;
   gender: number;
   known_for_department: string;
   profile_path: string | null;
 }
 
-/**
- * =========================
- *  CREDIT DETAILS RESPONSE
- * =========================
- */
-
 export interface TMDBCreditDetailsResponse {
-  credit_type: string;       // "cast" | "crew"
-  department: string;        // ví dụ: "Acting", "Production"
-  job: string;               // ví dụ: "Director", "Actor"
+  credit_type: string; // "cast" | "crew"
+  department: string; // ví dụ: "Acting", "Production"
+  job: string; // ví dụ: "Director", "Actor"
 
-  media: TMDBCreditMedia;    // thông tin movie hoặc TV
-  person: TMDBCreditPerson;  // thông tin diễn viên/người làm phim
+  media: TMDBCreditMedia; // thông tin movie hoặc TV
+  person: TMDBCreditPerson; // thông tin diễn viên/người làm phim
 
-  id: string;                // credit_id
+  id: string; // credit_id
 }

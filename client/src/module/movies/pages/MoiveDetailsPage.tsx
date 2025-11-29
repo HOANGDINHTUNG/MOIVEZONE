@@ -295,6 +295,20 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return movieData.belongs_to_collection ?? null;
   }, [data, resolvedMediaType]);
 
+  const productionCompanies = useMemo(() => {
+    if (!data) return [];
+
+    // cả MovieDetail và TvDetail đều có production_companies
+    if (
+      "production_companies" in data &&
+      Array.isArray(data.production_companies)
+    ) {
+      return data.production_companies;
+    }
+
+    return [];
+  }, [data]);
+
   if (loading || !data) {
     return (
       <section className="max-w-6xl mx-auto px-3 py-6">
@@ -368,9 +382,18 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
             {certification && (
               <>
                 <span>|</span>
-                <p>Rating: {certification}</p>
+                <p>
+                  Rating:{" "}
+                  <Link
+                    to="/certifications"
+                    className="underline underline-offset-2 text-red-400 hover:text-red-300"
+                  >
+                    {certification}
+                  </Link>
+                </p>
               </>
             )}
+
             {genresText && (
               <>
                 <span>|</span>
@@ -524,6 +547,50 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
               </div>
             </>
           )}
+
+          {/* Production Companies */}
+          {productionCompanies.length > 0 && (
+            <>
+              <Divider />
+              <div className="mt-4">
+                <h2 className="font-semibold mb-2 text-sm md:text-base">
+                  Production Companies
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {productionCompanies.map((c) => (
+                    <Link
+                      key={c.id}
+                      to={`/company/${c.id}`}
+                      className="
+                        inline-flex items-center gap-2 px-2 py-1 rounded-full
+                        bg-neutral-200 dark:bg-neutral-800
+                        hover:bg-neutral-300 dark:hover:bg-neutral-700
+                        text-xs text-neutral-800 dark:text-neutral-100
+                        border border-neutral-300 dark:border-neutral-700
+                        transition-colors
+                      "
+                    >
+                      {c.logo_path && (
+                        <div className="w-6 h-6 rounded-full overflow-hidden bg-white">
+                          <img
+                            src={imageURL + c.logo_path}
+                            alt={c.name}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      )}
+                      <span>{c.name}</span>
+                      {c.origin_country && (
+                        <span className="text-[10px] text-neutral-500 dark:text-neutral-400">
+                          ({c.origin_country})
+                        </span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -562,32 +629,56 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
               Top Cast
             </h2>
             <div className="flex gap-3 overflow-x-auto pb-2">
-              {starCast.map((cast) => (
-                <div
-                  key={cast.cast_id ?? `${cast.credit_id}-${cast.id}`}
-                  className="w-24 shrink-0"
-                >
-                  <div className="w-24 h-24 rounded-lg overflow-hidden bg-neutral-800 mb-1">
-                    {cast.profile_path ? (
-                      <img
-                        src={imageURL + cast.profile_path}
-                        alt={cast.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[10px] text-neutral-400">
-                        No Image
-                      </div>
-                    )}
+              {starCast.length > 0 && (
+                <>
+                  <Divider />
+                  <div className="mt-4">
+                    <h2 className="font-semibold mb-2 text-sm md:text-base">
+                      Top Cast
+                    </h2>
+                    <div className="flex gap-3 overflow-x-auto pb-2">
+                      {starCast.map((cast) => (
+                        <Link
+                          key={cast.cast_id ?? `${cast.credit_id}-${cast.id}`}
+                          to={
+                            cast.credit_id
+                              ? `/credits/${cast.credit_id}` // 👉 đi thẳng sang Credit Details
+                              : `/person/${cast.id}` // fallback nếu lỡ không có credit_id
+                          }
+                          className="w-24 shrink-0 group"
+                        >
+                          <div className="w-24 h-24 rounded-lg overflow-hidden bg-neutral-800 mb-1 group-hover:ring-2 group-hover:ring-red-500/70 transition">
+                            {cast.profile_path ? (
+                              <img
+                                src={imageURL + cast.profile_path}
+                                alt={cast.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-[10px] text-neutral-400">
+                                No Image
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-xs font-semibold line-clamp-2 group-hover:text-red-400">
+                            {cast.name}
+                          </p>
+                          <p className="text-[11px] text-neutral-400 line-clamp-1">
+                            {cast.character}
+                          </p>
+
+                          {/* Nhãn nhỏ cho dev biết đây là credit view */}
+                          {cast.credit_id && (
+                            <span className="mt-0.5 inline-flex items-center rounded-full bg-neutral-800 px-2 py-0.5 text-[10px] text-neutral-300 group-hover:bg-red-600 group-hover:text-white">
+                              View credit
+                            </span>
+                          )}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                  <p className="text-xs font-semibold line-clamp-2">
-                    {cast.name}
-                  </p>
-                  <p className="text-[11px] text-neutral-400 line-clamp-1">
-                    {cast.character}
-                  </p>
-                </div>
-              ))}
+                </>
+              )}
             </div>
           </div>
         </>
