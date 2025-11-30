@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { TMDBCreditDetailsResponse } from "../database/interface/credit";
-import { tmdbCreditApi } from "../../../api/TMDBCredit.api";
+import { tmdbCreditApi } from "../../../api/movie/TMDBCredit.api";
 
 interface TMDBCreditDetailsState {
   currentId: string | null;

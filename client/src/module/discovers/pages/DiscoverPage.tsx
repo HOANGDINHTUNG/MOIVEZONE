@@ -6,7 +6,7 @@ import { fetchDiscoverMovies, fetchDiscoverTv } from "../store/discoverSlice";
 import type {
   TMDBDiscoverMovieItem,
   TMDBDiscoverTvItem,
-} from "../../../types/interface/discover";
+} from "../database/interface/discover";
 
 type DiscoverMediaType = "movie" | "tv";
 

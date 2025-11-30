@@ -1,8 +1,7 @@
 // src/module/changes/store/tmdbChangesSlice.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { TMDBChangeItem, TMDBChangeMediaType, TMDBChangesResponse } from "../database/interface/changes";
-import { tmdbChangesApi, type TMDBChangesParams } from "../../../api/TMDBChanges.api";
-
+import { tmdbChangesApi, type TMDBChangesParams } from "../../../api/movie/TMDBChanges.api";
 
 interface TMDBChangesListState {
   items: TMDBChangeItem[];

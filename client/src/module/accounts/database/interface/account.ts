@@ -1,11 +1,3 @@
-// src/module/account/interface/account.ts
-
-/**
- * =========================
- *  Account details
- * =========================
- */
-
 export interface TMDBAvatarGravatar {
   hash: string; // thực tế TMDB trả hash gravatar
 }
@@ -22,18 +14,12 @@ export interface TMDBAvatar {
 export interface TMDBAccountDetails {
   id: number;
   avatar: TMDBAvatar;
-  iso_639_1: string;      // ngôn ngữ ưu tiên
-  iso_3166_1: string;     // quốc gia
+  iso_639_1: string; // ngôn ngữ ưu tiên
+  iso_3166_1: string; // quốc gia
   name: string;
   include_adult: boolean;
   username: string;
 }
-
-/**
- * =========================
- *  Common helper types
- * =========================
- */
 
 // Response chung có phân trang
 export interface TMDBPaginatedResponse<T> {
@@ -61,12 +47,6 @@ export interface TMDBMarkMediaRequest {
   favorite?: boolean;
   watchlist?: boolean;
 }
-
-/**
- * =========================
- *  Movie / TV list item cơ bản
- * =========================
- */
 
 export interface TMDBMovieListItem {
   adult: boolean;
@@ -102,33 +82,19 @@ export interface TMDBTvListItem {
   vote_count: number;
 }
 
-/**
- * =========================
- *  Favorite / Watchlist
- * =========================
- */
-
 // Favorite Movies
 export type TMDBFavoriteMoviesResponse =
   TMDBPaginatedResponse<TMDBMovieListItem>;
 
 // Favorite TV
-export type TMDBFavoriteTvResponse =
-  TMDBPaginatedResponse<TMDBTvListItem>;
+export type TMDBFavoriteTvResponse = TMDBPaginatedResponse<TMDBTvListItem>;
 
 // Watchlist Movies
 export type TMDBWatchlistMoviesResponse =
   TMDBPaginatedResponse<TMDBMovieListItem>;
 
 // Watchlist TV
-export type TMDBWatchlistTvResponse =
-  TMDBPaginatedResponse<TMDBTvListItem>;
-
-/**
- * =========================
- *  Custom Lists (user lists)
- * =========================
- */
+export type TMDBWatchlistTvResponse = TMDBPaginatedResponse<TMDBTvListItem>;
 
 export interface TMDBAccountListItem {
   description: string;
@@ -144,12 +110,6 @@ export interface TMDBAccountListItem {
 export type TMDBAccountListsResponse =
   TMDBPaginatedResponse<TMDBAccountListItem>;
 
-/**
- * =========================
- *  Rated Movies / TV / Episodes
- * =========================
- */
-
 export interface TMDBRatedMovieListItem extends TMDBMovieListItem {
   rating: number; // user rating
 }
@@ -161,8 +121,7 @@ export interface TMDBRatedTvListItem extends TMDBTvListItem {
   rating: number; // user rating
 }
 
-export type TMDBRatedTvResponse =
-  TMDBPaginatedResponse<TMDBRatedTvListItem>;
+export type TMDBRatedTvResponse = TMDBPaginatedResponse<TMDBRatedTvListItem>;
 
 // Rated TV Episodes
 export interface TMDBRatedEpisodeListItem {

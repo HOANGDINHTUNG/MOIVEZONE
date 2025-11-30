@@ -14,6 +14,8 @@ import ConfigurationPage from "../module/configuration/pages/ConfigurationPage";
 import ChangesPage from "../module/changes/pages/ChangesPage";
 import CreditDetailsPage from "../module/credits/pages/CreditDetailsPage";
 import DiscoverPage from "../module/discovers/pages/DiscoverPage";
+import LoginPage from "../module/auth/feature/pages/LoginPage";
+import RegisterPage from "../module/auth/feature/pages/RegisterPage";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +59,10 @@ const router = createBrowserRouter([
       { path: "/discover", element: <DiscoverPage /> },
     ],
   },
+
+  { path: "login", index: true, element: <LoginPage /> },
+  { path: "register", element: <RegisterPage /> },
+
   { path: "/test", element: <TmdbLogger /> },
 ]);
 

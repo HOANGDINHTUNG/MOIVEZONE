@@ -1,11 +1,11 @@
 // src/api/TMDBCollection.api.ts
 
-import axiosTMDB from "../app/axiosTMDB";
+import axiosTMDB from "../../app/axiosTMDB";
 import type {
   TMDBCollectionDetailsResponse,
   TMDBCollectionImagesResponse,
   TMDBCollectionTranslationsResponse,
-} from "../module/collections/database/interface/collection";
+} from "../../module/collections/database/interface/collection";
 
 // Chi tiết collection theo ngôn ngữ
 export const getCollectionDetails = (id: number, language?: string) =>

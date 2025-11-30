@@ -1,8 +1,8 @@
-import axiosTMDB from "../app/axiosTMDB";
+import axiosTMDB from "../../app/axiosTMDB";
 import type {
   TMDBDiscoverMovieResponse,
   TMDBDiscoverTvResponse,
-} from "../types/interface/discover";
+} from "../../module/discovers/database/interface/discover";
 
 export interface DiscoverMovieParams {
   page?: number;

@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "../../../stores";
+import type { TMDBCertificationResponse } from "../database/interface/certification";
 import {
   getMovieCertifications,
   getTvCertifications,
-} from "../../../api/TMDBCertification.api";
-import type { TMDBCertificationResponse } from "../database/interface/certification";
+} from "../../../api/movie/TMDBCertification.api";
 
 interface CertificationState {
   movie: TMDBCertificationResponse | null;

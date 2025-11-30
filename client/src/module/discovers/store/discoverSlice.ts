@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { TMDBDiscoverMovieItem, TMDBDiscoverMovieResponse, TMDBDiscoverTvItem, TMDBDiscoverTvResponse } from "../../../types/interface/discover";
-import { tmdbDiscoverApi, type DiscoverMovieParams, type DiscoverTvParams } from "../../../api/TMDBDiscover.api";
+import type {
+  TMDBDiscoverMovieItem,
+  TMDBDiscoverMovieResponse,
+  TMDBDiscoverTvItem,
+  TMDBDiscoverTvResponse,
+} from "../database/interface/discover";
+import { tmdbDiscoverApi, type DiscoverMovieParams, type DiscoverTvParams } from "../../../api/movie/TMDBDiscover.api";
+
 
 interface DiscoverListState<T> {
   items: T[];

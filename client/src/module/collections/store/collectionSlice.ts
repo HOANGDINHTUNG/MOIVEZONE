@@ -6,7 +6,7 @@ import {
   getCollectionDetails,
   getCollectionImages,
   getCollectionTranslations,
-} from "../../../api/TMDBCollection.api";
+} from "../../../api/movie/TMDBCollection.api";
 import type {
   TMDBCollectionDetailsResponse,
   TMDBCollectionImagesResponse,

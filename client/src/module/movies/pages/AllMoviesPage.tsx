@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
 import type { MovieSummary } from "../database/interface/movie";
-import { tmdbApi } from "../../../api/TMDB.api";
+import { tmdbApi } from "../../../api/movie/TMDB.api";
 import Card from "../../../components/common/Card";
 
 const ITEMS_PER_LOAD = 40;
@@ -98,9 +98,7 @@ const AllMoviesPage = () => {
 
   return (
     <section className="max-w-6xl mx-auto px-3 py-6">
-      <h1 className="text-2xl font-bold mb-1">
-        Phim mới nhất
-      </h1>
+      <h1 className="text-2xl font-bold mb-1">Phim mới nhất</h1>
       <p className="text-sm text-neutral-500 mb-4">
         Danh sách phim sắp ra mắt / mới ra mắt sẽ ở trên, cũ dần về sau.
       </p>
@@ -121,9 +119,7 @@ const AllMoviesPage = () => {
             {loading ? "Đang tải..." : "Tải thêm 40 phim"}
           </button>
         ) : (
-          <p className="text-sm text-neutral-500">
-            Đã hết phim để tải rồi 😄
-          </p>
+          <p className="text-sm text-neutral-500">Đã hết phim để tải rồi 😄</p>
         )}
       </div>
     </section>

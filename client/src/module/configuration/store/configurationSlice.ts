@@ -8,7 +8,7 @@ import type {
   TMDBPrimaryTranslationsResponse,
   TMDBTimezonesResponse,
 } from "../database/interface/configuration";
-import { tmdbConfigApi } from "../../../api/TMDBConfiguration.api";
+import { tmdbConfigApi } from "../../../api/movie/TMDBConfiguration.api";
 interface TMDBConfigurationState {
   configuration: TMDBConfigurationResponse | null;
   countries: TMDBCountriesResponse;

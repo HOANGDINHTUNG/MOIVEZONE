@@ -1,8 +1,8 @@
-import axiosTMDB from "../app/axiosTMDB";
+import axiosTMDB from "../../app/axiosTMDB";
 import type {
   TMDBChangeMediaType,
   TMDBChangesResponse,
-} from "../module/changes/database/interface/changes";
+} from "../../module/changes/database/interface/changes";
 
 export interface TMDBChangesParams {
   page?: number;

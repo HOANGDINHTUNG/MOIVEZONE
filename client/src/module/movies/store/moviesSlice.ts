@@ -1,15 +1,13 @@
 // src/module/movies/store/moviesSlice.ts
 
-import { createAsyncThunk, createSlice,type PayloadAction } from "@reduxjs/toolkit";
-import { tmdbApi } from "../../../api/TMDB.api";
-import type {
-  MovieDetail,
-  MovieSummary,
-} from "../database/interface/movie";
-import type {
-  TvDetail,
-  TvSummary,
-} from "../database/interface/tv";
+import {
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
+import { tmdbApi } from "../../../api/movie/TMDB.api";
+import type { MovieDetail, MovieSummary } from "../database/interface/movie";
+import type { TvDetail, TvSummary } from "../database/interface/tv";
 import type { RootState } from "../../../stores";
 
 // ================== STATE TYPE ==================
@@ -193,7 +191,8 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchNowPlayingMovies.rejected, (state, action) => {
         state.loadingLists = false;
-        state.errorList = action.error.message ?? "Failed to load now playing movies";
+        state.errorList =
+          action.error.message ?? "Failed to load now playing movies";
       });
 
     builder
@@ -207,7 +206,8 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchUpcomingMovies.rejected, (state, action) => {
         state.loadingLists = false;
-        state.errorList = action.error.message ?? "Failed to load upcoming movies";
+        state.errorList =
+          action.error.message ?? "Failed to load upcoming movies";
       });
 
     builder
@@ -221,7 +221,8 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchPopularMovies.rejected, (state, action) => {
         state.loadingLists = false;
-        state.errorList = action.error.message ?? "Failed to load popular movies";
+        state.errorList =
+          action.error.message ?? "Failed to load popular movies";
       });
 
     builder
@@ -235,7 +236,8 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchTopRatedMovies.rejected, (state, action) => {
         state.loadingLists = false;
-        state.errorList = action.error.message ?? "Failed to load top rated movies";
+        state.errorList =
+          action.error.message ?? "Failed to load top rated movies";
       });
 
     // ===== TV LIST =====
@@ -250,7 +252,8 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchPopularTvShows.rejected, (state, action) => {
         state.loadingLists = false;
-        state.errorList = action.error.message ?? "Failed to load popular tv shows";
+        state.errorList =
+          action.error.message ?? "Failed to load popular tv shows";
       });
 
     builder
@@ -264,7 +267,8 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchOnTheAirTvShows.rejected, (state, action) => {
         state.loadingLists = false;
-        state.errorList = action.error.message ?? "Failed to load on-the-air tv shows";
+        state.errorList =
+          action.error.message ?? "Failed to load on-the-air tv shows";
       });
 
     // ===== MOVIE DETAIL =====
@@ -280,7 +284,8 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchMovieDetailById.rejected, (state, action) => {
         state.loadingDetail = false;
-        state.errorDetail = action.error.message ?? "Failed to load movie detail";
+        state.errorDetail =
+          action.error.message ?? "Failed to load movie detail";
       });
 
     // ===== TV DETAIL =====

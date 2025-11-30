@@ -7,7 +7,7 @@ import {
   getCompanyDetails,
   getCompanyAltNames,
   getCompanyImages,
-} from "../../../api/TMDBCompany.api";
+} from "../../../api/movie/TMDBCompany.api";
 import type {
   TMDBCompanyAltNamesResponse,
   TMDBCompanyDetailsResponse,

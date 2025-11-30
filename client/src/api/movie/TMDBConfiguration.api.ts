@@ -1,4 +1,4 @@
-import axiosTMDB from "../app/axiosTMDB";
+import axiosTMDB from "../../app/axiosTMDB";
 import type {
   TMDBConfigurationResponse,
   TMDBCountriesResponse,
@@ -6,7 +6,7 @@ import type {
   TMDBLanguagesResponse,
   TMDBPrimaryTranslationsResponse,
   TMDBTimezonesResponse,
-} from "../module/configuration/database/interface/configuration";
+} from "../../module/configuration/database/interface/configuration";
 
 export const tmdbConfigApi = {
   getConfiguration(): Promise<TMDBConfigurationResponse> {

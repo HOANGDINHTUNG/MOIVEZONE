@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
 import type { TvSummary } from "../database/interface/tv";
-import { tmdbApi } from "../../../api/TMDB.api";
+import { tmdbApi } from "../../../api/movie/TMDB.api";
 import Card from "../../../components/common/Card";
 
 const ITEMS_PER_LOAD = 40;

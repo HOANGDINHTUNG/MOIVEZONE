@@ -9,6 +9,8 @@ import tmdbConfigurationReducer from "../module/configuration/store/configuratio
 import tmdbChangesReducer from "../module/changes/store/changesSlice";
 import creditDetailsReducer from "../module/credits/store/creditDetailsSlice";
 import tmdbDiscoverReducer from "../module/discovers/store/discoverSlice"
+import tmdbGenresReducer from "../module/movies/store/genresSlice"
+import accountReducer from "../module/accounts/store/accountSlice"
 export const store = configureStore({
   reducer: {
     moviesData: moviesReducer,
@@ -20,6 +22,8 @@ export const store = configureStore({
     tmdbChanges: tmdbChangesReducer,
     tmdbCreditDetails: creditDetailsReducer,
     tmdbDiscover: tmdbDiscoverReducer,
+    tmdbGenres: tmdbGenresReducer,
+    account: accountReducer,
   },
 });
 

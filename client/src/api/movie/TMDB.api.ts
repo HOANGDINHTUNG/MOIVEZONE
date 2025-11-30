@@ -1,23 +1,22 @@
 // src/api/TMDB.api.ts
-import { axiosTMDB } from "../app/axiosTMDB";
-import type { MovieDetail } from "../module/movies/database/interface/movie";
-import type { TvDetail } from "../module/movies/database/interface/tv";
-import type { AppLanguage } from "../module/movies/store/languageSlice";
+import { axiosTMDB } from "../../app/axiosTMDB";
+import type { MovieDetail } from "../../module/movies/database/interface/movie";
+import type { TvDetail } from "../../module/movies/database/interface/tv";
+import type { AppLanguage } from "../../module/movies/store/languageSlice";
 import type {
   TMDBMovieListResponse,
   TMDBTvListResponse,
-} from "../module/movies/database/interface/tmdb";
-import type { TMDBTrendingAllResponse } from "../types/interface/trending";
-import type { TMDBSearchMultiResponse } from "../types/interface/search";
-import type { TMDBGenreListResponse } from "../types/interface/genre";
-import type { TMDBPaginatedResponse } from "../types/interface/movie";
-import type { TMDBReviewDetails } from "../types/interface/review";
-import type { TMDBPersonDetails } from "../types/interface/person";
+} from "../../module/movies/database/interface/tmdb";
+import type { TMDBTrendingAllResponse } from "../../types/interface/trending";
+import type { TMDBSearchMultiResponse } from "../../types/interface/search";
+import type { TMDBGenreListResponse } from "../../module/movies/database/interface/genre";
+import type { TMDBPaginatedResponse } from "../../types/interface/movie";
+import type { TMDBReviewDetails } from "../../types/interface/review";
+import type { TMDBPersonDetails } from "../../types/interface/person";
 
 const defaultLanguage: AppLanguage = "vi-VN";
 
 type TMDBReviewListResponse = TMDBPaginatedResponse<TMDBReviewDetails>;
-
 
 export const tmdbApi = {
   // ===== MOVIE LIST =====
@@ -236,10 +235,9 @@ export const tmdbApi = {
     id: number,
     language: AppLanguage = defaultLanguage
   ): Promise<TMDBPersonDetails> {
-    const res = await axiosTMDB.get<TMDBPersonDetails>(
-      `/person/${id}`,
-      { params: { language, append_to_response: "combined_credits,images" } }
-    );
+    const res = await axiosTMDB.get<TMDBPersonDetails>(`/person/${id}`, {
+      params: { language, append_to_response: "combined_credits,images" },
+    });
     return res.data;
   },
 };

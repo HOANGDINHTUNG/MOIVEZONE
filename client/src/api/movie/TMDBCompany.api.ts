@@ -1,11 +1,11 @@
 // src/api/TMDBCompany.api.ts
 
-import axiosTMDB from "../app/axiosTMDB";
+import axiosTMDB from "../../app/axiosTMDB";
 import type {
   TMDBCompanyAltNamesResponse,
   TMDBCompanyDetailsResponse,
   TMDBCompanyImagesResponse,
-} from "../module/company/database/interface/company";
+} from "../../module/company/database/interface/company";
 
 /**
  * Company details
