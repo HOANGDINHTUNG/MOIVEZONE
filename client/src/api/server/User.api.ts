@@ -1,80 +1,76 @@
+// src/api/server/User.api.ts
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { IUser } from "../../module/auth/database/interface/users";
+import { axiosInstance } from "../../utils/axiosIntance";
 
-const STORAGE_KEY = "moviezone_users";
-
-/** Đọc danh sách user từ localStorage (an toàn tuyệt đối) */
-const readUsers = (): IUser[] => {
-  if (typeof window === "undefined") return [];
-
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return [];
-
-  try {
-    const parsed = JSON.parse(raw) as unknown;
-    if (Array.isArray(parsed)) {
-      return parsed as IUser[];
-    }
-    return [];
-  } catch {
-    return [];
-  }
-};
-
-/** Ghi danh sách user vào localStorage */
-const writeUsers = (users: IUser[]) => {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
-};
-
-/** Lấy toàn bộ user */
+/**
+ * Lấy toàn bộ user từ API ảo (JSON Server, Render,...)
+ * GET /users
+ */
 export const getAllUsers = async (): Promise<IUser[]> => {
-  return readUsers();
+  const response = await axiosInstance.get<IUser[]>("users");
+  return response.data;
 };
 
-/** Tạo user mới */
+/**
+ * Tạo user mới trên API ảo
+ * POST /users
+ * - Backend sẽ lưu vào db.json (nếu là JSON Server) hoặc DB của bạn
+ */
 export const createUser = async (
   payload: Omit<IUser, "id" | "createdAt">
 ): Promise<IUser> => {
-  const users = readUsers();
-
   const now = new Date().toISOString();
 
-  const newUser: IUser = {
+  const body = {
     ...payload,
-    id: Date.now(), // id auto
     createdAt: now,
   };
 
-  users.push(newUser);
-  writeUsers(users);
-
-  return newUser;
+  const response = await axiosInstance.post<IUser>("users", body);
+  return response.data;
 };
 
-/** Tìm user theo email */
+/**
+ * Tìm user theo email (dùng cho các logic như check trùng email, login,…)
+ * -> gọi getAllUsers rồi filter phía client
+ */
 export const findUserByEmail = async (
   email: string
 ): Promise<IUser | undefined> => {
-  const users = readUsers();
-  return users.find(
-    (u) => u.email.toLowerCase() === email.trim().toLowerCase()
-  );
+  const users = await getAllUsers();
+  const normalized = email.trim().toLowerCase();
+  return users.find((u) => u.email.toLowerCase() === normalized);
 };
 
-/** Cập nhật user — cần để authSlice extraReducers hoạt động */
-export const updateUser = async (payload: IUser): Promise<IUser> => {
-  const users = readUsers();
-  const index = users.findIndex((u) => u.id === payload.id);
+/**
+ * Hàm core cập nhật user trực tiếp lên API ảo
+ * PATCH /users/:id
+ */
+const updateUserCore = async (
+  payload: Partial<IUser> & { id: number }
+): Promise<IUser> => {
+  const { id, ...rest } = payload;
 
-  if (index === -1) throw new Error("User not found");
-
-  const updatedUser: IUser = {
-    ...users[index],
-    ...payload,
-  };
-
-  users[index] = updatedUser;
-  writeUsers(users);
-
-  return updatedUser;
+  const response = await axiosInstance.patch<IUser>(`users/${id}`, rest);
+  return response.data;
 };
+
+/**
+ * Thunk updateUser dành cho Redux:
+ * - authSlice đang import { updateUser } từ file này
+ * - và dùng updateUser.fulfilled trong extraReducers
+ */
+export const updateUser = createAsyncThunk<
+  IUser,
+  Partial<IUser> & { id: number }
+>("users/updateUser", async (payload) => {
+  const updated = await updateUserCore(payload);
+  return updated;
+});
+
+/**
+ * Nếu sau này muốn gọi cập nhật user trực tiếp trong component,
+ * không cần thông qua Redux, dùng hàm này
+ */
+export const updateUserDirect = updateUserCore;

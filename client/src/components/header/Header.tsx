@@ -1,10 +1,16 @@
 // src/components/header/Header.tsx
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 
 import DarkModeToggle from "../common/ui/DarkModeToggle";
 import LanguageToggle from "../common/ux/LanguageToggle";
 
 import logo from "../../../public/assets/img/logo3.png";
+import { useAppDispatch, useAppSelector } from "../../hooks/UseCustomeRedux";
+import { logout } from "../../module/auth/store/authSlice";
+
+// import HeaderSearch from "./components/HeaderSearch";
+import UserMenu from "./components/UserMenu";
+import NeonHeaderSearch from "./components/NeonHeaderSearch";
 
 interface HeaderProps {
   admin?: boolean;
@@ -17,7 +23,23 @@ const activeUnderline =
   "after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-2 after:h-[3px] after:rounded-full after:bg-[#ecad29]";
 
 export default function Header({ admin }: HeaderProps) {
-  // header cho trang admin: gọn, tối, vẫn dùng dark mode + language
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const { isAuthenticated, currentUser } = useAppSelector(
+    (state) => state.auth
+  );
+
+  const displayName =
+    currentUser?.username ||
+    (currentUser?.email ? currentUser.email.split("@")[0] : "User");
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
+  // header cho trang admin
   if (admin) {
     return (
       <header className="sticky top-0 z-80 bg-neutral-950/90 text-neutral-50 border-b border-neutral-800 backdrop-blur">
@@ -41,7 +63,7 @@ export default function Header({ admin }: HeaderProps) {
     );
   }
 
-  // header chính: style giống navbar trong TimedCardsHero
+  // header chính
   return (
     <header className="sticky top-0 z-80 bg-neutral-950/70 text-white backdrop-blur border-b border-neutral-800">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 md:px-8 py-4">
@@ -69,7 +91,9 @@ export default function Header({ admin }: HeaderProps) {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `${navLinkBase} ${isActive ? activeUnderline : "text-white/80 hover:text-white"}`
+              `${navLinkBase} ${
+                isActive ? activeUnderline : "text-white/80 hover:text-white"
+              }`
             }
           >
             Home
@@ -78,16 +102,20 @@ export default function Header({ admin }: HeaderProps) {
           <NavLink
             to="/explore"
             className={({ isActive }) =>
-              `${navLinkBase} ${isActive ? activeUnderline : "text-white/80 hover:text-white"}`
+              `${navLinkBase} ${
+                isActive ? activeUnderline : "text-white/80 hover:text-white"
+              }`
             }
           >
             Explore
           </NavLink>
 
           <NavLink
-            to="/movies"
+            to="/movie"
             className={({ isActive }) =>
-              `${navLinkBase} ${isActive ? activeUnderline : "text-white/80 hover:text-white"}`
+              `${navLinkBase} ${
+                isActive ? activeUnderline : "text-white/80 hover:text-white"
+              }`
             }
           >
             Movies
@@ -96,7 +124,9 @@ export default function Header({ admin }: HeaderProps) {
           <NavLink
             to="/tv"
             className={({ isActive }) =>
-              `${navLinkBase} ${isActive ? activeUnderline : "text-white/80 hover:text-white"}`
+              `${navLinkBase} ${
+                isActive ? activeUnderline : "text-white/80 hover:text-white"
+              }`
             }
           >
             TV Shows
@@ -105,7 +135,9 @@ export default function Header({ admin }: HeaderProps) {
           <NavLink
             to="/search?s="
             className={({ isActive }) =>
-              `${navLinkBase} ${isActive ? activeUnderline : "text-white/80 hover:text-white"}`
+              `${navLinkBase} ${
+                isActive ? activeUnderline : "text-white/80 hover:text-white"
+              }`
             }
           >
             Search
@@ -114,79 +146,98 @@ export default function Header({ admin }: HeaderProps) {
 
         {/* Search nhỏ + toggles + auth */}
         <div className="flex items-center gap-3">
-          {/* Search compact cho desktop */}
-          <form
-            action="/search"
-            className="hidden md:flex items-center rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-[13px]"
-          >
-            <input
-              type="text"
-              name="s"
-              placeholder="Search movie..."
-              className="bg-transparent outline-none placeholder:text-white/40 text-white w-32"
-            />
-            <button type="submit" className="ml-1">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4 text-white/70"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.8}
-                stroke="currentColor"
+          {/* Search compact cho desktop (đã tách component + icon search) */}
+          {/* <HeaderSearch /> */}
+
+          <div className="hidden md:block">
+            <NeonHeaderSearch />
+          </div>
+
+          {/* Nếu CHƯA đăng nhập: toggle + login */}
+          {!isAuthenticated ? (
+            <div className="hidden sm:flex items-center gap-3">
+              <LanguageToggle />
+              <DarkModeToggle />
+              <Link
+                to="/login"
+                className="inline-flex items-center rounded-full border border-[#ecad29]/60 px-3 py-1.5 text-[12px] font-medium uppercase tracking-wide text-[#ecad29] hover:bg-[#ecad29] hover:text-black transition-colors"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                />
-              </svg>
-            </button>
-          </form>
-
-          <LanguageToggle />
-          <DarkModeToggle />
-
-          {/* Placeholder nút Login (có thể nối với auth slice sau) */}
-          <button className="hidden sm:inline-flex items-center rounded-full border border-[#ecad29]/60 px-3 py-1.5 text-[12px] font-medium uppercase tracking-wide text-[#ecad29] hover:bg-[#ecad29] hover:text-black transition-colors">
-            Login
-          </button>
+                Login
+              </Link>
+            </div>
+          ) : (
+            // ĐÃ ĐĂNG NHẬP: dùng UserMenu
+            <UserMenu
+              displayName={displayName}
+              email={currentUser?.email}
+              onLogout={handleLogout}
+            />
+          )}
         </div>
       </nav>
 
       {/* Nav mobile đơn giản */}
-      <div className="md:hidden px-4 pb-3 flex items-center gap-4 text-[12px] uppercase tracking-wide text-white/80">
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            `mr-2 ${isActive ? "text-white font-semibold" : ""}`
-          }
-        >
-          Home
-        </NavLink>
-        <NavLink
-          to="/explore"
-          className={({ isActive }) =>
-            `mr-2 ${isActive ? "text-white font-semibold" : ""}`
-          }
-        >
-          Explore
-        </NavLink>
-        <NavLink
-          to="/movies"
-          className={({ isActive }) =>
-            `mr-2 ${isActive ? "text-white font-semibold" : ""}`
-          }
-        >
-          Movies
-        </NavLink>
-        <NavLink
-          to="/tv-shows"
-          className={({ isActive }) =>
-            `${isActive ? "text-white font-semibold" : ""}`
-          }
-        >
-          TV
-        </NavLink>
+      <div className="md:hidden px-4 pb-3 flex items-center justify-between text-[12px] uppercase tracking-wide text-white/80">
+        <div className="flex items-center gap-3">
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              `mr-2 ${isActive ? "text-white font-semibold" : ""}`
+            }
+          >
+            Home
+          </NavLink>
+          <NavLink
+            to="/explore"
+            className={({ isActive }) =>
+              `mr-2 ${isActive ? "text-white font-semibold" : ""}`
+            }
+          >
+            Explore
+          </NavLink>
+          <NavLink
+            to="/movie"
+            className={({ isActive }) =>
+              `mr-2 ${isActive ? "text-white font-semibold" : ""}`
+            }
+          >
+            Movies
+          </NavLink>
+          <NavLink
+            to="/tv"
+            className={({ isActive }) =>
+              `${isActive ? "text-white font-semibold" : ""}`
+            }
+          >
+            TV
+          </NavLink>
+        </div>
+
+        {/* Auth mobile */}
+        <div className="flex items-center gap-2">
+          {!isAuthenticated ? (
+            <>
+              <Link to="/login" className="text-white/80">
+                Login
+              </Link>
+              <Link to="/register" className="text-[#ecad29]">
+                Reg
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/profile" className="text-white">
+                {displayName}
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="text-red-400 font-semibold"
+              >
+                Out
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

@@ -1,10 +1,3 @@
-// src/module/movies/interface/movieLists.ts
-
-/**
- * =========================
- *  Movie item (dùng chung)
- * =========================
- */
 export interface TMDBMovieListItem {
   adult: boolean;
   backdrop_path: string | null;
@@ -22,11 +15,6 @@ export interface TMDBMovieListItem {
   vote_count: number;
 }
 
-/**
- * =========================
- *  Paginated response
- * =========================
- */
 export interface TMDBPaginatedResponse<T> {
   page: number;
   results: T[];
@@ -54,12 +42,6 @@ export interface TMDBUpcomingResponse
   extends TMDBPaginatedResponse<TMDBMovieListItem> {
   dates: TMDBMovieDateRange;
 }
-
-/**
- * =========================
- *  Popular & Top Rated — không có dates
- * =========================
- */
 
 export type TMDBPopularMoviesResponse =
   TMDBPaginatedResponse<TMDBMovieListItem>;

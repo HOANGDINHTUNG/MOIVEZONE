@@ -12,6 +12,7 @@ import { setBannerData, setImageURL } from "./module/movies/store/moviesSlice";
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
 import MobileNavigation from "./mobile/components/MobileNavigation";
+import ScrollToTop from "./components/common/ux/ScrollToTop";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -44,6 +45,7 @@ function App() {
     <main className="min-h-screen bg-slate-50 text-slate-900 dark:bg-neutral-900 dark:text-neutral-100 pb-14 lg:pb-0">
       <Header />
       <div className="min-h-[90vh]">
+        <ScrollToTop />
         <Outlet />
       </div>
       <Footer />

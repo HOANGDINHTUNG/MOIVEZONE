@@ -14,56 +14,83 @@ import ConfigurationPage from "../module/configuration/pages/ConfigurationPage";
 import ChangesPage from "../module/changes/pages/ChangesPage";
 import CreditDetailsPage from "../module/credits/pages/CreditDetailsPage";
 import DiscoverPage from "../module/discovers/pages/DiscoverPage";
+
 import LoginPage from "../module/auth/feature/pages/LoginPage";
 import RegisterPage from "../module/auth/feature/pages/RegisterPage";
+import AuthLayout from "../module/auth/feature/layout/AuthLayout";
+import NotFoundPage from "../components/error/NotFoundPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 const router = createBrowserRouter([
+  // Layout chính của app
   {
     path: "/",
     element: <App />,
+    errorElement: <NotFoundPage />,
     children: [
+      // Trang chính: vào đây là Home (ai cũng xem được)
       { index: true, element: <Home /> },
+
+      // Các trang public: ai cũng xem được
+      { path: "explore", element: <ExplorePage /> },
+      { path: "search", element: <SearchPage /> },
+      { path: "movie", element: <AllMoviesPage /> },
+      { path: "tv", element: <AllTvShowsPage /> },
+
+      // ================== NHÓM CẦN ĐĂNG NHẬP ==================
       {
-        path: "/movies",
-        element: <AllMoviesPage />,
+        element: <ProtectedRoute />,
+        children: [
+          // Chi tiết phim / tv
+          { path: "movie/:id", element: <DetailsPage mediaType="movie" /> },
+          { path: "tv/:id", element: <DetailsPage mediaType="tv" /> },
+
+          // TMDB details
+          { path: "collection/:id", element: <CollectionPage /> },
+          { path: "company/:id", element: <CompanyPage /> },
+          { path: "certifications", element: <CertificationPage /> },
+          { path: "configuration", element: <ConfigurationPage /> },
+          { path: "changes", element: <ChangesPage /> },
+          { path: "credits/:creditId", element: <CreditDetailsPage /> },
+          { path: "discover", element: <DiscoverPage /> },
+
+          // // Account / news / payment
+          // { path: "account", element: <AccountPage /> },
+          // { path: "news", element: <NewsListPage /> },
+          // { path: "news/:id", element: <NewsDetailPage /> },
+
+          // { path: "payment", element: <PaymentPage /> },
+          // { path: "payment/success", element: <PaymentSuccessPage /> },
+          // { path: "ticket-price", element: <TicketPricePage /> },
+
+          // // Admin (cũng nên bảo vệ)
+          // { path: "admin/movies", element: <AdminMoviesPage /> },
+          // { path: "admin/schedule", element: <AdminSchedulePage /> },
+          // { path: "admin/users", element: <AdminUsersPage /> },
+        ],
       },
-      {
-        path: "/tv",
-        element: <AllTvShowsPage />,
-      },
-      {
-        path: "explore/:explore",
-        element: <ExplorePage />,
-      },
-      {
-        path: "movie/:id",
-        element: <DetailsPage mediaType="movie" />,
-      },
-      {
-        path: "tv/:id",
-        element: <DetailsPage mediaType="tv" />,
-      },
-      {
-        path: "search",
-        element: <SearchPage />,
-      },
-      {
-        path: "/collection/:id",
-        element: <CollectionPage />,
-      },
-      { path: "/company/:id", element: <CompanyPage /> },
-      { path: "/credits/:creditId", element: <CreditDetailsPage /> },
-      { path: "/certifications", element: <CertificationPage /> },
-      { path: "/configuration", element: <ConfigurationPage /> },
-      { path: "/changes", element: <ChangesPage /> },
-      { path: "/discover", element: <DiscoverPage /> },
     ],
   },
 
-  { path: "login", index: true, element: <LoginPage /> },
-  { path: "register", element: <RegisterPage /> },
+  // ================== LAYOUT AUTH (LOGIN / REGISTER) ==================
+  {
+    element: (
+      <AuthLayout videoSrc="https://res.cloudinary.com/dmzvum1lp/video/upload/v1764555355/The_Dark_Knight_-_Official_Trailer_3_HD_tsypcl.mp4" />
+    ),
+    children: [
+      { path: "login", element: <LoginPage /> },
+      { path: "register", element: <RegisterPage /> },
+    ],
+  },
 
+  //=================== TEST ====================
   { path: "/test", element: <TmdbLogger /> },
+
+  // ================== 404 ==================
+  {
+    path: "*",
+    element: <NotFoundPage />,
+  },
 ]);
 
 export default router;

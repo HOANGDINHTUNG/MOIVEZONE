@@ -66,14 +66,11 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // updateUser là một createAsyncThunk được export từ ../../api/User.api
     builder.addCase(updateUser.fulfilled, (state, action) => {
-      // Nếu user hiện tại khác id thì không làm gì
       if (!state.currentUser || state.currentUser.id !== action.payload.id) {
         return;
       }
 
-      // Merge dữ liệu mới vào currentUser
       state.currentUser = {
         ...state.currentUser,
         ...action.payload,

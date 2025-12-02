@@ -1,11 +1,3 @@
-// src/module/movies/interface/movie.ts
-
-/**
- * ===================================================================
- *  COMMON TYPES
- * ===================================================================
- */
-
 // Dùng chung cho rất nhiều chỗ
 export interface TMDBPaginatedResponse<T> {
   page: number;
@@ -268,7 +260,8 @@ export interface TMDBListSummary {
   poster_path: string | null;
 }
 
-export interface TMDBMovieListsResponse extends TMDBPaginatedResponse<TMDBListSummary> {
+export interface TMDBMovieListsResponse
+  extends TMDBPaginatedResponse<TMDBListSummary> {
   id: number;
 }
 
@@ -340,8 +333,7 @@ export interface TMDBMovieReviewsResponse
  * ===================================================================
  */
 
-export type TMDBMovieSimilarResponse =
-  TMDBPaginatedResponse<TMDBMovieSummary>;
+export type TMDBMovieSimilarResponse = TMDBPaginatedResponse<TMDBMovieSummary>;
 
 /**
  * ===================================================================
@@ -374,10 +366,10 @@ export interface TMDBMovieVideo {
   iso_639_1: string;
   iso_3166_1: string;
   name: string;
-  key: string;        // dùng build URL YouTube/Vimeo
-  site: string;       // "YouTube", "Vimeo"
-  size: number;       // 360, 480, 720, 1080...
-  type: string;       // "Trailer", "Teaser", ...
+  key: string; // dùng build URL YouTube/Vimeo
+  site: string; // "YouTube", "Vimeo"
+  size: number; // 360, 480, 720, 1080...
+  type: string; // "Trailer", "Teaser", ...
   official: boolean;
   published_at: string;
   id: string;
@@ -421,7 +413,7 @@ export interface TMDBMovieWatchProvidersResponse {
  */
 
 export interface TMDBMovieRatingRequest {
-  value: number; // 0.5 - 10 (bước 0.5)
+  value: number;
 }
 
 export interface TMDBStatusResponse {

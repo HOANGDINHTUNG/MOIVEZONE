@@ -8,9 +8,10 @@ import certificationsReducer from "../module/certifications/store/certificationS
 import tmdbConfigurationReducer from "../module/configuration/store/configurationSlice";
 import tmdbChangesReducer from "../module/changes/store/changesSlice";
 import creditDetailsReducer from "../module/credits/store/creditDetailsSlice";
-import tmdbDiscoverReducer from "../module/discovers/store/discoverSlice"
-import tmdbGenresReducer from "../module/movies/store/genresSlice"
-import accountReducer from "../module/accounts/store/accountSlice"
+import tmdbDiscoverReducer from "../module/discovers/store/discoverSlice";
+import tmdbGenresReducer from "../module/movies/store/genresSlice";
+import accountReducer from "../module/accounts/store/accountSlice";
+import authReducer from "../module/auth/store/authSlice"
 export const store = configureStore({
   reducer: {
     moviesData: moviesReducer,
@@ -24,6 +25,7 @@ export const store = configureStore({
     tmdbDiscover: tmdbDiscoverReducer,
     tmdbGenres: tmdbGenresReducer,
     account: accountReducer,
+    auth: authReducer,
   },
 });
 
