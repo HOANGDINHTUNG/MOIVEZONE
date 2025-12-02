@@ -109,6 +109,20 @@ export const tmdbApi = {
     return res.data;
   },
 
+  async getMovieVideos(id: number, language: AppLanguage = defaultLanguage) {
+    const res = await axiosTMDB.get(`/movie/${id}/videos`, {
+      params: { language },
+    });
+    return res.data;
+  },
+
+  async getTvVideos(id: number, language: AppLanguage = defaultLanguage) {
+    const res = await axiosTMDB.get(`/tv/${id}/videos`, {
+      params: { language },
+    });
+    return res.data;
+  },
+
   // ===== TV LIST =====
 
   async getPopularTv(

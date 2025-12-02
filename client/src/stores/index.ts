@@ -11,7 +11,8 @@ import creditDetailsReducer from "../module/credits/store/creditDetailsSlice";
 import tmdbDiscoverReducer from "../module/discovers/store/discoverSlice";
 import tmdbGenresReducer from "../module/movies/store/genresSlice";
 import accountReducer from "../module/accounts/store/accountSlice";
-import authReducer from "../module/auth/store/authSlice"
+import authReducer from "../module/auth/store/authSlice";
+import networkReducer from "../module/networks/store/networkSlice";
 export const store = configureStore({
   reducer: {
     moviesData: moviesReducer,
@@ -26,6 +27,7 @@ export const store = configureStore({
     tmdbGenres: tmdbGenresReducer,
     account: accountReducer,
     auth: authReducer,
+    network: networkReducer,
   },
 });
 

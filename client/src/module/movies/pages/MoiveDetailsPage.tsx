@@ -23,6 +23,7 @@ import DetailsReviewsSection from "../components/DetailsReviewsSection";
 import DetailsRelatedSection from "../components/DetailsRelatedSection";
 import DetailsAlternativeTitlesSection from "../components/DetailsAlternativeTitlesSection";
 import { fetchTMDBGenres } from "../store/genresSlice";
+import DetailsNetworksSection from "../components/DetailsNetworksSection";
 
 type MediaDetail = MovieDetail | TvDetail;
 type MediaSummary = MovieSummary | TvSummary;
@@ -76,6 +77,15 @@ type DetailsPageProps = {
 };
 
 export type DetailGenre = { id: number; name: string };
+
+export type TvNetworkSummary = {
+  id: number;
+  name: string;
+  logo_path: string | null;
+  origin_country: string;
+};
+
+const TMDB_IMAGE = "https://image.tmdb.org/t/p";
 
 const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
   const { explore, id } = useParams<{ explore?: string; id: string }>();
@@ -325,6 +335,15 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return data.genres as DetailGenre[];
   }, [data]);
 
+  const tvNetworks = useMemo<TvNetworkSummary[]>(() => {
+    if (!data || resolvedMediaType !== "tv") return [];
+
+    const tvData = data as TvDetail;
+    if (!Array.isArray(tvData.networks)) return [];
+
+    return tvData.networks as TvNetworkSummary[];
+  }, [data, resolvedMediaType]);
+
   if (loading || !data) {
     return (
       <section className="max-w-6xl mx-auto px-3 py-6">
@@ -391,6 +410,11 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
       {/* Top Cast */}
       {starCast.length > 0 && (
         <DetailsTopCastSection starCast={starCast} imageURL={imageURL} />
+      )}
+
+      {/* Networks (chỉ có cho TV show) */}
+      {resolvedMediaType === "tv" && tvNetworks.length > 0 && (
+        <DetailsNetworksSection networks={tvNetworks} imageURL={TMDB_IMAGE} />
       )}
 
       {/* Keywords */}

@@ -20,6 +20,7 @@ import RegisterPage from "../module/auth/feature/pages/RegisterPage";
 import AuthLayout from "../module/auth/feature/layout/AuthLayout";
 import NotFoundPage from "../components/error/NotFoundPage";
 import ProtectedRoute from "./ProtectedRoute";
+import NetworkPage from "../module/networks/pages/NetworkPage";
 
 const router = createBrowserRouter([
   // Layout chính của app
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
           { path: "changes", element: <ChangesPage /> },
           { path: "credits/:creditId", element: <CreditDetailsPage /> },
           { path: "discover", element: <DiscoverPage /> },
+          { path: "network/:id", element: <NetworkPage /> },
 
           // // Account / news / payment
           // { path: "account", element: <AccountPage /> },

@@ -20,6 +20,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
     <div className="hidden sm:flex items-center">
       <div className="relative group">
         {/* Nút user (avatar + tên + caret) */}
+
         <button
           className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-2.5 py-1.5 text-[13px] hover:bg-white/10 transition-colors"
           type="button"
