@@ -22,11 +22,6 @@ export interface TMDBPaginatedResponse<T> {
   total_results: number;
 }
 
-/**
- * =========================
- *  Now Playing & Upcoming — có thêm dates
- * =========================
- */
 
 export interface TMDBMovieDateRange {
   maximum: string; // ví dụ: 2024-12-30

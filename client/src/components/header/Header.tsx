@@ -105,10 +105,10 @@ export default function Header({ admin }: HeaderProps) {
         showHeader ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 md:px-8 py-4">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 md:px-8 py-2">
         {/* Logo + tên site */}
         <Link to="/" className="inline-flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl overflow-hidden bg-black/60 border border-white/10 grid place-items-center">
+          <div className="w-12 h-12 overflow-hidden grid place-items-center">
             <img
               src={logo}
               alt="Cinema"
@@ -141,35 +141,6 @@ export default function Header({ admin }: HeaderProps) {
               </div>
             </MenuItem>
 
-            {/* EXPLORE */}
-            <MenuItem
-              setActive={setActiveMenu}
-              active={activeMenu}
-              item="Explore"
-              to="/explore"
-            >
-              <div className="grid grid-cols-2 gap-4 text-sm p-1 pr-3">
-                <div className="flex flex-col space-y-2">
-                  <p className="text-[11px] uppercase tracking-wide text-neutral-400">
-                    Khám phá
-                  </p>
-                  <HoveredLink href="/explore">Tất cả tiêu đề</HoveredLink>
-                  <HoveredLink href="/movie">Chỉ Movies</HoveredLink>
-                  <HoveredLink href="/tv">Chỉ TV Shows</HoveredLink>
-                  <HoveredLink href="/search?s=">Tìm kiếm nâng cao</HoveredLink>
-                </div>
-                <div className="flex flex-col space-y-2">
-                  <p className="text-[11px] uppercase tracking-wide text-neutral-400">
-                    Nhanh
-                  </p>
-                  <HoveredLink href="/movie?sort=popular">
-                    Movies phổ biến
-                  </HoveredLink>
-                  <HoveredLink href="/tv?sort=popular">TV phổ biến</HoveredLink>
-                </div>
-              </div>
-            </MenuItem>
-
             {/* MOVIES – có hình */}
             <MenuItem
               setActive={setActiveMenu}
@@ -180,26 +151,26 @@ export default function Header({ admin }: HeaderProps) {
               <div className="text-sm grid grid-cols-2 gap-6 p-2">
                 <ProductItem
                   title="Popular Movies"
-                  href="/movie?sort=popular"
+                  href="/category_movie/popular"
                   src="https://image.tmdb.org/t/p/w300/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg"
                   description="Danh sách phim đang hot, đang được xem nhiều."
                 />
                 <ProductItem
                   title="Top Rated"
-                  href="/movie?sort=top_rated"
+                  href="/category_movie/top_rated"
                   src="https://image.tmdb.org/t/p/w300/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg"
                   description="Những bộ phim được đánh giá cao nhất."
                 />
                 <ProductItem
                   title="Upcoming"
-                  href="/movie?sort=upcoming"
+                  href="/category_movie/upcoming"
                   src="https://image.tmdb.org/t/p/w300/1E5baAaEse26fej7uHcjOgEE2t2.jpg"
                   description="Phim sắp chiếu, đừng bỏ lỡ suất chiếu đầu tiên."
                 />
                 <ProductItem
                   title="Now Playing"
-                  href="/movie?sort=now_playing"
-                  src="https://image.tmdb.org/t/p/w300/kqjL17yufvn9OVLyXYpvtyrFfak.jpg"
+                  href="/category_movie/now_playing"
+                  src="https://image.tmdb.org/t/p/w300/b9ixaRHHhkdeMfUn3xOcHWY5IXI.jpg"
                   description="Phim đang chiếu ngoài rạp tuần này."
                 />
               </div>
@@ -215,33 +186,61 @@ export default function Header({ admin }: HeaderProps) {
               <div className="text-sm grid grid-cols-2 gap-6 p-2">
                 <ProductItem
                   title="Popular TV"
-                  href="/tv?sort=popular"
-                  src="https://image.tmdb.org/t/p/w300/9RqlpGHuZSP3kC5xCTC2Z8pU85V.jpg"
+                  href="/category_tv/popular"
+                  src="https://image.tmdb.org/t/p/w300/oHx043lHsysn8klll1nPvKMBHLf.jpg"
                   description="Series được xem nhiều nhất hiện tại."
                 />
                 <ProductItem
                   title="Top Rated TV"
-                  href="/tv?sort=top_rated"
+                  href="/category_tv/top_rated"
                   src="https://image.tmdb.org/t/p/w300/roYyPiQDQKmIKUEhO912693tSja.jpg"
                   description="Những series được chấm điểm cao nhất."
                 />
                 <ProductItem
                   title="On The Air"
-                  href="/tv?sort=on_the_air"
-                  src="https://image.tmdb.org/t/p/w300/gnW8bXYBy8ISGL8k3p9xjL9C7qk.jpg"
+                  href="/category_tv/on_the_air"
+                  src="https://image.tmdb.org/t/p/w300/ogyw5LTmL53dVxsppcy8Dlm30Fu.jpg"
                   description="Đang phát sóng từng tuần, cập nhật liên tục."
                 />
                 <ProductItem
                   title="Airing Today"
-                  href="/tv?sort=airing_today"
+                  href="/category_tv/airing_today"
                   src="https://image.tmdb.org/t/p/w300/2IWouZK4gkgHhJa3oyYuSWfSqbG.jpg"
                   description="Tập mới lên sóng trong ngày hôm nay."
                 />
               </div>
             </MenuItem>
 
-            {/* SEARCH */}
+            {/* EXPLORE */}
             <MenuItem
+              setActive={setActiveMenu}
+              active={activeMenu}
+              item="More"
+              to="/explore"
+            >
+              <div className="grid grid-cols-2 gap-4 text-sm p-1 pr-3">
+                <div className="flex flex-col space-y-2">
+                  <p className="text-[11px] uppercase tracking-wide text-neutral-400">
+                    EXPLORE
+                  </p>
+                  <HoveredLink href="/explore">All</HoveredLink>
+                  <HoveredLink href="/trending">Trending</HoveredLink>
+                  <HoveredLink href="/search">Advanced search</HoveredLink>
+                </div>
+                <div className="flex flex-col space-y-2">
+                  <p className="text-[11px] uppercase tracking-wide text-neutral-400">
+                    PERSONAL
+                  </p>
+                  <HoveredLink href="/movie?sort=popular">
+                    List favorites
+                  </HoveredLink>
+                  <HoveredLink href="/movie?sort=popular">History</HoveredLink>
+                </div>
+              </div>
+            </MenuItem>
+
+            {/* SEARCH */}
+            {/* <MenuItem
               setActive={setActiveMenu}
               active={activeMenu}
               item="Search"
@@ -260,7 +259,7 @@ export default function Header({ admin }: HeaderProps) {
                   Đi tới trang Search &rarr;
                 </HoveredLink>
               </div>
-            </MenuItem>
+            </MenuItem> */}
           </Menu>
         </div>
 

@@ -13,8 +13,10 @@ import tmdbGenresReducer from "../module/movies/store/genresSlice";
 import accountReducer from "../module/accounts/store/accountSlice";
 import authReducer from "../module/auth/store/authSlice";
 import networkReducer from "../module/networks/store/networkSlice";
-import appReducer from "../stores/appSlice"
-import trendingReducer from "../module/trending/store/trendingSlice"
+import appReducer from "../stores/appSlice";
+import trendingReducer from "../module/trending/store/trendingSlice";
+import moviesCategoriesReducer from "../module/movies/store/moviesCategorySlice";
+import tvCategoriesReducer from "../module/movies/store/tvCategorySlice";
 export const store = configureStore({
   reducer: {
     moviesData: moviesReducer,
@@ -30,8 +32,10 @@ export const store = configureStore({
     account: accountReducer,
     auth: authReducer,
     network: networkReducer,
-    app:appReducer,
+    app: appReducer,
     trending: trendingReducer,
+    moviesCategories: moviesCategoriesReducer,
+    tvCategories: tvCategoriesReducer,
   },
 });
 

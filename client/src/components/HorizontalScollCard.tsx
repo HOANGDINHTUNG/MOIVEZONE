@@ -34,15 +34,25 @@ const HorizontalScollCard = ({
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const handleNext = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollLeft += 300;
-    }
+    if (!containerRef.current) return;
+
+    const width = containerRef.current.clientWidth || 300;
+
+    containerRef.current.scrollBy({
+      left: width * 0.9, // gần 1 “trang” → có đà
+      behavior: "smooth",
+    });
   };
 
   const handlePrevious = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollLeft -= 300;
-    }
+    if (!containerRef.current) return;
+
+    const width = containerRef.current.clientWidth || 300;
+
+    containerRef.current.scrollBy({
+      left: -width * 0.9,
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -55,15 +65,19 @@ const HorizontalScollCard = ({
         <div className="hidden md:flex items-center gap-2">
           <button
             onClick={handlePrevious}
-            className="bg-neutral-200 dark:bg-white text-neutral-900 p-1 rounded-full"
+            className="relative p-2 rounded-full bg-neutral-900 text-white shadow-md
+                       overflow-hidden transition-all duration-200
+                       hover:scale-110 hover:bg-linear-to-r hover:from-red-500 hover:to-yellow-400"
           >
-            <FaAngleLeft />
+            <FaAngleLeft className="text-lg" />
           </button>
           <button
             onClick={handleNext}
-            className="bg-neutral-200 dark:bg-white text-neutral-900 p-1 rounded-full"
+            className="relative p-2 rounded-full bg-neutral-900 text-white shadow-md
+                       overflow-hidden transition-all duration-200
+                       hover:scale-110 hover:bg-linear-to-r hover:from-red-500 hover:to-yellow-400"
           >
-            <FaAngleRight />
+            <FaAngleRight className="text-lg" />
           </button>
         </div>
       </div>
@@ -71,7 +85,7 @@ const HorizontalScollCard = ({
       <div className="relative">
         <div
           ref={containerRef}
-          className="flex items-stretch gap-4 overflow-x-auto scrolbar-none pb-2"
+          className="flex items-stretch gap-4 overflow-x-auto scrollbar-none pb-2 scroll-smooth"
         >
           {data.map((item, index) => (
             <Card
@@ -88,13 +102,15 @@ const HorizontalScollCard = ({
         <div className="md:hidden absolute inset-y-0 flex justify-between items-center pointer-events-none">
           <button
             onClick={handlePrevious}
-            className="bg-white dark:bg-black/70 text-black dark:text-white p-1 rounded-full ml-1 pointer-events-auto"
+            className="bg-white dark:bg-black/70 text-black dark:text-white p-1 rounded-full ml-1 pointer-events-auto
+                       transition-all duration-200 hover:scale-110 hover:bg-linear-to-r hover:from-red-500 hover:to-yellow-400"
           >
             <FaAngleLeft />
           </button>
           <button
             onClick={handleNext}
-            className="bg-white dark:bg-black/70 text-black dark:text-white p-1 rounded-full mr-1 pointer-events-auto"
+            className="bg-white dark:bg-black/70 text-black dark:text-white p-1 rounded-full mr-1 pointer-events-auto
+                       transition-all duration-200 hover:scale-110 hover:bg-linear-to-r hover:from-red-500 hover:to-yellow-400"
           >
             <FaAngleRight />
           </button>

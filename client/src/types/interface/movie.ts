@@ -180,12 +180,6 @@ export interface TMDBMovieCredits {
   crew: TMDBMovieCrew[];
 }
 
-/**
- * ===================================================================
- *  EXTERNAL IDS (GET /movie/{id}/external_ids)
- * ===================================================================
- */
-
 export interface TMDBMovieExternalIds {
   id: number;
   imdb_id: string | null;
@@ -194,12 +188,6 @@ export interface TMDBMovieExternalIds {
   instagram_id: string | null;
   twitter_id: string | null;
 }
-
-/**
- * ===================================================================
- *  IMAGES (GET /movie/{id}/images)
- * ===================================================================
- */
 
 export interface TMDBMediaImage {
   aspect_ratio: number;
@@ -218,12 +206,6 @@ export interface TMDBMovieImagesResponse {
   logos: TMDBMediaImage[];
 }
 
-/**
- * ===================================================================
- *  KEYWORDS (GET /movie/{id}/keywords)
- * ===================================================================
- */
-
 export interface TMDBMovieKeyword {
   id: number;
   name: string;
@@ -234,20 +216,7 @@ export interface TMDBMovieKeywordsResponse {
   keywords: TMDBMovieKeyword[];
 }
 
-/**
- * ===================================================================
- *  LATEST (GET /movie/latest)
- * ===================================================================
- * Thực tế cấu trúc gần giống MovieDetails, nhưng nhiều field null.
- */
-
 export type TMDBLatestMovieResponse = TMDBMovieDetails;
-
-/**
- * ===================================================================
- *  LISTS (GET /movie/{id}/lists)
- * ===================================================================
- */
 
 export interface TMDBListSummary {
   description: string;

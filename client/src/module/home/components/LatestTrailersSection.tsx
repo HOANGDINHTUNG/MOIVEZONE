@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+// src/module/home/components/LatestTrailersSection.tsx (ví dụ đường dẫn)
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { MovieSummary } from "../../movies/database/interface/movie";
 import type { TvSummary } from "../../movies/database/interface/tv";
 
@@ -28,8 +29,10 @@ const LatestTrailersSection = ({
   const popularItems = useMemo(() => popular ?? [], [popular]);
   const inTheatersItems = useMemo(() => inTheaters ?? [], [inTheaters]);
 
+  const hasInTheaters = (inTheaters?.length ?? 0) > 0;
+
   const [activeTab, setActiveTab] = useState<"popular" | "inTheaters">(
-    inTheatersItems.length ? "inTheaters" : "popular"
+    hasInTheaters ? "inTheaters" : "popular"
   );
 
   const items = activeTab === "popular" ? popularItems : inTheatersItems;
@@ -56,6 +59,35 @@ const LatestTrailersSection = ({
     return "";
   };
 
+  // ===== Tabs indicator refs + style (auto fit theo button) =====
+  const popularRef = useRef<HTMLButtonElement | null>(null);
+  const theatersRef = useRef<HTMLButtonElement | null>(null);
+
+  const [indicatorStyle, setIndicatorStyle] = useState({
+    width: 0,
+    left: 0,
+  });
+
+  useEffect(() => {
+    let target: HTMLButtonElement | null = null;
+
+    if (activeTab === "popular") {
+      target = popularRef.current;
+    } else {
+      // Nếu tab inTheaters nhưng không có data -> fallback về Popular
+      target = inTheatersItems.length
+        ? theatersRef.current
+        : popularRef.current;
+    }
+
+    if (target) {
+      setIndicatorStyle({
+        width: target.offsetWidth,
+        left: target.offsetLeft,
+      });
+    }
+  }, [activeTab, popularItems.length, inTheatersItems.length]);
+
   if (!popularItems.length && !inTheatersItems.length) return null;
 
   return (
@@ -71,8 +103,8 @@ const LatestTrailersSection = ({
             opacity: activeBackdrop ? 0.5 : 0,
           }}
         />
-        {/* Gradient overlay */}
-        <div className="absolute inset-0" />
+        {/* Gradient overlay nếu cần (hiện giờ chỉ để tối nền) */}
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/60" />
 
         {/* Nội dung canh theo container để thẳng hàng Trending / Now Playing */}
         <div className="relative">
@@ -90,27 +122,52 @@ const LatestTrailersSection = ({
               </div>
 
               {/* Tabs: Popular / In Theaters */}
-              <div className="flex items-center gap-1 rounded-full bg-black/40 p-1 text-xs md:text-sm">
+              <div className="relative flex items-center gap-1 rounded-full bg-black/40 p-1 text-xs md:text-sm">
+                {/* Thanh highlight trượt mượt + gradient đỏ → vàng */}
+                <div
+                  className="absolute top-1 bottom-1 rounded-full bg-linear-to-r from-red-500 via-orange-500 to-yellow-400 shadow-lg transition-all duration-300 ease-out"
+                  style={{
+                    width: indicatorStyle.width,
+                    left: indicatorStyle.left,
+                  }}
+                />
+
+                {/* POPULAR BTN */}
                 <button
+                  ref={popularRef}
                   type="button"
                   onClick={() => setActiveTab("popular")}
-                  className={`rounded-full px-3 py-1 font-medium transition ${
-                    activeTab === "popular"
-                      ? "bg-cyan-500/90 text-white shadow-md"
-                      : "text-neutral-200/80 hover:bg-white/10"
-                  }`}
+                  className={`
+                    relative z-10 rounded-full px-3 py-1 font-semibold transition-colors duration-300
+                    ${
+                      activeTab === "popular"
+                        ? "text-black"
+                        : "text-neutral-200/80 hover:text-white"
+                    }
+                  `}
                 >
                   Popular
                 </button>
+
+                {/* IN THEATERS BTN */}
                 <button
+                  ref={theatersRef}
                   type="button"
                   onClick={() => setActiveTab("inTheaters")}
-                  className={`rounded-full px-3 py-1 font-medium transition ${
-                    activeTab === "inTheaters"
-                      ? "bg-cyan-500/90 text-white shadow-md"
-                      : "text-neutral-200/80 hover:bg-white/10"
-                  }`}
                   disabled={!inTheatersItems.length}
+                  className={`
+                    relative z-10 rounded-full px-3 py-1 font-semibold transition-colors duration-300
+                    ${
+                      activeTab === "inTheaters"
+                        ? "text-black"
+                        : "text-neutral-200/80 hover:text-white"
+                    }
+                    ${
+                      !inTheatersItems.length
+                        ? "opacity-40 cursor-not-allowed"
+                        : ""
+                    }
+                  `}
                 >
                   In Theaters
                 </button>
@@ -120,13 +177,11 @@ const LatestTrailersSection = ({
             {/* Slider cards */}
             {items.length ? (
               <div
-                className="overflow-x-auto pb-2 
-                [-ms-overflow-style:none] [scrollbar-width:thin]
-                [&::-webkit-scrollbar]:h-3
-                [&::-webkit-scrollbar-track]:bg-black/60    /* track tối hơn */
-                [&::-webkit-scrollbar-thumb]:bg-neutral-700 /* thumb đậm hơn */
-                [&::-webkit-scrollbar-thumb]:rounded-full
-                [&::-webkit-scrollbar-thumb:hover]:bg-neutral-500
+                className=" overflow-x-auto px-4 pb-2 
+                  [&::-webkit-scrollbar]:h-2
+                  [&::-webkit-scrollbar-track]:bg-black/40
+                  [&::-webkit-scrollbar-thumb]:bg-neutral-600/90
+                  [&::-webkit-scrollbar-thumb]:rounded-full
                 "
               >
                 <div className="flex min-w-fit gap-4 md:gap-6">

@@ -1,23 +1,9 @@
-// src/module/people/interface/person.ts
-
-/**
- * ===================================================================
- *  COMMON
- * ===================================================================
- */
-
 export interface TMDBPaginatedResponse<T> {
   page: number;
   results: T[];
   total_pages: number;
   total_results: number;
 }
-
-/**
- * ===================================================================
- *  PERSON DETAILS  (GET /person/{person_id})
- * ===================================================================
- */
 
 export interface TMDBPersonDetails {
   adult: boolean;
@@ -34,15 +20,7 @@ export interface TMDBPersonDetails {
   place_of_birth: string | null;
   popularity: number;
   profile_path: string | null;
-
-  // append_to_response có thể thêm trường khác (movie_credits, images, ...)
 }
-
-/**
- * ===================================================================
- *  PERSON CHANGES  (GET /person/{id}/changes)
- * ===================================================================
- */
 
 export interface TMDBPersonChangeItemValue {
   id: string;
@@ -61,13 +39,6 @@ export interface TMDBPersonChangeItem {
 export interface TMDBPersonChangesResponse {
   changes: TMDBPersonChangeItem[];
 }
-
-/**
- * ===================================================================
- *  COMBINED CREDITS  (GET /person/{id}/combined_credits)
- * ===================================================================
- * cast + crew gồm cả movie và tv, phân biệt bằng media_type
- */
 
 export interface TMDBPersonCreditBase {
   adult: boolean;
@@ -98,62 +69,32 @@ export interface TMDBPersonTvCredit extends TMDBPersonCreditBase {
   name: string;
 }
 
-/**
- * Media cho combined credits có thể là movie hoặc tv
- */
-export type TMDBPersonCreditMedia =
-  | TMDBPersonMovieCredit
-  | TMDBPersonTvCredit;
+export type TMDBPersonCreditMedia = TMDBPersonMovieCredit | TMDBPersonTvCredit;
 
-/**
- * Phần field chung cho cast (dùng cho cả movie/tv)
- */
 interface TMDBPersonCastCommon {
   character: string;
   credit_id: string;
   order?: number;
 }
 
-/**
- * Cast combined = union:
- *  - Movie credit + field cast
- *  - TV credit + field cast
- */
 export type TMDBPersonCastCombined =
   | (TMDBPersonMovieCredit & TMDBPersonCastCommon)
   | (TMDBPersonTvCredit & TMDBPersonCastCommon);
 
-/**
- * Phần field chung cho crew (dùng cho cả movie/tv)
- */
 interface TMDBPersonCrewCommon {
   credit_id: string;
   department: string;
   job: string;
 }
 
-/**
- * Crew combined = union:
- *  - Movie credit + field crew
- *  - TV credit + field crew
- */
 export type TMDBPersonCrewCombined =
   | (TMDBPersonMovieCredit & TMDBPersonCrewCommon)
   | (TMDBPersonTvCredit & TMDBPersonCrewCommon);
 
-/**
- * Response combined_credits
- */
 export interface TMDBPersonCombinedCredits {
   cast: TMDBPersonCastCombined[];
   crew: TMDBPersonCrewCombined[];
 }
-
-/**
- * ===================================================================
- *  EXTERNAL IDS  (GET /person/{id}/external_ids)
- * ===================================================================
- */
 
 export interface TMDBPersonExternalIds {
   id: number;
@@ -168,12 +109,6 @@ export interface TMDBPersonExternalIds {
   twitter_id: string | null;
   youtube_id: string | null;
 }
-
-/**
- * ===================================================================
- *  IMAGES  (GET /person/{id}/images)
- * ===================================================================
- */
 
 export interface TMDBPersonImage {
   aspect_ratio: number;
@@ -190,19 +125,7 @@ export interface TMDBPersonImagesResponse {
   profiles: TMDBPersonImage[];
 }
 
-/**
- * ===================================================================
- *  LATEST PERSON  (GET /person/latest)
- * ===================================================================
- */
-
 export type TMDBLatestPersonResponse = TMDBPersonDetails;
-
-/**
- * ===================================================================
- *  MOVIE CREDITS  (GET /person/{id}/movie_credits)
- * ===================================================================
- */
 
 export interface TMDBPersonMovieCastCredit extends TMDBPersonMovieCredit {
   character: string;
@@ -220,12 +143,6 @@ export interface TMDBPersonMovieCredits {
   cast: TMDBPersonMovieCastCredit[];
   crew: TMDBPersonMovieCrewCredit[];
 }
-
-/**
- * ===================================================================
- *  TV CREDITS  (GET /person/{id}/tv_credits)
- * ===================================================================
- */
 
 export interface TMDBPersonTvCastCredit extends TMDBPersonTvCredit {
   origin_country: string[];
@@ -247,12 +164,6 @@ export interface TMDBPersonTvCredits {
   crew: TMDBPersonTvCrewCredit[];
 }
 
-/**
- * ===================================================================
- *  TAGGED IMAGES (deprecated)  (GET /person/{id}/tagged_images)
- * ===================================================================
- */
-
 export interface TMDBPersonTaggedImage {
   aspect_ratio: number;
   file_path: string;
@@ -273,12 +184,6 @@ export interface TMDBPersonTaggedImagesResponse
   extends TMDBPaginatedResponse<TMDBPersonTaggedImage> {
   id: number;
 }
-
-/**
- * ===================================================================
- *  TRANSLATIONS  (GET /person/{id}/translations)
- * ===================================================================
- */
 
 export type TMDBPersonTranslationData = Record<string, unknown>;
 

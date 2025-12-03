@@ -14,7 +14,6 @@ import ConfigurationPage from "../module/configuration/pages/ConfigurationPage";
 import ChangesPage from "../module/changes/pages/ChangesPage";
 import CreditDetailsPage from "../module/credits/pages/CreditDetailsPage";
 import DiscoverPage from "../module/discovers/pages/DiscoverPage";
-
 import LoginPage from "../module/auth/feature/pages/LoginPage";
 import RegisterPage from "../module/auth/feature/pages/RegisterPage";
 import AuthLayout from "../module/auth/feature/layout/AuthLayout";
@@ -22,6 +21,8 @@ import NotFoundPage from "../components/error/NotFoundPage";
 import ProtectedRoute from "./ProtectedRoute";
 import NetworkPage from "../module/networks/pages/NetworkPage";
 import TrendingPage from "../module/trending/pages/TrendingPage";
+import MoviesCategoryPage from "../module/movies/pages/MoviesCategoryPage";
+import TvCategoryPage from "../module/movies/pages/TvCategoryPage";
 
 const router = createBrowserRouter([
   // Layout chính của app
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
       { path: "search", element: <SearchPage /> },
       { path: "movie", element: <AllMoviesPage /> },
       { path: "tv", element: <AllTvShowsPage /> },
-      { path: "trending", element: <TrendingPage /> },
+      { path: "category_tv/:type", element: <TvCategoryPage /> },
 
       // ================== NHÓM CẦN ĐĂNG NHẬP ==================
       {
@@ -57,6 +58,9 @@ const router = createBrowserRouter([
           { path: "credits/:creditId", element: <CreditDetailsPage /> },
           { path: "discover", element: <DiscoverPage /> },
           { path: "network/:id", element: <NetworkPage /> },
+
+          { path: "trending", element: <TrendingPage /> },
+          { path: "category_movie/:type", element: <MoviesCategoryPage /> },
 
           // // Account / news / payment
           // { path: "account", element: <AccountPage /> },

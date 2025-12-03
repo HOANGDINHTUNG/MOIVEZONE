@@ -15,7 +15,6 @@ import type {
   MovieVideosResponse,
 } from "../../../types/interface/movies/videos";
 import DetailsHero from "../components/DetailsHero";
-import DetailsTrailerSection from "../components/DetailsTrailerSection";
 import DetailsTopCastSection from "../components/DetailsTopCastSection";
 import DetailsKeywordsSection from "../components/DetailsKeywordsSection";
 import DetailsWatchProvidersSection from "../components/DetailsWatchProvidersSection";
@@ -64,12 +63,18 @@ type ExternalIds = {
 };
 
 type CastItem = {
-  cast_id?: number;
-  credit_id?: string;
+  adult: boolean;
+  gender: number | null;
   id: number;
+  known_for_department: string;
   name: string;
-  character?: string;
+  original_name: string;
+  popularity: number;
   profile_path: string | null;
+  cast_id: number;
+  character: string;
+  credit_id: string;
+  order: number;
 };
 
 type DetailsPageProps = {
@@ -148,7 +153,8 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
 
   const overview = data?.overview ?? "";
 
-  const posterPath = data?.poster_path ?? data?.backdrop_path ?? null;
+  const posterPath = data?.poster_path ?? null;
+  const backdropPath = data?.backdrop_path ?? null;
 
   const releaseDate = useMemo(() => {
     if (!data) return "";
@@ -218,7 +224,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
   }, [credits]);
 
   const starCast = useMemo<CastItem[]>(() => {
-    return (credits?.cast?.slice(0, 8) ?? []) as CastItem[];
+    return (credits?.cast ?? []) as CastItem[];
   }, [credits]);
 
   // Videos
@@ -361,11 +367,12 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-3 py-6">
+    <section className="w-full">
       {/* Top hero */}
       <DetailsHero
         imageURL={imageURL}
         posterPath={posterPath}
+        backdropPath={backdropPath} // thêm dòng này
         title={title}
         originalTitle={originalTitle}
         tagline={tagline}
@@ -391,50 +398,45 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
       />
 
       {/* Trailer block + modal */}
-      {trailer && (
-        <>
-          <DetailsTrailerSection
-            trailer={{ name: trailer.name }}
-            onOpenTrailer={() => setIsTrailerOpen(true)}
-          />
-
-          {isTrailerOpen && (
-            <VideoPlay
-              videoId={trailer.key}
-              onClose={() => setIsTrailerOpen(false)}
-            />
-          )}
-        </>
+      {trailer && isTrailerOpen && (
+        <VideoPlay
+          videoId={trailer.key}
+          onClose={() => setIsTrailerOpen(false)}
+        />
       )}
 
-      {/* Top Cast */}
-      {starCast.length > 0 && (
-        <DetailsTopCastSection starCast={starCast} imageURL={imageURL} />
-      )}
+      <div className="max-w-6xl mx-auto px-3 py-6">
+        {/* Top Cast */}
+        {starCast.length > 0 && (
+          <DetailsTopCastSection starCast={starCast} imageURL={imageURL} />
+        )}
 
-      {/* Networks (chỉ có cho TV show) */}
-      {resolvedMediaType === "tv" && tvNetworks.length > 0 && (
-        <DetailsNetworksSection networks={tvNetworks} imageURL={TMDB_IMAGE} />
-      )}
+        {/* Networks (chỉ có cho TV show) */}
+        {resolvedMediaType === "tv" && tvNetworks.length > 0 && (
+          <DetailsNetworksSection networks={tvNetworks} imageURL={TMDB_IMAGE} />
+        )}
 
-      {/* Keywords */}
-      <DetailsKeywordsSection keywords={keywords} />
+        {/* Keywords */}
+        <DetailsKeywordsSection keywords={keywords} />
 
-      {/* Alternative titles */}
-      <DetailsAlternativeTitlesSection alternativeTitles={alternativeTitles} />
+        {/* Alternative titles */}
+        <DetailsAlternativeTitlesSection
+          alternativeTitles={alternativeTitles}
+        />
 
-      {/* Where to watch */}
-      <DetailsWatchProvidersSection watchProviders={watchProviders} />
+        {/* Where to watch */}
+        <DetailsWatchProvidersSection watchProviders={watchProviders} />
 
-      {/* Reviews */}
-      <DetailsReviewsSection reviews={reviews} />
+        {/* Reviews */}
+        <DetailsReviewsSection reviews={reviews} />
 
-      {/* Similar & Recommendations */}
-      <DetailsRelatedSection
-        similarList={similarList}
-        recommendationList={recommendationList}
-        resolvedMediaType={resolvedMediaType}
-      />
+        {/* Similar & Recommendations */}
+        <DetailsRelatedSection
+          similarList={similarList}
+          recommendationList={recommendationList}
+          resolvedMediaType={resolvedMediaType}
+        />
+      </div>
     </section>
   );
 };

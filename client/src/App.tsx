@@ -83,20 +83,19 @@ function App() {
   }
 
   return (
-    <SmoothScrollLayout ease={0.08}>
-      {/* Header fixed + hide/show theo scroll */}
+    <>
       <Header />
-
-      {/* Nội dung chính, chừa khoảng trống dưới header bằng pt-20 */}
-      <main className="min-h-screen bg-slate-50 text-slate-900 dark:bg-neutral-900 dark:text-neutral-100 pb-20 lg:pb-0">
-        <ScrollToTop />
-        <div className="min-h-[90vh] pt-20">
-          <Outlet />
-        </div>
-        <Footer />
-        <MobileNavigation />
-      </main>
-    </SmoothScrollLayout>
+      <SmoothScrollLayout ease={0.08}>
+        <main className="min-h-screen bg-slate-50 text-slate-900 dark:bg-neutral-900 dark:text-neutral-100 lg:pb-0">
+          <ScrollToTop />
+          <div className="min-h-[90vh] pt-18">
+            <Outlet />
+          </div>
+          <Footer />
+          <MobileNavigation />
+        </main>
+      </SmoothScrollLayout>
+    </>
   );
 }
 

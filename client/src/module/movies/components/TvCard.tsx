@@ -1,43 +1,42 @@
 import { useNavigate } from "react-router-dom";
-import type { TMDBMovieListItem } from "../database/interface/movieLists";
+import type { TMDBTvSummary } from "../database/interface/tvList";
 
 const IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
 
-interface MovieCardProps {
-  movie: TMDBMovieListItem;
-  onClick?: (movie: TMDBMovieListItem) => void;
+interface TvCardProps {
+  tv: TMDBTvSummary;
+  onClick?: (tv: TMDBTvSummary) => void;
 }
 
-export default function MovieCard({ movie, onClick }: MovieCardProps) {
+export default function TvCard({ tv, onClick }: TvCardProps) {
   const navigate = useNavigate();
 
   const imageUrl =
-    movie.poster_path || movie.backdrop_path
-      ? `${IMAGE_BASE}${movie.poster_path ?? movie.backdrop_path}`
+    tv.poster_path || tv.backdrop_path
+      ? `${IMAGE_BASE}${tv.poster_path ?? tv.backdrop_path}`
       : undefined;
 
-  const year = movie.release_date
-    ? new Date(movie.release_date).getFullYear()
+  const year = tv.first_air_date
+    ? new Date(tv.first_air_date).getFullYear()
     : "N/A";
 
   const handleClick = () => {
-    if (onClick) return onClick(movie);
-
-    // 👉 tự động điều hướng đến trang chi tiết
-    navigate(`/movie/${movie.id}`);
+    if (onClick) return onClick(tv);
+    // 👉 Điều hướng đến trang chi tiết TV
+    navigate(`/tv/${tv.id}`);
   };
 
   return (
     <button
       type="button"
       onClick={handleClick}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-neutral-900/80 shadow-lg ring-1 ring-neutral-800 transition duration-300 hover:-translate-y-1 hover:bg-neutral-900 hover:shadow-2xl hover:ring-yellow-400/80"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-neutral-900/80 shadow-lg ring-1 ring-neutral-800 transition duration-300 hover:-translate-y-1 hover:bg-neutral-900 hover:shadow-2xl hover:ring-indigo-400/80"
     >
       <div className="relative aspect-2/3 w-full overflow-hidden bg-neutral-800">
         {imageUrl ? (
           <img
             src={imageUrl}
-            alt={movie.title}
+            alt={tv.name}
             loading="lazy"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -51,19 +50,19 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
         <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/80 via-black/0 to-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
         {/* badge vote */}
-        <div className="absolute left-2 top-2 rounded-full bg-black/80 px-2 py-0.5 text-[10px] font-semibold text-yellow-300 backdrop-blur">
-          ★ {movie.vote_average.toFixed(1)}
+        <div className="absolute left-2 top-2 rounded-full bg-black/80 px-2 py-0.5 text-[10px] font-semibold text-indigo-300 backdrop-blur">
+          ★ {tv.vote_average.toFixed(1)}
         </div>
       </div>
 
       <div className="flex flex-1 flex-col gap-1 px-3 py-2.5 text-left">
-        <h3 className="line-clamp-2 text-[13px] font-semibold text-neutral-50 group-hover:text-yellow-300">
-          {movie.title}
+        <h3 className="line-clamp-2 text-[13px] font-semibold text-neutral-50 group-hover:text-indigo-300">
+          {tv.name}
         </h3>
         <div className="mt-1 flex items-center justify-between text-[11px] text-neutral-400">
           <span>{year}</span>
           <span className="rounded-full bg-neutral-800/80 px-2 py-0.5 text-[10px] uppercase tracking-wide text-neutral-300">
-            Movie
+            TV Show
           </span>
         </div>
       </div>

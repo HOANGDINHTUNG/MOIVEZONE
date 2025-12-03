@@ -18,8 +18,8 @@ const springTransition: Transition = {
 type MenuItemProps = {
   setActive: (item: string | null) => void;
   active: string | null;
-  item: string;              // label hiển thị
-  to: string;                // route chính để click + active
+  item: string;
+  to: string;
   children?: React.ReactNode;
 };
 
@@ -98,7 +98,7 @@ export const Menu: React.FC<MenuProps> = ({ setActive, children }) => {
   return (
     <nav
       onMouseLeave={() => setActive(null)}
-      className="relative flex items-center gap-6"
+      className="relative flex items-center gap-10"
     >
       {children}
     </nav>
@@ -119,16 +119,32 @@ export const ProductItem: React.FC<ProductItemProps> = ({
   src,
 }) => {
   return (
-    <a href={href} className="flex space-x-2">
+    <a
+      href={href}
+      className="
+        group flex space-x-3 rounded-lg p-2 transition-all duration-300
+        hover:bg-neutral-100 dark:hover:bg-neutral-800/70
+        hover:shadow-lg cursor-pointer
+      "
+    >
       <img
         src={src}
         width={140}
         height={70}
         alt={title}
-        className="shrink-0 rounded-md shadow-2xl"
+        className="
+          shrink-0 rounded-md shadow-xl transition-transform duration-300
+          group-hover:scale-[1.03]
+        "
       />
-      <div>
-        <h4 className="text-xl font-bold mb-1 text-black dark:text-white">
+      <div className="flex flex-col justify-center">
+        <h4
+          className="
+            text-xl font-bold mb-1 text-black dark:text-white
+            transition-colors duration-300
+            group-hover:text-yellow-500
+          "
+        >
           {title}
         </h4>
         <p className="text-neutral-700 text-sm max-w-40 dark:text-neutral-300">
