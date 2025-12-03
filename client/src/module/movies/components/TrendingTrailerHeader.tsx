@@ -7,7 +7,7 @@ import type { TMDBTvVideoItem } from "../../../types/interface/tv";
 import type {
   TMDBTrendingMovieItem,
   TMDBTrendingTvItem,
-} from "../../../types/interface/trending";
+} from "../../trending/database/interface/trending";
 import { tmdbApi } from "../../../api/movie/TMDB.api";
 
 type BaseTrendingItem = TMDBTrendingMovieItem | TMDBTrendingTvItem;

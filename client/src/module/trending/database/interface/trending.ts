@@ -1,22 +1,13 @@
-// src/module/trending/interface/trending.ts
+export type TMDBTimeWindow = "day" | "week";
 
-/**
- * ===================================================================
- *  COMMON PAGINATION
- * ===================================================================
- */
+export type TrendingCategory = "all" | "movie" | "tv" | "person";
+
 export interface TMDBPaginatedResponse<T> {
   page: number;
   results: T[];
   total_pages: number;
   total_results: number;
 }
-
-/**
- * ===================================================================
- *  TRENDING MOVIES  (GET /trending/movie/{time_window})
- * ===================================================================
- */
 
 export interface TMDBTrendingMovieItem {
   adult: boolean;
@@ -39,12 +30,6 @@ export interface TMDBTrendingMovieItem {
 export type TMDBTrendingMoviesResponse =
   TMDBPaginatedResponse<TMDBTrendingMovieItem>;
 
-/**
- * ===================================================================
- *  TRENDING TV  (GET /trending/tv/{time_window})
- * ===================================================================
- */
-
 export interface TMDBTrendingTvItem {
   adult: boolean;
   backdrop_path: string | null;
@@ -63,14 +48,7 @@ export interface TMDBTrendingTvItem {
   origin_country: string[];
 }
 
-export type TMDBTrendingTvResponse =
-  TMDBPaginatedResponse<TMDBTrendingTvItem>;
-
-/**
- * ===================================================================
- *  TRENDING PEOPLE  (GET /trending/person/{time_window})
- * ===================================================================
- */
+export type TMDBTrendingTvResponse = TMDBPaginatedResponse<TMDBTrendingTvItem>;
 
 export interface TMDBTrendingPersonKnownForMovie {
   adult: boolean;
@@ -126,13 +104,6 @@ export interface TMDBTrendingPersonItem {
 
 export type TMDBTrendingPeopleResponse =
   TMDBPaginatedResponse<TMDBTrendingPersonItem>;
-
-/**
- * ===================================================================
- *  TRENDING ALL  (GET /trending/all/{time_window})
- * ===================================================================
- * Kết hợp cả movie + tv + person
- */
 
 export type TMDBTrendingAllItem =
   | TMDBTrendingMovieItem

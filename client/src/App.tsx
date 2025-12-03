@@ -1,3 +1,4 @@
+// src/App.tsx
 import { Outlet } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./hooks/UseCustomeRedux";
 import { useEffect, useState } from "react";
@@ -16,7 +17,6 @@ import ScrollToTop from "./components/common/ux/ScrollToTop";
 import { setPageLoading } from "./stores/appSlice";
 import PageLoader from "./components/common/ux/PageLoader";
 import SmoothScrollLayout from "./components/common/ux/SmoothScrollLayout";
-
 
 function App() {
   const dispatch = useAppDispatch();
@@ -83,11 +83,14 @@ function App() {
   }
 
   return (
-    <SmoothScrollLayout ease={0.06}>
-      <main className="min-h-screen bg-slate-50 text-slate-900 dark:bg-neutral-900 dark:text-neutral-100 pb-14 lg:pb-0">
-        <Header />
-        <div className="min-h-[90vh]">
-          <ScrollToTop />
+    <SmoothScrollLayout ease={0.08}>
+      {/* Header fixed + hide/show theo scroll */}
+      <Header />
+
+      {/* Nội dung chính, chừa khoảng trống dưới header bằng pt-20 */}
+      <main className="min-h-screen bg-slate-50 text-slate-900 dark:bg-neutral-900 dark:text-neutral-100 pb-20 lg:pb-0">
+        <ScrollToTop />
+        <div className="min-h-[90vh] pt-20">
           <Outlet />
         </div>
         <Footer />

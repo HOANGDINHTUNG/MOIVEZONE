@@ -7,7 +7,7 @@ import type {
   TMDBMovieListResponse,
   TMDBTvListResponse,
 } from "../../module/movies/database/interface/tmdb";
-import type { TMDBTrendingAllResponse } from "../../types/interface/trending";
+import type { TMDBTrendingAllResponse } from "../../module/trending/database/interface/trending";
 import type { TMDBSearchMultiResponse } from "../../types/interface/search";
 import type { TMDBGenreListResponse } from "../../module/movies/database/interface/genre";
 import type { TMDBPaginatedResponse } from "../../types/interface/movie";

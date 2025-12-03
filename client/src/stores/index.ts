@@ -14,6 +14,7 @@ import accountReducer from "../module/accounts/store/accountSlice";
 import authReducer from "../module/auth/store/authSlice";
 import networkReducer from "../module/networks/store/networkSlice";
 import appReducer from "../stores/appSlice"
+import trendingReducer from "../module/trending/store/trendingSlice"
 export const store = configureStore({
   reducer: {
     moviesData: moviesReducer,
@@ -30,6 +31,7 @@ export const store = configureStore({
     auth: authReducer,
     network: networkReducer,
     app:appReducer,
+    trending: trendingReducer,
   },
 });
 

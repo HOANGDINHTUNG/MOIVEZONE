@@ -1,21 +1,33 @@
 // src/components/VideoPlay.tsx
 import { IoClose } from "react-icons/io5";
+import { createPortal } from "react-dom";
 
 interface VideoPlayProps {
   videoId: string;
-  onClose?: () => void; // optional để DetailsPage không bắt buộc phải truyền
+  onClose?: () => void;
 }
 
 const VideoPlay = ({ videoId, onClose }: VideoPlayProps) => {
   if (!videoId) return null;
 
-  return (
-    <section className="fixed inset-0 z-40 bg-black/70 flex justify-center items-center">
-      <div className="bg-black w-full max-h-[80vh] max-w-5xl aspect-video rounded relative">
+  // Nếu đang SSR thì document chưa có
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <section className="fixed inset-0 z-9999 bg-black/80 flex justify-center items-center px-4">
+      {/* Background click-to-close */}
+      {onClose && (
+        <div
+          className="absolute inset-0 cursor-pointer"
+          onClick={onClose}
+        />
+      )}
+
+      <div className="relative bg-black w-full max-w-5xl aspect-video rounded-lg shadow-2xl z-10000">
         {onClose && (
           <button
             onClick={onClose}
-            className="absolute -right-2 -top-8 text-3xl text-white z-50"
+            className="absolute -top-12 right-0 text-4xl text-white hover:text-red-400 transition"
           >
             <IoClose />
           </button>
@@ -23,12 +35,13 @@ const VideoPlay = ({ videoId, onClose }: VideoPlayProps) => {
 
         <iframe
           src={`https://www.youtube.com/embed/${videoId}`}
-          className="w-full h-full"
+          className="w-full h-full rounded-lg"
           allowFullScreen
           title="Trailer"
         />
       </div>
-    </section>
+    </section>,
+    document.body
   );
 };
 

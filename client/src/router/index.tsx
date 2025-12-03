@@ -21,6 +21,7 @@ import AuthLayout from "../module/auth/feature/layout/AuthLayout";
 import NotFoundPage from "../components/error/NotFoundPage";
 import ProtectedRoute from "./ProtectedRoute";
 import NetworkPage from "../module/networks/pages/NetworkPage";
+import TrendingPage from "../module/trending/pages/TrendingPage";
 
 const router = createBrowserRouter([
   // Layout chính của app
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
       { path: "search", element: <SearchPage /> },
       { path: "movie", element: <AllMoviesPage /> },
       { path: "tv", element: <AllTvShowsPage /> },
+      { path: "trending", element: <TrendingPage /> },
 
       // ================== NHÓM CẦN ĐĂNG NHẬP ==================
       {

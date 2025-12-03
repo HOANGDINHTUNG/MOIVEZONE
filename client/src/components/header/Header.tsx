@@ -1,4 +1,7 @@
 // src/components/header/Header.tsx
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 
 import DarkModeToggle from "../common/ui/DarkModeToggle";
@@ -8,19 +11,13 @@ import logo from "../../../public/assets/img/logo3.png";
 import { useAppDispatch, useAppSelector } from "../../hooks/UseCustomeRedux";
 import { logout } from "../../module/auth/store/authSlice";
 
-// import HeaderSearch from "./components/HeaderSearch";
 import UserMenu from "./components/UserMenu";
 import NeonHeaderSearch from "./components/NeonHeaderSearch";
+import { HoveredLink, Menu, MenuItem, ProductItem } from "./ui/navbar-menu";
 
 interface HeaderProps {
   admin?: boolean;
 }
-
-const navLinkBase =
-  "relative text-[13px] md:text-[14px] uppercase tracking-wide cursor-pointer transition-colors";
-
-const activeUnderline =
-  "after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-2 after:h-[3px] after:rounded-full after:bg-[#ecad29]";
 
 export default function Header({ admin }: HeaderProps) {
   const dispatch = useAppDispatch();
@@ -29,6 +26,44 @@ export default function Header({ admin }: HeaderProps) {
   const { isAuthenticated, currentUser } = useAppSelector(
     (state) => state.auth
   );
+
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+
+  // ====== LOGIC ẨN / HIỆN HEADER THEO SCROLL ======
+  const [showHeader, setShowHeader] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY || window.pageYOffset;
+
+      // Ở top: luôn hiện header
+      if (currentY <= 0) {
+        setShowHeader(true);
+        lastScrollY.current = 0;
+        return;
+      }
+
+      const diff = currentY - lastScrollY.current;
+
+      // nhỏ hơn 2px thì bỏ qua cho đỡ rung
+      const DEADZONE = 2;
+
+      // Kéo xuống (scroll down) -> ẩn header
+      if (diff > DEADZONE) {
+        setShowHeader(false);
+      }
+      // Kéo lên (scroll up) -> hiện header
+      else if (diff < -DEADZONE) {
+        setShowHeader(true);
+      }
+
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const displayName =
     currentUser?.username ||
@@ -39,7 +74,7 @@ export default function Header({ admin }: HeaderProps) {
     navigate("/login");
   };
 
-  // header cho trang admin
+  // ===== HEADER ADMIN (GIỮ NGUYÊN, KHÔNG CẦN HIỆU ỨNG SCROLL) =====
   if (admin) {
     return (
       <header className="sticky top-0 z-80 bg-neutral-950/90 text-neutral-50 border-b border-neutral-800 backdrop-blur">
@@ -63,9 +98,13 @@ export default function Header({ admin }: HeaderProps) {
     );
   }
 
-  // header chính
+  // ===== HEADER CHÍNH =====
   return (
-    <header className="sticky top-0 z-80 bg-neutral-950/70 text-white backdrop-blur border-b border-neutral-800">
+    <header
+      className={`fixed top-0 left-0 right-0 z-80 border-b border-neutral-800 bg-neutral-950/70 text-white backdrop-blur transition-transform duration-300 ease-out will-change-transform ${
+        showHeader ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 md:px-8 py-4">
         {/* Logo + tên site */}
         <Link to="/" className="inline-flex items-center gap-2">
@@ -86,74 +125,151 @@ export default function Header({ admin }: HeaderProps) {
           </div>
         </Link>
 
-        {/* Nav links giữa */}
-        <div className="hidden md:flex items-center gap-6">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `${navLinkBase} ${
-                isActive ? activeUnderline : "text-white/80 hover:text-white"
-              }`
-            }
-          >
-            Home
-          </NavLink>
+        {/* Nav giữa – dùng Menu animate + active underline */}
+        <div className="hidden md:flex items-center">
+          <Menu setActive={setActiveMenu}>
+            {/* HOME */}
+            <MenuItem
+              setActive={setActiveMenu}
+              active={activeMenu}
+              item="Home"
+              to="/"
+            >
+              <div className="flex flex-col space-y-3 text-sm">
+                <HoveredLink href="/">Trang chủ</HoveredLink>
+                <HoveredLink href="/search?s=">Tìm kiếm nhanh</HoveredLink>
+              </div>
+            </MenuItem>
 
-          <NavLink
-            to="/explore"
-            className={({ isActive }) =>
-              `${navLinkBase} ${
-                isActive ? activeUnderline : "text-white/80 hover:text-white"
-              }`
-            }
-          >
-            Explore
-          </NavLink>
+            {/* EXPLORE */}
+            <MenuItem
+              setActive={setActiveMenu}
+              active={activeMenu}
+              item="Explore"
+              to="/explore"
+            >
+              <div className="grid grid-cols-2 gap-4 text-sm p-1 pr-3">
+                <div className="flex flex-col space-y-2">
+                  <p className="text-[11px] uppercase tracking-wide text-neutral-400">
+                    Khám phá
+                  </p>
+                  <HoveredLink href="/explore">Tất cả tiêu đề</HoveredLink>
+                  <HoveredLink href="/movie">Chỉ Movies</HoveredLink>
+                  <HoveredLink href="/tv">Chỉ TV Shows</HoveredLink>
+                  <HoveredLink href="/search?s=">Tìm kiếm nâng cao</HoveredLink>
+                </div>
+                <div className="flex flex-col space-y-2">
+                  <p className="text-[11px] uppercase tracking-wide text-neutral-400">
+                    Nhanh
+                  </p>
+                  <HoveredLink href="/movie?sort=popular">
+                    Movies phổ biến
+                  </HoveredLink>
+                  <HoveredLink href="/tv?sort=popular">TV phổ biến</HoveredLink>
+                </div>
+              </div>
+            </MenuItem>
 
-          <NavLink
-            to="/movie"
-            className={({ isActive }) =>
-              `${navLinkBase} ${
-                isActive ? activeUnderline : "text-white/80 hover:text-white"
-              }`
-            }
-          >
-            Movies
-          </NavLink>
+            {/* MOVIES – có hình */}
+            <MenuItem
+              setActive={setActiveMenu}
+              active={activeMenu}
+              item="Movies"
+              to="/movie"
+            >
+              <div className="text-sm grid grid-cols-2 gap-6 p-2">
+                <ProductItem
+                  title="Popular Movies"
+                  href="/movie?sort=popular"
+                  src="https://image.tmdb.org/t/p/w300/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg"
+                  description="Danh sách phim đang hot, đang được xem nhiều."
+                />
+                <ProductItem
+                  title="Top Rated"
+                  href="/movie?sort=top_rated"
+                  src="https://image.tmdb.org/t/p/w300/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg"
+                  description="Những bộ phim được đánh giá cao nhất."
+                />
+                <ProductItem
+                  title="Upcoming"
+                  href="/movie?sort=upcoming"
+                  src="https://image.tmdb.org/t/p/w300/1E5baAaEse26fej7uHcjOgEE2t2.jpg"
+                  description="Phim sắp chiếu, đừng bỏ lỡ suất chiếu đầu tiên."
+                />
+                <ProductItem
+                  title="Now Playing"
+                  href="/movie?sort=now_playing"
+                  src="https://image.tmdb.org/t/p/w300/kqjL17yufvn9OVLyXYpvtyrFfak.jpg"
+                  description="Phim đang chiếu ngoài rạp tuần này."
+                />
+              </div>
+            </MenuItem>
 
-          <NavLink
-            to="/tv"
-            className={({ isActive }) =>
-              `${navLinkBase} ${
-                isActive ? activeUnderline : "text-white/80 hover:text-white"
-              }`
-            }
-          >
-            TV Shows
-          </NavLink>
+            {/* TV SHOWS */}
+            <MenuItem
+              setActive={setActiveMenu}
+              active={activeMenu}
+              item="TV Shows"
+              to="/tv"
+            >
+              <div className="text-sm grid grid-cols-2 gap-6 p-2">
+                <ProductItem
+                  title="Popular TV"
+                  href="/tv?sort=popular"
+                  src="https://image.tmdb.org/t/p/w300/9RqlpGHuZSP3kC5xCTC2Z8pU85V.jpg"
+                  description="Series được xem nhiều nhất hiện tại."
+                />
+                <ProductItem
+                  title="Top Rated TV"
+                  href="/tv?sort=top_rated"
+                  src="https://image.tmdb.org/t/p/w300/roYyPiQDQKmIKUEhO912693tSja.jpg"
+                  description="Những series được chấm điểm cao nhất."
+                />
+                <ProductItem
+                  title="On The Air"
+                  href="/tv?sort=on_the_air"
+                  src="https://image.tmdb.org/t/p/w300/gnW8bXYBy8ISGL8k3p9xjL9C7qk.jpg"
+                  description="Đang phát sóng từng tuần, cập nhật liên tục."
+                />
+                <ProductItem
+                  title="Airing Today"
+                  href="/tv?sort=airing_today"
+                  src="https://image.tmdb.org/t/p/w300/2IWouZK4gkgHhJa3oyYuSWfSqbG.jpg"
+                  description="Tập mới lên sóng trong ngày hôm nay."
+                />
+              </div>
+            </MenuItem>
 
-          <NavLink
-            to="/search?s="
-            className={({ isActive }) =>
-              `${navLinkBase} ${
-                isActive ? activeUnderline : "text-white/80 hover:text-white"
-              }`
-            }
-          >
-            Search
-          </NavLink>
+            {/* SEARCH */}
+            <MenuItem
+              setActive={setActiveMenu}
+              active={activeMenu}
+              item="Search"
+              to="/search"
+            >
+              <div className="flex flex-col space-y-3 text-sm p-1 pr-3">
+                <p className="text-[11px] uppercase tracking-wide text-neutral-400">
+                  Search tips
+                </p>
+                <ul className="list-disc list-inside space-y-1 text-[12px] text-neutral-200">
+                  <li>Tìm theo tên phim, TV show hoặc diễn viên.</li>
+                  <li>Dùng tiếng Anh để có nhiều kết quả hơn.</li>
+                  <li>Kết hợp filters trong trang Search để lọc kỹ hơn.</li>
+                </ul>
+                <HoveredLink href="/search?s=">
+                  Đi tới trang Search &rarr;
+                </HoveredLink>
+              </div>
+            </MenuItem>
+          </Menu>
         </div>
 
         {/* Search nhỏ + toggles + auth */}
         <div className="flex items-center gap-3">
-          {/* Search compact cho desktop (đã tách component + icon search) */}
-          {/* <HeaderSearch /> */}
-
           <div className="hidden md:block">
             <NeonHeaderSearch />
           </div>
 
-          {/* Nếu CHƯA đăng nhập: toggle + login */}
           {!isAuthenticated ? (
             <div className="hidden sm:flex items-center gap-3">
               <LanguageToggle />
@@ -166,7 +282,6 @@ export default function Header({ admin }: HeaderProps) {
               </Link>
             </div>
           ) : (
-            // ĐÃ ĐĂNG NHẬP: dùng UserMenu
             <UserMenu
               displayName={displayName}
               email={currentUser?.email}
@@ -176,7 +291,7 @@ export default function Header({ admin }: HeaderProps) {
         </div>
       </nav>
 
-      {/* Nav mobile đơn giản */}
+      {/* Nav mobile */}
       <div className="md:hidden px-4 pb-3 flex items-center justify-between text-[12px] uppercase tracking-wide text-white/80">
         <div className="flex items-center gap-3">
           <NavLink
