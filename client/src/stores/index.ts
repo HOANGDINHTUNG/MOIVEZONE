@@ -13,6 +13,7 @@ import tmdbGenresReducer from "../module/movies/store/genresSlice";
 import accountReducer from "../module/accounts/store/accountSlice";
 import authReducer from "../module/auth/store/authSlice";
 import networkReducer from "../module/networks/store/networkSlice";
+import appReducer from "../stores/appSlice"
 export const store = configureStore({
   reducer: {
     moviesData: moviesReducer,
@@ -28,6 +29,7 @@ export const store = configureStore({
     account: accountReducer,
     auth: authReducer,
     network: networkReducer,
+    app:appReducer,
   },
 });
 

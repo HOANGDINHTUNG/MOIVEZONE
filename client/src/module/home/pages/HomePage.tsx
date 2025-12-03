@@ -8,6 +8,7 @@ import { useFetch } from "../../../hooks/useFetch";
 
 import type { MovieSummary } from "../../movies/database/interface/movie";
 import type { TvSummary } from "../../movies/database/interface/tv";
+import LatestTrailersSection from "../components/LatestTrailersSection";
 
 const HomePage = () => {
   const trendingData = useAppSelector((state) => state.moviesData.bannerData);
@@ -30,6 +31,8 @@ const HomePage = () => {
         trending
         media_type="movie"
       />
+
+      <LatestTrailersSection data={nowPlayingData} />
 
       <HorizontalScollCard
         data={nowPlayingData}

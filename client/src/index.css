@@ -163,3 +163,13 @@ body {
     animation: fade-up 0.7s ease-out forwards;
   }
 }
+
+
+.latest-scroll {
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.latest-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
