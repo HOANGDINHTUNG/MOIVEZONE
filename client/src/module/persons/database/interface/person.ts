@@ -199,3 +199,21 @@ export interface TMDBPersonTranslationsResponse {
   id: number;
   translations: TMDBPersonTranslation[];
 }
+
+// Person summary cho /person/popular
+export interface TMDBPersonSummary {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  popularity: number;
+  profile_path: string | null;
+  // TMDB trả về mảng known_for gồm movie/tv, dùng luôn TMDBPersonCreditMedia
+  known_for: TMDBPersonCreditMedia[];
+}
+
+// Response phân trang cho /person/popular
+export type TMDBPopularPersonsResponse =
+  TMDBPaginatedResponse<TMDBPersonSummary>;
+

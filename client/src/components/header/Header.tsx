@@ -225,7 +225,8 @@ export default function Header({ admin }: HeaderProps) {
                   </p>
                   <HoveredLink href="/explore">All</HoveredLink>
                   <HoveredLink href="/trending">Trending</HoveredLink>
-                  <HoveredLink href="/search">Advanced search</HoveredLink>
+                  <HoveredLink href="/search_advanced">Advanced search</HoveredLink>
+                  <HoveredLink href="/person">Person</HoveredLink>
                 </div>
                 <div className="flex flex-col space-y-2">
                   <p className="text-[11px] uppercase tracking-wide text-neutral-400">

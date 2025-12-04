@@ -1,22 +1,9 @@
-// src/module/reviews/interface/review.ts
-
-/**
- * ===================================================================
- *  AUTHOR DETAILS
- * ===================================================================
- */
 export interface TMDBReviewAuthorDetails {
   name: string;
   username: string;
   avatar_path: string | null;
   rating: number | null;
 }
-
-/**
- * ===================================================================
- *  REVIEW DETAILS (GET /review/{review_id})
- * ===================================================================
- */
 
 export interface TMDBReviewDetails {
   id: string;

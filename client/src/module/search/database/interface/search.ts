@@ -1,10 +1,3 @@
-// src/module/search/interface/search.ts
-
-/**
- * ===================================================================
- * Common TMDB Pagination
- * ===================================================================
- */
 export interface TMDBPaginatedResponse<T> {
   page: number;
   results: T[];
@@ -12,11 +5,6 @@ export interface TMDBPaginatedResponse<T> {
   total_results: number;
 }
 
-/**
- * ===================================================================
- * Search Collection
- * ===================================================================
- */
 export interface TMDBSearchCollectionItem {
   adult: boolean;
   backdrop_path: string | null;
@@ -31,11 +19,6 @@ export interface TMDBSearchCollectionItem {
 export type TMDBSearchCollectionResponse =
   TMDBPaginatedResponse<TMDBSearchCollectionItem>;
 
-/**
- * ===================================================================
- * Search Company
- * ===================================================================
- */
 export interface TMDBSearchCompanyItem {
   id: number;
   logo_path: string | null;
@@ -46,11 +29,6 @@ export interface TMDBSearchCompanyItem {
 export type TMDBSearchCompanyResponse =
   TMDBPaginatedResponse<TMDBSearchCompanyItem>;
 
-/**
- * ===================================================================
- * Search Keyword
- * ===================================================================
- */
 export interface TMDBSearchKeywordItem {
   id: number;
   name: string;
@@ -59,11 +37,6 @@ export interface TMDBSearchKeywordItem {
 export type TMDBSearchKeywordResponse =
   TMDBPaginatedResponse<TMDBSearchKeywordItem>;
 
-/**
- * ===================================================================
- * Search Movie
- * ===================================================================
- */
 export interface TMDBSearchMovieItem {
   adult: boolean;
   backdrop_path: string | null;
@@ -84,11 +57,6 @@ export interface TMDBSearchMovieItem {
 export type TMDBSearchMovieResponse =
   TMDBPaginatedResponse<TMDBSearchMovieItem>;
 
-/**
- * ===================================================================
- * Search TV
- * ===================================================================
- */
 export interface TMDBSearchTvItem {
   adult: boolean;
   backdrop_path: string | null;
@@ -106,14 +74,8 @@ export interface TMDBSearchTvItem {
   vote_count: number;
 }
 
-export type TMDBSearchTvResponse =
-  TMDBPaginatedResponse<TMDBSearchTvItem>;
+export type TMDBSearchTvResponse = TMDBPaginatedResponse<TMDBSearchTvItem>;
 
-/**
- * ===================================================================
- * Search Person
- * ===================================================================
- */
 export interface TMDBSearchPersonKnownForMovie {
   adult: boolean;
   backdrop_path: string | null;
@@ -167,12 +129,6 @@ export interface TMDBSearchPersonItem {
 
 export type TMDBSearchPersonResponse =
   TMDBPaginatedResponse<TMDBSearchPersonItem>;
-
-/**
- * ===================================================================
- * Search Multi (movie | tv | person)
- * ===================================================================
- */
 
 export interface TMDBSearchMultiMovie {
   media_type: "movie";

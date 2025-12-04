@@ -8,11 +8,11 @@ import type {
   TMDBTvListResponse,
 } from "../../module/movies/database/interface/tmdb";
 import type { TMDBTrendingAllResponse } from "../../module/trending/database/interface/trending";
-import type { TMDBSearchMultiResponse } from "../../types/interface/search";
+import type { TMDBSearchMultiResponse } from "../../module/search/database/interface/search";
 import type { TMDBGenreListResponse } from "../../module/movies/database/interface/genre";
 import type { TMDBPaginatedResponse } from "../../types/interface/movie";
-import type { TMDBReviewDetails } from "../../types/interface/review";
-import type { TMDBPersonDetails } from "../../types/interface/person";
+import type { TMDBReviewDetails } from "../../module/review/database/interface/review";
+import type { TMDBPersonDetails } from "../../module/persons/database/interface/person";
 
 const defaultLanguage: AppLanguage = "vi-VN";
 

@@ -17,6 +17,10 @@ import appReducer from "../stores/appSlice";
 import trendingReducer from "../module/trending/store/trendingSlice";
 import moviesCategoriesReducer from "../module/movies/store/moviesCategorySlice";
 import tvCategoriesReducer from "../module/movies/store/tvCategorySlice";
+import personReducer from "../module/persons/store/personSlice";
+import reviewReducer from "../module/review/store/reviewSlice";
+import searchReducer from "../module/search/store/searchSlice";
+
 export const store = configureStore({
   reducer: {
     moviesData: moviesReducer,
@@ -36,6 +40,9 @@ export const store = configureStore({
     trending: trendingReducer,
     moviesCategories: moviesCategoriesReducer,
     tvCategories: tvCategoriesReducer,
+    person: personReducer,
+    review: reviewReducer,
+    search: searchReducer,
   },
 });
 
