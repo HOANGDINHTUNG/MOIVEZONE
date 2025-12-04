@@ -1,4 +1,4 @@
-// Dùng chung cho rất nhiều chỗ
+// ===== Common =====
 export interface TMDBPaginatedResponse<T> {
   page: number;
   results: T[];
@@ -6,7 +6,6 @@ export interface TMDBPaginatedResponse<T> {
   total_results: number;
 }
 
-// Genre đơn giản
 export interface TMDBGenre {
   id: number;
   name: string;
@@ -14,7 +13,7 @@ export interface TMDBGenre {
 
 export interface TMDBProductionCompany {
   id: number;
-  logo_path: string | null;
+  logo_path: string;
   name: string;
   origin_country: string;
 }
@@ -30,7 +29,40 @@ export interface TMDBSpokenLanguage {
   name: string;
 }
 
-// Kiểu movie “summary” dùng cho list / similar / recommendations / discover …
+// ===== Details: GET /movie/{movie_id} =====
+export interface TMDBMovieDetailsResponse {
+  adult: boolean;
+  backdrop_path: string;
+  belongs_to_collection: string; // docs ghi string
+  budget: number;
+  genres: TMDBGenre[];
+  homepage: string;
+  id: number;
+  imdb_id: string;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+
+  production_companies: TMDBProductionCompany[];
+  production_countries: TMDBProductionCountry[];
+
+  release_date: string;
+  revenue: number;
+  runtime: number;
+
+  spoken_languages: TMDBSpokenLanguage[];
+
+  status: string;
+  tagline: string;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+}
+
+// ===== Similar: GET /movie/{movie_id}/similar =====
 export interface TMDBMovieSummary {
   adult: boolean;
   backdrop_path: string | null;
@@ -48,62 +80,19 @@ export interface TMDBMovieSummary {
   vote_count: number;
 }
 
-/**
- * ===================================================================
- *  MOVIE DETAILS  (GET /movie/{movie_id})
- * ===================================================================
- */
+export type TMDBMovieSimilarResponse = TMDBPaginatedResponse<TMDBMovieSummary>;
 
-export interface TMDBMovieDetails {
-  adult: boolean;
-  backdrop_path: string | null;
-  belongs_to_collection: unknown | null; // có thể là object collection, để generic
-  budget: number;
-  genres: TMDBGenre[];
-  homepage: string | null;
-  id: number;
-  imdb_id: string | null;
-  original_language: string;
-  original_title: string;
-  overview: string | null;
-  popularity: number;
-  poster_path: string | null;
-  production_companies: TMDBProductionCompany[];
-  production_countries: TMDBProductionCountry[];
-  release_date: string;
-  revenue: number;
-  runtime: number | null;
-  spoken_languages: TMDBSpokenLanguage[];
-  status: string;
-  tagline: string | null;
-  title: string;
-  video: boolean;
-  vote_average: number;
-  vote_count: number;
-
-  // append_to_response có thể thêm field khác (credits, videos, recommendations, ...)
-  // nên bạn có thể mở rộng bằng intersection ở chỗ khác.
-}
-
-/**
- * ===================================================================
- *  ACCOUNT STATES (GET /movie/{id}/account_states)
- * ===================================================================
- */
-
-export interface TMDBMovieAccountStates {
+// ===== Account states: GET /movie/{movie_id}/account_states =====
+export interface TMDBMovieAccountStatesResponse {
   id: number;
   favorite: boolean;
-  rated: { value: number } | boolean; // TMDB đôi khi trả false nếu chưa rate
+  rated: {
+    value: number;
+  };
   watchlist: boolean;
 }
 
-/**
- * ===================================================================
- *  ALTERNATIVE TITLES (GET /movie/{id}/alternative_titles)
- * ===================================================================
- */
-
+// ===== Alternative titles: GET /movie/{movie_id}/alternative_titles =====
 export interface TMDBMovieAlternativeTitle {
   iso_3166_1: string;
   title: string;
@@ -115,19 +104,17 @@ export interface TMDBMovieAlternativeTitlesResponse {
   titles: TMDBMovieAlternativeTitle[];
 }
 
-/**
- * ===================================================================
- *  MOVIE CHANGES (GET /movie/{id}/changes)
- * ===================================================================
- */
-
+// ===== Changes: GET /movie/{movie_id}/changes =====
 export interface TMDBMovieChangeItemValue {
   id: string;
   action: string;
   time: string;
-  iso_639_1?: string;
-  iso_3166_1?: string;
+  iso_639_1: string;
+  iso_3166_1: string;
   value: Record<string, unknown>;
+
+  // docs có example value.poster.file_path
+  // bạn có thể narrow ở nơi dùng nếu cần.
 }
 
 export interface TMDBMovieChangeItem {
@@ -139,21 +126,17 @@ export interface TMDBMovieChangesResponse {
   changes: TMDBMovieChangeItem[];
 }
 
-/**
- * ===================================================================
- *  CREDITS (GET /movie/{id}/credits)
- * ===================================================================
- */
-
+// ===== Credits: GET /movie/{movie_id}/credits =====
 export interface TMDBMovieCast {
   adult: boolean;
-  gender: number | null;
+  gender: number;
   id: number;
   known_for_department: string;
   name: string;
   original_name: string;
   popularity: number;
-  profile_path: string | null;
+  profile_path: string;
+
   cast_id: number;
   character: string;
   credit_id: string;
@@ -162,37 +145,40 @@ export interface TMDBMovieCast {
 
 export interface TMDBMovieCrew {
   adult: boolean;
-  gender: number | null;
+  gender: number;
   id: number;
   known_for_department: string;
   name: string;
   original_name: string;
   popularity: number;
-  profile_path: string | null;
+  profile_path: string;
+
   credit_id: string;
   department: string;
   job: string;
 }
 
-export interface TMDBMovieCredits {
+export interface TMDBMovieCreditsResponse {
   id: number;
   cast: TMDBMovieCast[];
   crew: TMDBMovieCrew[];
 }
 
-export interface TMDBMovieExternalIds {
+// ===== External IDs: GET /movie/{movie_id}/external_ids =====
+export interface TMDBMovieExternalIdsResponse {
   id: number;
-  imdb_id: string | null;
-  wikidata_id: string | null;
-  facebook_id: string | null;
-  instagram_id: string | null;
-  twitter_id: string | null;
+  imdb_id: string;
+  wikidata_id: string;
+  facebook_id: string;
+  instagram_id: string;
+  twitter_id: string;
 }
 
+// ===== Images: GET /movie/{movie_id}/images =====
 export interface TMDBMediaImage {
   aspect_ratio: number;
   height: number;
-  iso_639_1: string | null;
+  iso_639_1: string; // docs ghi string
   file_path: string;
   vote_average: number;
   vote_count: number;
@@ -202,10 +188,11 @@ export interface TMDBMediaImage {
 export interface TMDBMovieImagesResponse {
   id: number;
   backdrops: TMDBMediaImage[];
-  posters: TMDBMediaImage[];
   logos: TMDBMediaImage[];
+  posters: TMDBMediaImage[];
 }
 
+// ===== Keywords: GET /movie/{movie_id}/keywords =====
 export interface TMDBMovieKeyword {
   id: number;
   name: string;
@@ -216,8 +203,10 @@ export interface TMDBMovieKeywordsResponse {
   keywords: TMDBMovieKeyword[];
 }
 
-export type TMDBLatestMovieResponse = TMDBMovieDetails;
+// ===== Latest: GET /movie/latest =====
+export type TMDBLatestMovieResponse = TMDBMovieDetailsResponse;
 
+// ===== Lists: GET /movie/{movie_id}/lists =====
 export interface TMDBListSummary {
   description: string;
   favorite_count: number;
@@ -226,36 +215,24 @@ export interface TMDBListSummary {
   iso_639_1: string;
   list_type: string;
   name: string;
-  poster_path: string | null;
+  poster_path: string;
 }
 
-export interface TMDBMovieListsResponse
-  extends TMDBPaginatedResponse<TMDBListSummary> {
+export interface TMDBMovieListsResponse extends TMDBPaginatedResponse<TMDBListSummary> {
   id: number;
 }
 
-/**
- * ===================================================================
- *  RECOMMENDATIONS (GET /movie/{id}/recommendations)
- * ===================================================================
- */
+// ===== Recommendations: GET /movie/{movie_id}/recommendations =====
+export type TMDBMovieRecommendationsResponse = TMDBPaginatedResponse<TMDBMovieSummary>;
 
-export type TMDBMovieRecommendationsResponse =
-  TMDBPaginatedResponse<TMDBMovieSummary>;
-
-/**
- * ===================================================================
- *  RELEASE DATES (GET /movie/{id}/release_dates)
- * ===================================================================
- */
-
+// ===== Release dates: GET /movie/{movie_id}/release_dates =====
 export interface TMDBMovieReleaseDateItem {
   certification: string;
   descriptors: string[];
-  iso_639_1: string | null;
-  note: string | null;
+  iso_639_1: string;
+  note: string;
   release_date: string;
-  type: number; // 1..6
+  type: number;
 }
 
 export interface TMDBMovieReleaseDatesByCountry {
@@ -268,17 +245,12 @@ export interface TMDBMovieReleaseDatesResponse {
   results: TMDBMovieReleaseDatesByCountry[];
 }
 
-/**
- * ===================================================================
- *  REVIEWS (GET /movie/{id}/reviews)
- * ===================================================================
- */
-
+// ===== Reviews: GET /movie/{movie_id}/reviews =====
 export interface TMDBReviewAuthorDetails {
   name: string;
   username: string;
-  avatar_path: string | null;
-  rating: number | null;
+  avatar_path: string;
+  rating: string; // docs bạn paste ghi string
 }
 
 export interface TMDBMovieReview {
@@ -291,26 +263,18 @@ export interface TMDBMovieReview {
   url: string;
 }
 
-export interface TMDBMovieReviewsResponse
-  extends TMDBPaginatedResponse<TMDBMovieReview> {
+export interface TMDBMovieReviewsResponse extends TMDBPaginatedResponse<TMDBMovieReview> {
   id: number;
 }
 
-/**
- * ===================================================================
- *  SIMILAR (GET /movie/{id}/similar)
- * ===================================================================
- */
-
-export type TMDBMovieSimilarResponse = TMDBPaginatedResponse<TMDBMovieSummary>;
-
-/**
- * ===================================================================
- *  TRANSLATIONS (GET /movie/{id}/translations)
- * ===================================================================
- */
-
-export type TMDBMovieTranslationData = Record<string, unknown>;
+// ===== Translations: GET /movie/{movie_id}/translations =====
+export interface TMDBMovieTranslationData {
+  homepage: string;
+  overview: string;
+  runtime: number;
+  tagline: string;
+  title: string;
+}
 
 export interface TMDBMovieTranslation {
   iso_3166_1: string;
@@ -325,20 +289,15 @@ export interface TMDBMovieTranslationsResponse {
   translations: TMDBMovieTranslation[];
 }
 
-/**
- * ===================================================================
- *  VIDEOS (GET /movie/{id}/videos)
- * ===================================================================
- */
-
+// ===== Videos: GET /movie/{movie_id}/videos =====
 export interface TMDBMovieVideo {
   iso_639_1: string;
   iso_3166_1: string;
   name: string;
-  key: string; // dùng build URL YouTube/Vimeo
-  site: string; // "YouTube", "Vimeo"
-  size: number; // 360, 480, 720, 1080...
-  type: string; // "Trailer", "Teaser", ...
+  key: string;
+  site: string;
+  size: number;
+  type: string;
   official: boolean;
   published_at: string;
   id: string;
@@ -349,14 +308,9 @@ export interface TMDBMovieVideosResponse {
   results: TMDBMovieVideo[];
 }
 
-/**
- * ===================================================================
- *  WATCH PROVIDERS (GET /movie/{id}/watch/providers)
- * ===================================================================
- */
-
+// ===== Watch providers: GET /movie/{movie_id}/watch/providers =====
 export interface TMDBWatchProvider {
-  logo_path: string | null;
+  logo_path: string;
   provider_id: number;
   provider_name: string;
   display_priority: number;
@@ -364,28 +318,12 @@ export interface TMDBWatchProvider {
 
 export interface TMDBWatchProviderRegion {
   link: string;
-  flatrate?: TMDBWatchProvider[];
-  rent?: TMDBWatchProvider[];
-  buy?: TMDBWatchProvider[];
+  flatrate: TMDBWatchProvider[];
+  rent: TMDBWatchProvider[];
+  buy: TMDBWatchProvider[];
 }
 
-// key = mã quốc gia: "US", "VN", "GB", ...
 export interface TMDBMovieWatchProvidersResponse {
   id: number;
   results: Record<string, TMDBWatchProviderRegion>;
-}
-
-/**
- * ===================================================================
- *  RATING (POST/DELETE /movie/{id}/rating)
- * ===================================================================
- */
-
-export interface TMDBMovieRatingRequest {
-  value: number;
-}
-
-export interface TMDBStatusResponse {
-  status_code: number;
-  status_message: string;
 }

@@ -1,10 +1,9 @@
 // src/pages/DetailsRelatedSection.tsx
 import Divider from "../../../components/common/ux/Divider";
 import HorizontalScollCard from "../../../components/HorizontalScollCard";
-import type { MovieSummary } from "../database/interface/movie";
-import type { TvSummary } from "../database/interface/tv";
+import type { TMDBMediaBase } from "../database/interface/movieLists";
 
-type MediaSummary = MovieSummary | TvSummary;
+type MediaSummary = TMDBMediaBase;
 
 type DetailsRelatedSectionProps = {
   similarList: MediaSummary[];
@@ -23,7 +22,7 @@ const DetailsRelatedSection: React.FC<DetailsRelatedSectionProps> = ({
       {similarList && similarList.length > 0 && (
         <>
           <Divider />
-          <div className="mt-4">
+          <div className="mt-4 sm:mt-6">
             <HorizontalScollCard
               heading={
                 resolvedMediaType === "movie"
@@ -41,7 +40,7 @@ const DetailsRelatedSection: React.FC<DetailsRelatedSectionProps> = ({
       {recommendationList && recommendationList.length > 0 && (
         <>
           <Divider />
-          <div className="mt-4 mb-4">
+          <div className="mt-4 mb-4 sm:mt-6 sm:mb-8">
             <HorizontalScollCard
               heading={
                 resolvedMediaType === "movie"

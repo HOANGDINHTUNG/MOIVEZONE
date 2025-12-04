@@ -2,14 +2,25 @@
 
 import { useEffect, useState, type JSX } from "react";
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
-import type { MovieSummary } from "../database/interface/movie";
-import { tmdbApi } from "../../../api/movie/TMDB.api";
 import Card from "../../../components/common/Card";
 
-// 👇 THÊM IMPORT
 import TrendingTrailerHeader from "../components/TrendingTrailerHeader";
+import { tmdbDiscoverApi } from "../../../api/movie/TMDBDiscover.api";
 
-type MoviesByPage = Record<number, MovieSummary[]>;
+// Kiểu movie dùng cho UI (đủ cho Card + sort)
+type UIMovie = {
+  id: number;
+  title?: string;
+  original_title?: string;
+  overview?: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  release_date?: string;
+  vote_average?: number;
+  popularity?: number;
+};
+
+type MoviesByPage = Record<number, UIMovie[]>;
 
 const AllMoviesPage = () => {
   const language = useAppSelector((state) => state.language.current);
@@ -25,6 +36,7 @@ const AllMoviesPage = () => {
 
   // Cuộn lên đầu trang — mượt
   const scrollToTopSmooth = () => {
+    if (typeof window === "undefined") return;
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -38,7 +50,7 @@ const AllMoviesPage = () => {
   };
 
   // ---------------------------
-  // LOAD 40 PHIM MỖI TRANG
+  // LOAD 40 PHIM MỖI TRANG UI
   // ---------------------------
   const loadPage = async (uiPage: number) => {
     if (loading) return;
@@ -52,30 +64,33 @@ const AllMoviesPage = () => {
       const tmdbPage1 = uiPage * 2 - 1;
       const tmdbPage2 = uiPage * 2;
 
-      let totalFromApi: number | null = tmdbTotalPages;
+      let totalFromApi = tmdbTotalPages;
 
-      let res1: { results: MovieSummary[]; total_pages: number } | null = null;
-      let res2: { results: MovieSummary[]; total_pages: number } | null = null;
+      let page1Results: UIMovie[] = [];
+      let page2Results: UIMovie[] = [];
 
-      // --- Trang đầu ---
+      // --- Trang TMDB 1 ---
       if (totalFromApi === null || tmdbPage1 <= totalFromApi) {
-        res1 = await tmdbApi.discoverMovies(tmdbPage1, language);
+        const res1 = await tmdbDiscoverApi.discoverMovies(tmdbPage1, language);
 
+        // Lần đầu: lấy total_pages từ API
         if (totalFromApi === null) {
           totalFromApi = res1.total_pages;
           setTmdbTotalPages(totalFromApi);
           setTotalPages(Math.ceil(totalFromApi / 2)); // 2 page TMDB = 1 page UI
         }
+
+        page1Results = (res1.results ?? []) as unknown as UIMovie[];
       }
 
-      // --- Trang thứ hai ---
+      // --- Trang TMDB 2 ---
       if (totalFromApi !== null && tmdbPage2 <= totalFromApi) {
-        res2 = await tmdbApi.discoverMovies(tmdbPage2, language);
+        const res2 = await tmdbDiscoverApi.discoverMovies(tmdbPage2, language);
+        page2Results = (res2.results ?? []) as unknown as UIMovie[];
       }
 
-      const combined: MovieSummary[] = [];
-      if (res1) combined.push(...res1.results);
-      if (res2) combined.push(...res2.results);
+      // Gộp lại
+      const combined: UIMovie[] = [...page1Results, ...page2Results];
 
       // Sort phim mới/hot hơn lên đầu
       combined.sort((a, b) => {
@@ -113,7 +128,7 @@ const AllMoviesPage = () => {
     setTotalPages(0);
     setTmdbTotalPages(null);
 
-    loadPage(1);
+    void loadPage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
@@ -137,7 +152,7 @@ const AllMoviesPage = () => {
     }
 
     // chưa có thì load từ API
-    loadPage(newPage);
+    void loadPage(newPage);
   };
 
   // ---------------------------
@@ -179,22 +194,25 @@ const AllMoviesPage = () => {
 
   return (
     <>
-      {/* HEADER TRAILER */}
+      {/* HEADER TRAILER (full width, responsive) */}
       <TrendingTrailerHeader mode="movie" />
 
       {/* LIST PHIM */}
-      <section className="max-w-6xl mx-auto px-3 py-6">
-        {/* Title */}
-        <div className="flex flex-col gap-1 mb-4 md:flex-row md:items-baseline md:justify-between">
+      <section className="mx-auto max-w-6xl px-3 pb-8 pt-4 sm:pb-10 sm:pt-6 md:pb-12">
+        {/* Title + info */}
+        <div className="mb-4 flex flex-col gap-1 md:mb-5 md:flex-row md:items-baseline md:justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Phim mới nhất</h1>
-            <p className="text-sm text-neutral-500">
-              Mỗi trang hiển thị 40 bộ phim. Phim mới và hot hơn sẽ ở phía trên.
+            <h1 className="text-xl font-bold sm:text-2xl md:text-3xl">
+              Phim mới nhất
+            </h1>
+            <p className="text-xs text-neutral-500 sm:text-sm">
+              Mỗi trang hiển thị khoảng 40 bộ phim. Phim mới và hot hơn sẽ ở
+              phía trên.
             </p>
           </div>
 
           {totalPages > 1 && (
-            <p className="text-xs md:text-sm text-neutral-400 mt-1 md:mt-0">
+            <p className="mt-1 text-xs text-neutral-400 md:mt-0 md:text-sm">
               Trang{" "}
               <span className="font-semibold text-neutral-200">
                 {currentPage}
@@ -204,12 +222,17 @@ const AllMoviesPage = () => {
           )}
         </div>
 
-        {/* GRID MOVIES + FADE */}
+        {/* GRID MOVIES + FADE (responsive 2–3–4–5 cột) */}
         <div
-          className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 
-          transition-opacity duration-300 ${
-            gridVisible ? "opacity-100" : "opacity-0"
-          }`}
+          className={`
+            grid gap-3 sm:gap-4
+            grid-cols-2
+            sm:grid-cols-3
+            md:grid-cols-4
+            lg:grid-cols-5
+            transition-opacity duration-300
+            ${gridVisible ? "opacity-100" : "opacity-0"}
+          `}
         >
           {currentMovies.map((movie) => (
             <Card key={movie.id} data={movie} media_type="movie" />
@@ -218,7 +241,7 @@ const AllMoviesPage = () => {
 
         {/* Loading indicator */}
         {loading && (
-          <div className="mt-4 flex justify-center text-sm text-neutral-300 gap-2">
+          <div className="mt-4 flex justify-center gap-2 text-sm text-neutral-300">
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-red-500 border-t-transparent" />
             Đang tải phim...
           </div>

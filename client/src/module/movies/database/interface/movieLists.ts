@@ -22,7 +22,6 @@ export interface TMDBPaginatedResponse<T> {
   total_results: number;
 }
 
-
 export interface TMDBMovieDateRange {
   maximum: string; // ví dụ: 2024-12-30
   minimum: string; // ví dụ: 2024-11-01
@@ -43,3 +42,25 @@ export type TMDBPopularMoviesResponse =
 
 export type TMDBTopRatedMoviesResponse =
   TMDBPaginatedResponse<TMDBMovieListItem>;
+
+export type MediaType = "movie" | "tv" | "person" | string;
+
+export interface TMDBMediaBase {
+  id: number;
+  title?: string;
+  name?: string;
+  overview?: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  media_type?: MediaType;
+  release_date?: string;
+  first_air_date?: string;
+  vote_average?: number;
+}
+
+export interface TMDBListResponse<T = TMDBMediaBase> {
+  page: number;
+  results: T[];
+  total_pages: number;
+  total_results: number;
+}

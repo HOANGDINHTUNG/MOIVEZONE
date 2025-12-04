@@ -1,12 +1,26 @@
+// src/module/movies/pages/AllTvShowsPage.tsx
+
 import { useEffect, useState, type JSX } from "react";
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
-import type { TvSummary } from "../database/interface/tv";
 
 import Card from "../../../components/common/Card";
 import TrendingTrailerHeader from "../components/TrendingTrailerHeader";
-import { tmdbApi } from "../../../api/movie/TMDB.api";
+import { tmdbDiscoverApi } from "../../../api/movie/TMDBDiscover.api";
 
-type ShowsByPage = Record<number, TvSummary[]>;
+// Kiểu TV show dùng cho UI (đủ cho Card + sort)
+type UITvShow = {
+  id: number;
+  name?: string;
+  original_name?: string;
+  overview?: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  first_air_date?: string;
+  vote_average?: number;
+  popularity?: number;
+};
+
+type ShowsByPage = Record<number, UITvShow[]>;
 
 const AllTvShowsPage = () => {
   const language = useAppSelector((state) => state.language.current);
@@ -21,6 +35,7 @@ const AllTvShowsPage = () => {
   const [gridVisible, setGridVisible] = useState(true);
 
   const scrollToTopSmooth = () => {
+    if (typeof window === "undefined") return;
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -44,30 +59,38 @@ const AllTvShowsPage = () => {
       const tmdbPage1 = uiPage * 2 - 1;
       const tmdbPage2 = uiPage * 2;
 
-      let totalFromApi: number | null = tmdbTotalPages;
+      let totalFromApi = tmdbTotalPages;
 
-      let res1: { results: TvSummary[]; total_pages: number } | null = null;
-      let res2: { results: TvSummary[]; total_pages: number } | null = null;
+      let page1Results: UITvShow[] = [];
+      let page2Results: UITvShow[] = [];
 
       // --- Call page 1 ---
       if (totalFromApi === null || tmdbPage1 <= totalFromApi) {
-        res1 = await tmdbApi.discoverTvShows(tmdbPage1, language);
+        const res1 = await tmdbDiscoverApi.discoverTvShows(
+          tmdbPage1,
+          language
+        );
 
+        // lần đầu: lấy total_pages từ API
         if (totalFromApi === null) {
           totalFromApi = res1.total_pages;
           setTmdbTotalPages(totalFromApi);
           setTotalPages(Math.ceil(totalFromApi / 2)); // 2 page TMDB = 1 page UI
         }
+
+        page1Results = (res1.results ?? []) as unknown as UITvShow[];
       }
 
       // --- Call page 2 ---
       if (totalFromApi !== null && tmdbPage2 <= totalFromApi) {
-        res2 = await tmdbApi.discoverTvShows(tmdbPage2, language);
+        const res2 = await tmdbDiscoverApi.discoverTvShows(
+          tmdbPage2,
+          language
+        );
+        page2Results = (res2.results ?? []) as unknown as UITvShow[];
       }
 
-      const combined: TvSummary[] = [];
-      if (res1) combined.push(...res1.results);
-      if (res2) combined.push(...res2.results);
+      const combined: UITvShow[] = [...page1Results, ...page2Results];
 
       // Sort: TV show mới / hot hơn lên trên trong 40 cái
       combined.sort((a, b) => {
@@ -104,7 +127,7 @@ const AllTvShowsPage = () => {
     setTotalPages(0);
     setTmdbTotalPages(null);
 
-    loadPage(1);
+    void loadPage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
@@ -125,7 +148,7 @@ const AllTvShowsPage = () => {
     }
 
     // Chưa có → gọi API
-    loadPage(newPage);
+    void loadPage(newPage);
   };
 
   const renderPageNumbers = () => {
@@ -170,20 +193,20 @@ const AllTvShowsPage = () => {
       {/* Header trailer dùng chung – mode='tv' */}
       <TrendingTrailerHeader mode="tv" />
 
-      <section className="mx-auto max-w-6xl px-4 py-8">
-        <header className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <section className="mx-auto max-w-6xl px-3 py-6 sm:px-4 sm:py-8">
+        <header className="mb-6 flex flex-col gap-2 sm:mb-7 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            <h1 className="text-xl font-bold tracking-tight sm:text-2xl md:text-3xl">
               Tất cả TV show
             </h1>
-            <p className="mt-1 text-sm text-neutral-500">
-              Mỗi trang hiển thị 40 TV show. TV show mới lên sóng / hot hơn sẽ
-              được ưu tiên ở phía trên.
+            <p className="mt-1 text-xs text-neutral-500 sm:text-sm">
+              Mỗi trang hiển thị khoảng 40 TV show. TV show mới lên sóng / hot
+              hơn sẽ được ưu tiên ở phía trên.
             </p>
           </div>
 
           {totalPages > 1 && (
-            <p className="text-xs sm:text-sm text-neutral-400">
+            <p className="text-xs text-neutral-400 sm:text-sm">
               Trang{" "}
               <span className="font-semibold text-neutral-100">
                 {currentPage}
@@ -193,9 +216,9 @@ const AllTvShowsPage = () => {
           )}
         </header>
 
-        {/* GRID + FADE */}
+        {/* GRID + FADE (responsive 2–3–4–5 cột) */}
         <div
-          className={`grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 
+          className={`grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4
           transition-opacity duration-300 ${
             gridVisible ? "opacity-100" : "opacity-0"
           }`}
@@ -207,7 +230,7 @@ const AllTvShowsPage = () => {
 
         {/* Loading nhỏ */}
         {loading && (
-          <div className="mt-4 flex justify-center text-sm text-neutral-300 gap-2">
+          <div className="mt-4 flex justify-center gap-2 text-sm text-neutral-300">
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-red-500 border-t-transparent" />
             Đang tải TV show...
           </div>

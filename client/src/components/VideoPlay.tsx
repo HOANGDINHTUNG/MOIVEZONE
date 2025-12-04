@@ -14,20 +14,17 @@ const VideoPlay = ({ videoId, onClose }: VideoPlayProps) => {
   if (typeof document === "undefined") return null;
 
   return createPortal(
-    <section className="fixed inset-0 z-9999 bg-black/80 flex justify-center items-center px-4">
+    <section className="fixed inset-0 z-9999 bg-black/80 flex justify-center items-center px-2 sm:px-4 py-4 sm:py-0">
       {/* Background click-to-close */}
       {onClose && (
-        <div
-          className="absolute inset-0 cursor-pointer"
-          onClick={onClose}
-        />
+        <div className="absolute inset-0 cursor-pointer" onClick={onClose} />
       )}
 
-      <div className="relative bg-black w-full max-w-5xl aspect-video rounded-lg shadow-2xl z-10000">
+      <div className="relative bg-black w-full max-w-[900px] sm:max-w-4xl md:max-w-5xl aspect-video rounded-md sm:rounded-lg shadow-2xl z-10000">
         {onClose && (
           <button
             onClick={onClose}
-            className="absolute -top-12 right-0 text-4xl text-white hover:text-red-400 transition"
+            className="absolute -top-10 right-0 sm:-top-12 sm:right-0 text-3xl sm:text-4xl text-white hover:text-red-400 transition bg-black/60 rounded-full p-1"
           >
             <IoClose />
           </button>
@@ -35,7 +32,7 @@ const VideoPlay = ({ videoId, onClose }: VideoPlayProps) => {
 
         <iframe
           src={`https://www.youtube.com/embed/${videoId}`}
-          className="w-full h-full rounded-lg"
+          className="w-full h-full rounded-md sm:rounded-lg"
           allowFullScreen
           title="Trailer"
         />

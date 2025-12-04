@@ -1,5 +1,5 @@
 // src/pages/DetailsPage.tsx
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 
@@ -8,61 +8,151 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/UseCustomeRedux";
 
 import VideoPlay from "../../../components/VideoPlay";
 
-import type { MovieDetail, MovieSummary } from "../database/interface/movie";
-import type { TvDetail, TvSummary } from "../database/interface/tv";
-import type {
-  MovieVideoItem,
-  MovieVideosResponse,
-} from "../../../types/interface/movies/videos";
-import DetailsHero from "../components/DetailsHero";
+import DetailsHero, { type MovieCollection } from "../components/DetailsHero";
 import DetailsTopCastSection from "../components/DetailsTopCastSection";
 import DetailsKeywordsSection from "../components/DetailsKeywordsSection";
 import DetailsWatchProvidersSection from "../components/DetailsWatchProvidersSection";
 import DetailsReviewsSection from "../components/DetailsReviewsSection";
 import DetailsRelatedSection from "../components/DetailsRelatedSection";
 import DetailsAlternativeTitlesSection from "../components/DetailsAlternativeTitlesSection";
-import { fetchTMDBGenres } from "../store/genresSlice";
 import DetailsNetworksSection from "../components/DetailsNetworksSection";
 
-type MediaDetail = MovieDetail | TvDetail;
-type MediaSummary = MovieSummary | TvSummary;
+import { fetchTMDBGenres } from "../store/genresSlice";
 
-type DetailWithLists = MediaDetail & {
-  similar?: { results: MediaSummary[] };
-  recommendations?: { results: MediaSummary[] };
+// ===== MOVIE TYPES (chính thức) =====
+import type {
+  TMDBMovieDetailsResponse,
+  TMDBMovieSummary,
+  TMDBMovieAccountStatesResponse,
+  TMDBMovieAlternativeTitlesResponse,
+  TMDBMovieChangesResponse,
+  TMDBMovieCreditsResponse,
+  TMDBMovieExternalIdsResponse,
+  TMDBMovieImagesResponse,
+  TMDBMovieKeywordsResponse,
+  TMDBMovieListsResponse,
+  TMDBMovieReleaseDatesResponse,
+  TMDBMovieReviewsResponse,
+  TMDBMovieTranslationsResponse,
+  TMDBMovieVideosResponse,
+  TMDBMovieWatchProvidersResponse,
+  TMDBMovieKeyword,
+  TMDBMovieAlternativeTitle,
+  TMDBMovieReview,
+  TMDBMovieVideo,
+  TMDBMovieSimilarResponse,
+  TMDBMovieRecommendationsResponse,
+  TMDBGenre,
+  TMDBProductionCompany,
+  TMDBMovieReleaseDatesByCountry,
+} from "../../../types/interface/movie";
+
+// ===== TV TYPES (chính thức) =====
+import type {
+  TMDBTvDetailsResponse,
+  TMDBTvAccountStatesResponse,
+  TMDBTvAggregateCreditsResponse,
+  TMDBTvAlternativeTitlesResponse,
+  TMDBTvChangesResponse,
+  TMDBTvContentRatingsResponse,
+  TMDBTvCreditsResponse,
+  TMDBTvEpisodeGroupsResponse,
+  TMDBTvExternalIdsResponse,
+  TMDBTvImagesResponse,
+  TMDBTvKeywordsResponse,
+  TMDBTvListsResponse,
+  TMDBTvRecommendationsResponse,
+  TMDBTvReviewsResponse,
+  TMDBTvScreenedTheatricallyResponse,
+  TMDBTvSimilarResponse,
+  TMDBTvTranslationsResponse,
+  TMDBTvVideosResponse,
+  TMDBTvWatchProvidersResponse,
+  TMDBTvKeyword,
+  TMDBTvAlternativeTitleItem,
+  TMDBTvReview,
+  TMDBTvVideoItem,
+  TMDBTvCast,
+  TMDBTvNetwork,
+  TMDBTvSimilarItem,
+  TMDBTvRecommendationItem,
+} from "../../../types/interface/tv";
+
+import type { TMDBWatchProviderRegion } from "../../../types/interface/tv"; // bạn đang dùng chung common ở file tv
+
+// =======================
+// Kiểu dùng trong trang
+// =======================
+
+type MovieDetailsWithAppend = TMDBMovieDetailsResponse & {
+  account_states?: TMDBMovieAccountStatesResponse;
+  alternative_titles?: TMDBMovieAlternativeTitlesResponse;
+  changes?: TMDBMovieChangesResponse;
+  credits?: TMDBMovieCreditsResponse;
+  external_ids?: TMDBMovieExternalIdsResponse;
+  images?: TMDBMovieImagesResponse;
+  keywords?: TMDBMovieKeywordsResponse;
+  lists?: TMDBMovieListsResponse;
+  release_dates?: TMDBMovieReleaseDatesResponse;
+  reviews?: TMDBMovieReviewsResponse;
+  translations?: TMDBMovieTranslationsResponse;
+  videos?: TMDBMovieVideosResponse;
+  "watch/providers"?: TMDBMovieWatchProvidersResponse;
+  similar?: TMDBMovieSimilarResponse;
+  recommendations?: TMDBMovieRecommendationsResponse;
 };
 
-type KeywordItem = { id: number; name: string };
-type AltTitleItem = { iso_3166_1: string; title: string };
-
-type WatchProviderItem = {
-  provider_id: number;
-  provider_name: string;
+type TvDetailsWithAppend = TMDBTvDetailsResponse & {
+  account_states?: TMDBTvAccountStatesResponse;
+  aggregate_credits?: TMDBTvAggregateCreditsResponse;
+  alternative_titles?: TMDBTvAlternativeTitlesResponse;
+  changes?: TMDBTvChangesResponse;
+  content_ratings?: TMDBTvContentRatingsResponse;
+  credits?: TMDBTvCreditsResponse;
+  episode_groups?: TMDBTvEpisodeGroupsResponse;
+  external_ids?: TMDBTvExternalIdsResponse;
+  images?: TMDBTvImagesResponse;
+  keywords?: TMDBTvKeywordsResponse;
+  lists?: TMDBTvListsResponse;
+  recommendations?: TMDBTvRecommendationsResponse;
+  reviews?: TMDBTvReviewsResponse;
+  screened_theatrically?: TMDBTvScreenedTheatricallyResponse;
+  similar?: TMDBTvSimilarResponse;
+  translations?: TMDBTvTranslationsResponse;
+  videos?: TMDBTvVideosResponse;
+  "watch/providers"?: TMDBTvWatchProvidersResponse;
 };
 
-type WatchProviderCountry = {
-  link?: string;
-  flatrate?: WatchProviderItem[];
-  rent?: WatchProviderItem[];
-  buy?: WatchProviderItem[];
+type MediaDetail = MovieDetailsWithAppend | TvDetailsWithAppend;
+
+// Card list (similar + recommendations)
+type MediaSummary =
+  | TMDBMovieSummary
+  | TMDBTvSimilarItem
+  | TMDBTvRecommendationItem;
+
+// Keyword / Alt titles / Reviews dùng union từ 2 phía
+type KeywordItem = TMDBMovieKeyword | TMDBTvKeyword;
+type AltTitleItem = TMDBMovieAlternativeTitle | TMDBTvAlternativeTitleItem;
+type ReviewItem = TMDBMovieReview | TMDBTvReview;
+type DetailVideoItem = TMDBMovieVideo | TMDBTvVideoItem;
+
+type ExternalIds = TMDBMovieExternalIdsResponse | TMDBTvExternalIdsResponse;
+
+type DetailsPageProps = {
+  mediaType?: "movie" | "tv";
 };
 
-type ReviewItem = {
-  id: string;
-  author: string;
-  content: string;
-  created_at: string;
-  author_details?: { rating?: number | null };
+export type DetailGenre = TMDBGenre;
+
+export type TvNetworkSummary = {
+  id: number;
+  name: string;
+  logo_path: string | null;
+  origin_country: string;
 };
 
-type ExternalIds = {
-  imdb_id?: string | null;
-  facebook_id?: string | null;
-  instagram_id?: string | null;
-  twitter_id?: string | null;
-};
-
-type CastItem = {
+type UnifiedCastItem = {
   adult: boolean;
   gender: number | null;
   id: number;
@@ -71,23 +161,10 @@ type CastItem = {
   original_name: string;
   popularity: number;
   profile_path: string | null;
-  cast_id: number;
+  cast_id?: number; // 👈 thêm vào, optional
   character: string;
   credit_id: string;
   order: number;
-};
-
-type DetailsPageProps = {
-  mediaType?: "movie" | "tv";
-};
-
-export type DetailGenre = { id: number; name: string };
-
-export type TvNetworkSummary = {
-  id: number;
-  name: string;
-  logo_path: string | null;
-  origin_country: string;
 };
 
 const TMDB_IMAGE = "https://image.tmdb.org/t/p";
@@ -137,6 +214,17 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     ].join(","),
   });
 
+  const isMovie = useCallback(
+    (d: MediaDetail): d is TMDBMovieDetailsResponse =>
+      "title" in d && "release_date" in d,
+    []
+  );
+
+  const isTv = useCallback(
+    (d: MediaDetail): d is TMDBTvDetailsResponse =>
+      "name" in d && "first_air_date" in d,
+    []
+  );
   const title = useMemo(() => {
     if (!data) return "";
     if ("title" in data) return data.title;
@@ -173,70 +261,135 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     if (!data) return "";
     const genres = "genres" in data ? data.genres : [];
     if (!genres?.length) return "";
-    return genres.map((g) => g.name).join(", ");
+    return genres.map((g: TMDBGenre) => g.name).join(", ");
   }, [data]);
 
   const runtimeText = useMemo(() => {
     if (!data) return "";
-    if ("runtime" in data && data.runtime) {
+
+    if (isMovie(data) && data.runtime) {
       const hours = Math.floor(data.runtime / 60);
       const mins = data.runtime % 60;
       return `${hours}h ${mins}m`;
     }
 
-    if ("episode_run_time" in data && data.episode_run_time?.length) {
+    if (isTv(data) && data.episode_run_time?.length) {
       const m = data.episode_run_time[0];
       return `${m}m / episode`;
     }
     return "";
-  }, [data]);
+  }, [data, isMovie, isTv]);
 
   const rating = data?.vote_average ?? 0;
   const voteCount = data?.vote_count ?? 0;
   const userScore = Math.round(rating * 10);
-
   const tagline = data?.tagline ?? "";
 
-  const credits = data?.credits;
+  // ========================
+  // Credits, director/creator, writer
+  // ========================
+
+  const credits = data && "credits" in data ? data.credits : undefined;
 
   const directorOrCreator = useMemo(() => {
     if (!data) return "";
-    if (resolvedMediaType === "movie") {
-      const crew = credits?.crew ?? [];
+
+    if (isMovie(data)) {
+      const mCredits = data.credits as TMDBMovieCreditsResponse | undefined;
+      const crew = mCredits?.crew ?? [];
       const directors = crew.filter((c) => c.job === "Director");
       if (!directors.length) return "";
       return directors.map((d) => d.name).join(", ");
-    } else {
-      const tvData = data as TvDetail;
-      const createdBy = tvData.created_by ?? [];
+    }
+
+    if (isTv(data)) {
+      const createdBy = data.created_by ?? [];
       if (!createdBy.length) return "";
       return createdBy.map((c) => c.name).join(", ");
     }
-  }, [credits, data, resolvedMediaType]);
+
+    return "";
+  }, [data, isMovie, isTv]);
 
   const writer = useMemo(() => {
-    const crew = credits?.crew ?? [];
+    if (!data) return "";
+    const anyCredits = credits as
+      | TMDBMovieCreditsResponse
+      | TMDBTvCreditsResponse
+      | undefined;
+    const crew = anyCredits?.crew ?? [];
     const writers = crew.filter(
       (c) => c.job === "Writer" || c.job === "Screenplay"
     );
     if (!writers.length) return "";
     return writers.map((w) => w.name).join(", ");
-  }, [credits]);
+  }, [credits, data]);
 
-  const starCast = useMemo<CastItem[]>(() => {
-    return (credits?.cast ?? []) as CastItem[];
-  }, [credits]);
-
-  // Videos
-  const videos = useMemo<MovieVideoItem[]>(() => {
+  const starCast = useMemo<UnifiedCastItem[]>(() => {
     if (!data) return [];
-    const anyData = data;
-    if (!anyData.videos || !anyData.videos.results) return [];
-    const raw = (anyData.videos as MovieVideosResponse).results ?? [];
-    return raw;
-  }, [data]);
 
-  const trailer = useMemo<MovieVideoItem | null>(() => {
+    if (isMovie(data)) {
+      const mCredits = data.credits as TMDBMovieCreditsResponse | undefined;
+      const cast = mCredits?.cast ?? [];
+      return cast.map((c) => ({
+        adult: c.adult,
+        gender: c.gender ?? null,
+        id: c.id,
+        known_for_department: c.known_for_department,
+        name: c.name,
+        original_name: c.original_name,
+        popularity: c.popularity,
+        profile_path: c.profile_path ?? null,
+        cast_id: c.cast_id,
+        character: c.character,
+        credit_id: c.credit_id,
+        order: c.order,
+      }));
+    }
+
+    if (isTv(data)) {
+      const tvCredits = data.credits as TMDBTvCreditsResponse | undefined;
+      const cast = tvCredits?.cast ?? [];
+      return cast.map((c: TMDBTvCast) => ({
+        adult: c.adult,
+        gender: c.gender ?? null,
+        id: c.id,
+        known_for_department: c.known_for_department,
+        name: c.name,
+        original_name: c.original_name,
+        popularity: c.popularity,
+        profile_path: c.profile_path ?? null,
+        cast_id: undefined,
+        character: c.character,
+        credit_id: c.credit_id,
+        order: c.order,
+      }));
+    }
+
+    return [];
+  }, [data, isMovie, isTv]);
+
+  // ========================
+  // VIDEOS (Movie + TV)
+  // ========================
+
+  const videos = useMemo<DetailVideoItem[]>(() => {
+    if (!data) return [];
+
+    if (isMovie(data)) {
+      const v = data.videos as TMDBMovieVideosResponse | undefined;
+      return v?.results ?? [];
+    }
+
+    if (isTv(data)) {
+      const v = data.videos as TMDBTvVideosResponse | undefined;
+      return v?.results ?? [];
+    }
+
+    return [];
+  }, [data, isMovie, isTv]);
+
+  const trailer = useMemo<DetailVideoItem | null>(() => {
     if (!videos.length) return null;
 
     const officialTrailer = videos.find(
@@ -258,80 +411,210 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return anyYoutube ?? null;
   }, [videos]);
 
-  // Similar & recommendations
-  const detailWithLists = (data ?? undefined) as DetailWithLists | undefined;
-  const similarList = detailWithLists?.similar?.results ?? [];
-  const recommendationList = detailWithLists?.recommendations?.results ?? [];
+  // ========================
+  // Similar & Recommendations
+  // ========================
+
+  const similarList: MediaSummary[] = useMemo(() => {
+    if (!data) return [];
+
+    if (isMovie(data)) {
+      const s = data.similar as TMDBMovieSimilarResponse | undefined;
+      return (s?.results ?? []) as MediaSummary[];
+    }
+
+    if (isTv(data)) {
+      const s = data.similar as TMDBTvSimilarResponse | undefined;
+      return (s?.results ?? []) as MediaSummary[];
+    }
+
+    return [];
+  }, [data, isMovie, isTv]);
+
+  const recommendationList: MediaSummary[] = useMemo(() => {
+    if (!data) return [];
+
+    if (isMovie(data)) {
+      const r = data.recommendations as
+        | TMDBMovieRecommendationsResponse
+        | undefined;
+      return (r?.results ?? []) as MediaSummary[];
+    }
+
+    if (isTv(data)) {
+      const r = data.recommendations as
+        | TMDBTvRecommendationsResponse
+        | undefined;
+      return (r?.results ?? []) as MediaSummary[];
+    }
+
+    return [];
+  }, [data, isMovie, isTv]);
+
+  // ========================
+  // Certification (Movie)
+  // ========================
 
   const certification = useMemo(() => {
-    if (!data || resolvedMediaType !== "movie") return "";
-    const movieData = data as MovieDetail;
-    const results = movieData.release_dates?.results ?? [];
+    if (!data || !isMovie(data)) return "";
+    const movieData = data as MovieDetailsWithAppend;
+    const rd = movieData.release_dates as
+      | TMDBMovieReleaseDatesResponse
+      | undefined;
+    const results = rd?.results ?? [];
     if (!results.length) return "";
 
-    const preferred =
+    const preferred: TMDBMovieReleaseDatesByCountry | undefined =
       results.find((r) => r.iso_3166_1 === "US") ||
       results.find((r) => r.iso_3166_1 === "VN") ||
       results[0];
 
+    if (!preferred) return "";
     const rel = preferred.release_dates.find((r) => r.certification);
     return rel?.certification ?? "";
-  }, [data, resolvedMediaType]);
+  }, [data, isMovie]);
+
+  // ========================
+  // Keywords
+  // ========================
 
   const keywords = useMemo<KeywordItem[]>(() => {
-    if (!data?.keywords) return [];
-    const raw = (data.keywords as { keywords?: KeywordItem[] }).keywords ?? [];
-    return raw;
-  }, [data]);
-
-  const alternativeTitles = useMemo<AltTitleItem[]>(() => {
-    if (!data?.alternative_titles) return [];
-    const raw =
-      (
-        data.alternative_titles as {
-          titles?: AltTitleItem[];
-        }
-      ).titles ?? [];
-    return raw;
-  }, [data]);
-
-  const watchProviders = useMemo<
-    Record<string, WatchProviderCountry> | undefined
-  >(() => {
-    if (!data?.["watch/providers"]) return undefined;
-    return data["watch/providers"].results as Record<
-      string,
-      WatchProviderCountry
-    >;
-  }, [data]);
-
-  const reviews = useMemo<ReviewItem[]>(() => {
-    if (!data?.reviews) return [];
-    const raw = (data.reviews as { results?: ReviewItem[] }).results ?? [];
-    return raw;
-  }, [data]);
-
-  const externalIds = useMemo<ExternalIds | undefined>(() => {
-    if (!data?.external_ids) return undefined;
-    return data.external_ids as ExternalIds;
-  }, [data]);
-
-  const movieCollection = useMemo(() => {
-    if (!data || resolvedMediaType !== "movie") return null;
-    const movieData = data as MovieDetail;
-    return movieData.belongs_to_collection ?? null;
-  }, [data, resolvedMediaType]);
-
-  const productionCompanies = useMemo(() => {
     if (!data) return [];
 
+    if (isMovie(data)) {
+      const k = data.keywords as TMDBMovieKeywordsResponse | undefined;
+      return (k?.keywords ?? []) as KeywordItem[];
+    }
+
+    if (isTv(data)) {
+      const k = data.keywords as TMDBTvKeywordsResponse | undefined;
+      return (k?.results ?? []) as KeywordItem[];
+    }
+
+    return [];
+  }, [data, isMovie, isTv]);
+
+  // ========================
+  // Alternative titles
+  // ========================
+
+  const alternativeTitles = useMemo<AltTitleItem[]>(() => {
+    if (!data) return [];
+
+    if (isMovie(data)) {
+      const alt = data.alternative_titles as
+        | TMDBMovieAlternativeTitlesResponse
+        | undefined;
+      return (alt?.titles ?? []) as AltTitleItem[];
+    }
+
+    if (isTv(data)) {
+      const alt = data.alternative_titles as
+        | TMDBTvAlternativeTitlesResponse
+        | undefined;
+      return (alt?.results ?? []) as AltTitleItem[];
+    }
+
+    return [];
+  }, [data, isMovie, isTv]);
+
+  // ========================
+  // Watch providers (Movie + TV)
+  // ========================
+
+  const watchProviders = useMemo<
+    Record<string, TMDBWatchProviderRegion> | undefined
+  >(() => {
+    if (!data) return undefined;
+
+    if (isMovie(data)) {
+      const wp = data["watch/providers"] as
+        | TMDBMovieWatchProvidersResponse
+        | undefined;
+      return wp?.results;
+    }
+
+    if (isTv(data)) {
+      const wp = data["watch/providers"] as
+        | TMDBTvWatchProvidersResponse
+        | undefined;
+      return wp?.results;
+    }
+
+    return undefined;
+  }, [data, isMovie, isTv]);
+
+  // ========================
+  // Reviews
+  // ========================
+
+  const reviews = useMemo<ReviewItem[]>(() => {
+    if (!data) return [];
+
+    if (isMovie(data)) {
+      const r = data.reviews as TMDBMovieReviewsResponse | undefined;
+      return (r?.results ?? []) as ReviewItem[];
+    }
+
+    if (isTv(data)) {
+      const r = data.reviews as TMDBTvReviewsResponse | undefined;
+      return (r?.results ?? []) as ReviewItem[];
+    }
+
+    return [];
+  }, [data, isMovie, isTv]);
+
+  // ========================
+  // External IDs
+  // ========================
+
+  const externalIds = useMemo<ExternalIds | undefined>(() => {
+    if (!data) return undefined;
+
+    if (isMovie(data)) {
+      return data.external_ids as TMDBMovieExternalIdsResponse | undefined;
+    }
+
+    if (isTv(data)) {
+      return data.external_ids as TMDBTvExternalIdsResponse | undefined;
+    }
+
+    return undefined;
+  }, [data, isMovie, isTv]);
+
+  // ========================
+  // Collection (Movie)
+  // ========================
+
+  const movieCollection = useMemo<MovieCollection>(() => {
+    if (!data || resolvedMediaType !== "movie") return null;
+
+    // kiểu chi tiết của movie (có belongs_to_collection)
+    const movieData = data as MovieDetailsWithAppend;
+
+    // TMDB thực tế trả object, nhưng type bạn đang để là string nên cần cast
+    const raw = movieData.belongs_to_collection as unknown as {
+      id: number;
+      name: string;
+      poster_path?: string | null;
+      backdrop_path?: string | null;
+    } | null;
+
+    return raw ?? null;
+  }, [data, resolvedMediaType]);
+
+  // ========================
+  // Production companies & genres
+  // ========================
+
+  const productionCompanies = useMemo<TMDBProductionCompany[]>(() => {
+    if (!data) return [];
     if (
       "production_companies" in data &&
       Array.isArray(data.production_companies)
     ) {
-      return data.production_companies;
+      return data.production_companies as TMDBProductionCompany[];
     }
-
     return [];
   }, [data]);
 
@@ -341,14 +624,27 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return data.genres as DetailGenre[];
   }, [data]);
 
-  const tvNetworks = useMemo<TvNetworkSummary[]>(() => {
-    if (!data || resolvedMediaType !== "tv") return [];
+  // ========================
+  // TV Networks (chỉ TV)
+  // ========================
 
-    const tvData = data as TvDetail;
+  const tvNetworks = useMemo<TvNetworkSummary[]>(() => {
+    if (!data || !isTv(data)) return [];
+
+    const tvData = data as TvDetailsWithAppend;
     if (!Array.isArray(tvData.networks)) return [];
 
-    return tvData.networks as TvNetworkSummary[];
-  }, [data, resolvedMediaType]);
+    return tvData.networks.map((n: TMDBTvNetwork) => ({
+      id: n.id,
+      name: n.name,
+      logo_path: n.logo_path,
+      origin_country: n.origin_country,
+    }));
+  }, [data, isTv]);
+
+  // ========================
+  // Loading / Error
+  // ========================
 
   if (loading || !data) {
     return (
@@ -366,13 +662,17 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     );
   }
 
+  // ========================
+  // RENDER
+  // ========================
+
   return (
     <section className="w-full">
       {/* Top hero */}
       <DetailsHero
         imageURL={imageURL}
         posterPath={posterPath}
-        backdropPath={backdropPath} // thêm dòng này
+        backdropPath={backdropPath}
         title={title}
         originalTitle={originalTitle}
         tagline={tagline}
@@ -411,7 +711,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
           <DetailsTopCastSection starCast={starCast} imageURL={imageURL} />
         )}
 
-        {/* Networks (chỉ có cho TV show) */}
+        {/* Networks (TV only) */}
         {resolvedMediaType === "tv" && tvNetworks.length > 0 && (
           <DetailsNetworksSection networks={tvNetworks} imageURL={TMDB_IMAGE} />
         )}

@@ -1,25 +1,16 @@
 // src/module/home/components/LatestTrailersSection.tsx (ví dụ đường dẫn)
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { MovieSummary } from "../../movies/database/interface/movie";
-import type { TvSummary } from "../../movies/database/interface/tv";
+import type { TMDBMovieSummary } from "../../../types/interface/movie";
 
-type TrailerItem = MovieSummary | TvSummary;
+type TrailerItem = TMDBMovieSummary;
 
 interface LatestTrailersSectionProps {
-  popular?: TrailerItem[];
-  inTheaters?: TrailerItem[];
-  onPlay?: (item: TrailerItem) => void;
+  popular?: TMDBMovieSummary[];
+  inTheaters?: TMDBMovieSummary[];
+  onPlay?: (item: TMDBMovieSummary) => void;
 }
 
 const IMAGE_BASE = "https://image.tmdb.org/t/p/original";
-
-function isMovie(item: TrailerItem): item is MovieSummary {
-  return (item as MovieSummary).title !== undefined;
-}
-
-function isTv(item: TrailerItem): item is TvSummary {
-  return (item as TvSummary).name !== undefined;
-}
 
 const LatestTrailersSection = ({
   popular,
@@ -48,15 +39,11 @@ const LatestTrailersSection = ({
   const activeBackdrop = hoverBackdrop ?? defaultBackdrop;
 
   const getTitle = (item: TrailerItem): string => {
-    if (isMovie(item)) return item.title;
-    if (isTv(item)) return item.name;
-    return "Untitled";
+    return item.title || "Untitled";
   };
 
   const getSubTitle = (item: TrailerItem): string => {
-    if (isMovie(item)) return item.release_date ?? "";
-    if (isTv(item)) return item.first_air_date ?? "";
-    return "";
+    return item.release_date ?? "";
   };
 
   // ===== Tabs indicator refs + style (auto fit theo button) =====
@@ -91,7 +78,7 @@ const LatestTrailersSection = ({
   if (!popularItems.length && !inTheatersItems.length) return null;
 
   return (
-    <section className="mt-10">
+    <section className="mt-8 md:mt-10">
       <div className="relative overflow-hidden rounded-3xl bg-neutral-950">
         {/* Backdrop full width */}
         <div
@@ -108,9 +95,9 @@ const LatestTrailersSection = ({
 
         {/* Nội dung canh theo container để thẳng hàng Trending / Now Playing */}
         <div className="relative">
-          <div className="container mx-auto px-4 py-6 md:px-8 md:py-8">
+          <div className="container mx-auto px-3 py-5 sm:px-4 sm:py-6 md:px-8 md:py-8">
             {/* Header */}
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2 sm:gap-3">
               <div>
                 <h2 className="flex items-center gap-2 text-lg md:text-2xl font-semibold tracking-tight text-white">
                   <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-red-500" />
@@ -122,7 +109,7 @@ const LatestTrailersSection = ({
               </div>
 
               {/* Tabs: Popular / In Theaters */}
-              <div className="relative flex items-center gap-1 rounded-full bg-black/40 p-1 text-xs md:text-sm">
+              <div className="relative flex items-center gap-1 rounded-full bg-black/40 p-1 text-[11px] sm:text-xs md:text-sm">
                 {/* Thanh highlight trượt mượt + gradient đỏ → vàng */}
                 <div
                   className="absolute top-1 bottom-1 rounded-full bg-linear-to-r from-red-500 via-orange-500 to-yellow-400 shadow-lg transition-all duration-300 ease-out"
@@ -177,12 +164,12 @@ const LatestTrailersSection = ({
             {/* Slider cards */}
             {items.length ? (
               <div
-                className=" overflow-x-auto px-4 pb-2 
-                  [&::-webkit-scrollbar]:h-2
-                  [&::-webkit-scrollbar-track]:bg-black/40
-                  [&::-webkit-scrollbar-thumb]:bg-neutral-600/90
-                  [&::-webkit-scrollbar-thumb]:rounded-full
-                "
+                className=" -mx-3 sm:mx-0 overflow-x-auto px-3 sm:px-4 pb-3
+                            [&::-webkit-scrollbar]:h-1.5
+                            [&::-webkit-scrollbar-track]:bg-neutral-900/80
+                            [&::-webkit-scrollbar-thumb]:bg-neutral-700
+                            [&::-webkit-scrollbar-thumb]:rounded-full
+                          "
               >
                 <div className="flex min-w-fit gap-4 md:gap-6">
                   {items.slice(0, 10).map((item) => (
@@ -196,7 +183,7 @@ const LatestTrailersSection = ({
                       }
                       onMouseLeave={() => setHoverBackdrop(null)}
                       onClick={() => onPlay?.(item)}
-                      className="group relative flex w-[190px] shrink-0 flex-col md:w-[260px] lg:w-[300px] focus:outline-none"
+                      className="group relative flex w-[170px] sm:w-[190px] md:w-60 lg:w-[280px] shrink-0 flex-col focus:outline-none"
                     >
                       <div className="relative overflow-hidden rounded-2xl bg-neutral-900 shadow-lg">
                         <div className="relative pb-[56.25%]">
@@ -230,10 +217,10 @@ const LatestTrailersSection = ({
                       </div>
 
                       <div className="mt-3 text-left">
-                        <p className="line-clamp-2 text-sm font-semibold text-white md:text-base">
+                        <p className="line-clamp-2 text-xs sm:text-sm font-semibold text-white md:text-base">
                           {getTitle(item)}
                         </p>
-                        <p className="mt-1 text-[11px] text-neutral-200 md:text-xs">
+                        <p className="mt-1 text-[10px] sm:text-[11px] text-neutral-200 md:text-xs">
                           {getSubTitle(item)}
                         </p>
                       </div>

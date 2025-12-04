@@ -1,18 +1,12 @@
-// src/components/common/Card.tsx
 import moment from "moment";
 import { Link } from "react-router-dom";
-import type { MediaType } from "../../module/movies/database/interface/tmdb";
 import type {
-  MovieSummary,
-  MovieDetail,
-} from "../../module/movies/database/interface/movie";
-import type {
-  TvSummary,
-  TvDetail,
-} from "../../module/movies/database/interface/tv";
+  MediaType,
+  TMDBMediaBase,
+} from "../../module/movies/database/interface/movieLists";
 import { useAppSelector } from "../../hooks/UseCustomeRedux";
 
-type CardMovie = MovieSummary | MovieDetail | TvSummary | TvDetail;
+type CardMovie = TMDBMediaBase;
 
 interface CardProps {
   data: CardMovie;
@@ -42,9 +36,9 @@ const Card = ({ data, trending, index, media_type = "movie" }: CardProps) => {
   return (
     <Link
       to={detailPath}
-      className="w-40 shrink-0 cursor-pointer transform hover:scale-105 transition-transform duration-200"
+      className="w-28 xs:w-32 sm:w-36 md:w-40 shrink-0 cursor-pointer transform hover:scale-105 transition-transform duration-200"
     >
-      <div className="relative w-full h-60 bg-neutral-800 rounded-lg overflow-hidden">
+      <div className="relative w-full h-44 xs:h-52 sm:h-56 md:h-60 bg-neutral-800 rounded-lg overflow-hidden">
         {poster ? (
           <img
             src={imageURL + poster}
@@ -65,12 +59,14 @@ const Card = ({ data, trending, index, media_type = "movie" }: CardProps) => {
       </div>
 
       <div className="mt-2 space-y-1">
-        <h2 className="text-sm font-semibold line-clamp-2">{title}</h2>
-        <div className="text-xs text-neutral-500">
+        <h2 className="text-xs sm:text-sm font-semibold line-clamp-2">
+          {title}
+        </h2>
+        <div className="text-[10px] sm:text-xs text-neutral-500">
           <p>{date ? moment(date).format("MMMM Do YYYY") : "Unknown date"}</p>
         </div>
         <div className="flex">
-          <p className="bg-amber-900 px-1 rounded-full text-[11px] text-white">
+          <p className="bg-amber-900 px-1 rounded-full text-[10px] sm:text-[11px] text-white">
             Rating: {Number(data.vote_average ?? 0).toFixed(1)}
           </p>
         </div>

@@ -3,11 +3,11 @@ import React, { useEffect, useMemo } from "react";
 import gsap from "gsap";
 import { useNavigate } from "react-router-dom";
 
-import type { MovieSummary } from "../../../module/movies/database/interface/movie";
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
+import type { TMDBMovieSummary } from "../../../types/interface/movie";
 
 interface BannerHomeProps {
-  data?: MovieSummary[];
+  data?: TMDBMovieSummary[];
 }
 
 interface Slide {
@@ -20,12 +20,13 @@ interface Slide {
 }
 
 // Gom hết field có thể có của movie/tv để khỏi dùng any
-interface MovieWithOptionalFields extends Partial<MovieSummary> {
+// 🔁 SỬA: extend từ TMDBMovieSummary mới
+interface MovieWithOptionalFields extends Partial<TMDBMovieSummary> {
   id?: number;
   backdrop_path?: string;
   poster_path?: string;
   title?: string;
-  name?: string;
+  name?: string; // giữ lại để phòng khi dùng với TV / multi
   original_title?: string;
   original_name?: string;
   overview?: string;
@@ -229,8 +230,9 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
 
     // 👉 GẮN CLICK CHO NÚT "Xem chi tiết phim" TRONG CARD NHỎ
     {
-      const cardDetailButtons =
-        demoCardsEl.querySelectorAll(".card-content .discover");
+      const cardDetailButtons = demoCardsEl.querySelectorAll(
+        ".card-content .discover"
+      );
       cardDetailButtons.forEach((btn, index) => {
         btn.addEventListener("click", () => {
           const slide = slides[index];
@@ -257,9 +259,10 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
     let offsetTop = 200;
     let offsetLeft = 700;
 
-    // card nhỏ
-    const cardWidth = 130;
-    const cardHeight = 200;
+    // card nhỏ: responsive theo kích thước màn hình
+    const isMobile = window.innerWidth < 768;
+    const cardWidth = isMobile ? 110 : 130;
+    const cardHeight = isMobile ? 170 : 200;
     const gap = 16;
     const numberSize = 50;
     const ease = "sine.inOut";
@@ -569,7 +572,7 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
 
   // layout hero full màn hình
   return (
-    <div className="relative h-screen w-full bg-black text-white overflow-hidden font-sans">
+    <div className="relative min-h-[520px] md:h-screen w-full bg-black text-white overflow-hidden font-sans">
       {/* thanh vàng chạy trên đầu */}
       <div className="indicator fixed left-0 right-0 top-0 h-[5px] bg-[#ecad29] z-40" />
 
@@ -632,8 +635,7 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
           </div>
         </div>
 
-        {/* pagination + progress + slide numbers
-            👉 CỐ ĐỊNH GÓC DƯỚI BÊN TRÁI CỦA HERO (bên trong #demo) */}
+        {/* pagination + progress + slide numbers */}
         <div
           id="pagination"
           className="pagination absolute left-4 md:left-6 bottom-4 md:bottom-6 inline-flex items-center gap-4 md:gap-5 z-80 pointer-events-auto"

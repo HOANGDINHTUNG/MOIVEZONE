@@ -3,17 +3,12 @@ import { useCallback, useEffect, useMemo, useState, type JSX } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosTMDB from "../../../app/axiosTMDB";
 import Card from "../../../components/common/Card";
+import type { TMDBMovieSummary } from "../../../types/interface/movie";
+import type { TMDBTvSummary } from "../../movies/database/interface/tvList";
+import type { TMDBPaginatedResponse } from "../../movies/database/interface/movieLists";
 
-import type { TMDBListResponse } from "../../movies/database/interface/tmdb";
-import type { MovieSummary } from "../../movies/database/interface/movie";
-import type { TvSummary } from "../../movies/database/interface/tv";
-
-// KHÔNG import ảnh từ public nữa
-// Ảnh đang ở: public/assets/img/bg.jpg
-// import bgImg from "../../../../public/assets/img/bg.png";
-
-type SearchMovieItem = MovieSummary & { media_type: "movie" };
-type SearchTvItem = TvSummary & { media_type: "tv" };
+type SearchMovieItem = TMDBMovieSummary & { media_type: "movie" };
+type SearchTvItem = TMDBTvSummary & { media_type: "tv" };
 
 interface SearchPersonItem {
   id: number;
@@ -50,85 +45,83 @@ const SearchPage = () => {
   }, []);
 
   // ✅ Hàm fetch: lấy N page từ TMDB, lọc chỉ movie+tv, rồi mới phân trang ở client
-  const fetchAllResults = useCallback(
-    async () => {
-      const trimmed = query.trim();
-      if (!trimmed) {
-        clearResults();
-        return;
-      }
+  const fetchAllResults = useCallback(async () => {
+    const trimmed = query.trim();
+    if (!trimmed) {
+      clearResults();
+      return;
+    }
 
-      try {
-        setLoading(true);
+    try {
+      setLoading(true);
 
-        // ---- 1. Gọi page 1 trước ----
-        const firstRes = await axiosTMDB.get<TMDBListResponse<SearchMultiItem>>(
-          "/search/multi",
-          {
-            params: {
-              query: trimmed,
-              page: 1,
-              include_adult: false,
-            },
-          }
-        );
+      // ---- 1. Gọi page 1 trước ----
+      const firstRes = await axiosTMDB.get<
+        TMDBPaginatedResponse<SearchMultiItem>
+      >("/search/multi", {
+        params: {
+          query: trimmed,
+          page: 1,
+          include_adult: false,
+        },
+      });
 
-        const totalPagesFromApi = firstRes.data.total_pages;
+      const totalPagesFromApi = firstRes.data.total_pages;
 
-        // Giới hạn số page gọi từ TMDB, tránh gọi quá nhiều
-        const maxApiPages = Math.min(totalPagesFromApi, 5); // lấy tối đa 5 page TMDB
+      // Giới hạn số page gọi từ TMDB, tránh gọi quá nhiều
+      const maxApiPages = Math.min(totalPagesFromApi, 5); // lấy tối đa 5 page TMDB
 
-        const responses: TMDBListResponse<SearchMultiItem>[] = [firstRes.data];
+      const responses: TMDBPaginatedResponse<SearchMultiItem>[] = [
+        firstRes.data,
+      ];
 
-        // ---- 2. Gọi thêm các page 2..maxApiPages ----
-        if (maxApiPages > 1) {
-          const promises = [];
-          for (let p = 2; p <= maxApiPages; p++) {
-            promises.push(
-              axiosTMDB.get<TMDBListResponse<SearchMultiItem>>(
-                "/search/multi",
-                {
-                  params: {
-                    query: trimmed,
-                    page: p,
-                    include_adult: false,
-                  },
-                }
-              )
-            );
-          }
-
-          const moreRes = await Promise.all(promises);
-          moreRes.forEach((r) => responses.push(r.data));
+      // ---- 2. Gọi thêm các page 2..maxApiPages ----
+      if (maxApiPages > 1) {
+        const promises = [];
+        for (let p = 2; p <= maxApiPages; p++) {
+          promises.push(
+            axiosTMDB.get<TMDBPaginatedResponse<SearchMultiItem>>(
+              "/search/multi",
+              {
+                params: {
+                  query: trimmed,
+                  page: p,
+                  include_adult: false,
+                },
+              }
+            )
+          );
         }
 
-        // ---- 3. Gộp tất cả results, chỉ giữ movie + tv ----
-        const mergedMoviesAndTv: CardMovie[] = [];
-        for (const data of responses) {
-          for (const item of data.results) {
-            if (item.media_type === "movie" || item.media_type === "tv") {
-              mergedMoviesAndTv.push(item as CardMovie);
-            }
+        const moreRes = await Promise.all(promises);
+        moreRes.forEach((r) => responses.push(r.data));
+      }
+
+      // ---- 3. Gộp tất cả results, chỉ giữ movie + tv ----
+      const mergedMoviesAndTv: CardMovie[] = [];
+      for (const data of responses) {
+        for (const item of data.results) {
+          if (item.media_type === "movie" || item.media_type === "tv") {
+            mergedMoviesAndTv.push(item as CardMovie);
           }
         }
-
-        // ---- 4. Cập nhật state cho client pagination ----
-        setAllResults(mergedMoviesAndTv);
-        setPage(1);
-        setTotalPages(
-          mergedMoviesAndTv.length === 0
-            ? 0
-            : Math.ceil(mergedMoviesAndTv.length / ITEMS_PER_PAGE)
-        );
-      } catch (error) {
-        console.error("SearchPage error:", error);
-        clearResults();
-      } finally {
-        setLoading(false);
       }
-    },
-    [query, clearResults]
-  );
+
+      // ---- 4. Cập nhật state cho client pagination ----
+      setAllResults(mergedMoviesAndTv);
+      setPage(1);
+      setTotalPages(
+        mergedMoviesAndTv.length === 0
+          ? 0
+          : Math.ceil(mergedMoviesAndTv.length / ITEMS_PER_PAGE)
+      );
+    } catch (error) {
+      console.error("SearchPage error:", error);
+      clearResults();
+    } finally {
+      setLoading(false);
+    }
+  }, [query, clearResults]);
 
   useEffect(() => {
     fetchAllResults();
@@ -206,8 +199,8 @@ const SearchPage = () => {
         {/* Lớp tối mờ để chữ dễ đọc */}
         <div className="pointer-events-none absolute inset-0 z-1 bg-linear-to-b from-black/40 via-black/20 to-black/90" />
 
-        <div className="mx-auto flex max-w-6xl flex-col items-center px-4 pt-28 pb-16 text-center md:pt-32 md:pb-20">
-          <h1 className="max-w-3xl text-3xl font-black leading-tight tracking-tight drop-shadow md:text-5xl z-2">
+        <div className="mx-auto flex max-w-6xl flex-col items-center px-3 sm:px-4 pt-24 pb-14 text-center md:pt-32 md:pb-20">
+          <h1 className="max-w-3xl text-2xl sm:text-3xl md:text-5xl font-black leading-tight tracking-tight drop-shadow z-2">
             Phim, series không giới hạn
             <br className="hidden md:block" /> và nhiều nội dung khác
           </h1>
@@ -221,7 +214,7 @@ const SearchPage = () => {
           </p>
 
           {/* ô search + nút kiểu Netflix */}
-          <div className="mt-6 flex w-full flex-col items-center gap-3 md:flex-row md:justify-center z-2">
+          <div className="mt-5 flex w-full flex-col items-center gap-3 sm:gap-4 md:flex-row md:justify-center z-2">
             <div className="w-full md:max-w-md">
               <div className="flex items-center overflow-hidden rounded-md border border-neutral-600/80 bg-black/70 shadow-[0_0_20px_rgba(0,0,0,0.8)]">
                 <input
@@ -251,8 +244,8 @@ const SearchPage = () => {
               {allResults.length > 0 && (
                 <>
                   {" "}
-                  · Trang {page}/{totalPages || 1} · Tổng{" "}
-                  {allResults.length} phim/TV
+                  · Trang {page}/{totalPages || 1} · Tổng {allResults.length}{" "}
+                  phim/TV
                 </>
               )}
             </p>
@@ -261,7 +254,7 @@ const SearchPage = () => {
       </section>
 
       {/* NỘI DUNG KẾT QUẢ */}
-      <div className="mx-auto max-w-6xl px-3 pb-12 pt-6 md:pt-8">
+      <div className="mx-auto max-w-6xl px-2 sm:px-3 pb-12 pt-6 md:pt-8">
         {/* chưa gõ gì */}
         {!hasQuery && (
           <div className="mt-10 flex flex-col items-center text-center text-sm text-neutral-400">
@@ -287,7 +280,7 @@ const SearchPage = () => {
         {/* GRID 5 PHIM 1 HÀNG (desktop), 20 phim / page */}
         {currentPageItems.length > 0 && (
           <div className="mt-3">
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
               {currentPageItems.map((item) => (
                 <Card
                   key={item.id + "search"}

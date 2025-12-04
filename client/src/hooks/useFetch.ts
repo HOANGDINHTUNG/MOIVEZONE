@@ -1,8 +1,8 @@
 // src/hooks/useFetch.ts
 import { useEffect, useState } from "react";
 import axiosTMDB from "../app/axiosTMDB";
-import type { TMDBListResponse } from "../module/movies/database/interface/tmdb";
 import { useAppSelector } from "./UseCustomeRedux";
+import type { TMDBListResponse } from "../module/movies/database/interface/movieLists";
 
 export function useFetch<T>(endpoint: string, extraParams?: Record<string, unknown>) {
   const [data, setData] = useState<T[]>([]);

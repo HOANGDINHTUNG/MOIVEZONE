@@ -18,17 +18,16 @@ type ProductionCompany = {
   origin_country?: string;
 };
 
-type MovieCollection = {
+export type MovieCollection = {
   id: number;
   name: string;
   poster_path?: string | null;
   backdrop_path?: string | null;
 } | null;
 
-type DetailsHeroProps = {
+export type DetailsHeroProps = {
   imageURL: string;
   posterPath: string | null;
-  /** 🆕 backdrop riêng để làm background */
   backdropPath: string | null;
 
   title: string;
@@ -112,25 +111,24 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
   }, [imageURL]);
 
   return (
-    <div className="relative w-full min-h-[60vh] overflow-hidden bg-neutral-900">
+    <div className="relative w-full min-h-[60vh] md:min-h-[70vh] overflow-hidden bg-neutral-900">
       {/* BACKDROP background */}
       {backdropPath && (
         <div className="absolute inset-0">
           <img
             src={hiResBase + backdropPath}
             alt={title}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover object-center md:object-top"
           />
           {/* overlay sáng hơn */}
           <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/40 to-black/40" />
-
         </div>
       )}
 
       {/* CONTENT */}
-      <div className="relative z-10 max-w-6xl mx-auto flex flex-col gap-6 p-4 md:flex-row md:p-6 lg:p-10">
+      <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-5 px-3 py-5 sm:px-4 sm:py-6 md:flex-row md:gap-6 md:px-6 md:py-8 lg:px-10 lg:py-10">
         {/* Poster */}
-        <div className="w-full md:w-1/3 lg:w-1/4">
+        <div className="w-full max-w-[260px] self-center sm:self-auto sm:max-w-none md:w-1/3 lg:w-1/4">
           <div className="w-full rounded-xl bg-neutral-900/80 shadow-[0_20px_45px_rgba(0,0,0,0.75)] ring-1 ring-white/5 overflow-hidden aspect-2/3">
             {posterPath ? (
               <img
@@ -147,10 +145,10 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
         </div>
 
         {/* Main info */}
-        <div className="w-full md:flex-1 space-y-4 text-neutral-50">
+        <div className="mt-4 w-full space-y-4 text-neutral-50 md:mt-0 md:flex-1">
           {/* Title */}
           <div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-snug drop-shadow-lg">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-snug drop-shadow-lg">
               {title}
             </h1>
             {originalTitle && originalTitle !== title && (
@@ -207,7 +205,7 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
 
           {/* Genres chips */}
           {currentGenres.length > 0 && (
-            <div className="flex flex-wrap gap-2 text-[11px] md:text-xs mt-1">
+            <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] sm:gap-2 md:text-xs">
               {currentGenres.map((g) => {
                 const mapped = activeGenreMap[g.id];
                 const displayName = mapped?.name || g.name || `#${g.id}`;
@@ -232,7 +230,7 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
           )}
 
           {/* User Score + actions */}
-          <div className="flex flex-wrap items-center gap-4 mt-2 text-sm">
+          <div className="mt-3 flex flex-wrap items-center gap-3 text-xs sm:text-sm">
             {/* USER SCORE */}
             {voteCount > 0 && (
               <div className="flex items-center gap-2">
@@ -261,7 +259,7 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
               <button
                 type="button"
                 onClick={onOpenTrailer}
-                className="flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-xs md:text-sm font-semibold text-white shadow-lg shadow-red-900/50 hover:bg-red-500 hover:shadow-red-700/70 transition"
+                className="flex items-center gap-2 rounded-full bg-red-600 px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm font-semibold text-white shadow-lg shadow-red-900/50 hover:bg-red-500 hover:shadow-red-700/70 transition"
               >
                 <span className="text-base">▶</span>
                 <span>Play Trailer</span>
@@ -271,7 +269,7 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
             {/* What's your vibe */}
             <button
               type="button"
-              className="flex items-center gap-2 rounded-full bg-sky-900/80 px-3 py-2 text-[11px] md:text-xs text-sky-50 hover:bg-sky-700 transition border border-sky-500/40"
+              className="flex items-center gap-2 rounded-full bg-sky-900/80 px-2.5 py-1.5 text-[11px] sm:px-3 sm:py-2 sm:text-xs text-sky-50 hover:bg-sky-700 transition border border-sky-500/40"
             >
               <span className="text-base">😍</span>
               <span>What's your vibe?</span>
@@ -281,7 +279,7 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
             <button
               type="button"
               onClick={onToggleLike}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-black/60 hover:bg-black/80 border border-white/10 transition"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-black/60 hover:bg-black/80 border border-white/10 transition sm:h-10 sm:w-10"
               aria-label="Add to favorites"
             >
               <svg
@@ -316,7 +314,7 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
           )}
 
           {/* Crew */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs md:text-sm text-neutral-200">
+          <div className="grid grid-cols-1 gap-1.5 text-xs text-neutral-200 sm:grid-cols-2 md:text-sm">
             {directorOrCreator && (
               <p>
                 <span className="font-semibold">
@@ -336,7 +334,7 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
           {externalIds && (
             <>
               <Divider />
-              <div className="flex flex-wrap gap-2 text-xs mt-1">
+              <div className="mt-2 flex flex-wrap gap-2 text-[11px] sm:text-xs">
                 {externalIds.imdb_id && (
                   <a
                     href={`https://www.imdb.com/title/${externalIds.imdb_id}`}
@@ -395,12 +393,9 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
                       key={c.id}
                       to={`/company/${c.id}`}
                       className="
-                        inline-flex items-center gap-2 px-2 py-1 rounded-full
-                        bg-black/50
-                        hover:bg-black/70
-                        text-xs text-neutral-100
-                        border border-white/10
-                        transition-colors
+                        inline-flex items-center gap-2 rounded-full border border-white/10
+                        bg-black/50 px-2.5 py-1 text-[11px] text-neutral-100 transition-colors
+                        hover:bg-black/70 sm:text-xs
                       "
                     >
                       {c.logo_path && (
