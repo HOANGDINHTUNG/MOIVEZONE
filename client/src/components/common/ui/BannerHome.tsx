@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { useNavigate } from "react-router-dom";
 
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
-import type { TMDBMovieSummary } from "../../../types/interface/movie";
+import type { TMDBMovieSummary } from "../../../module/movies/database/interface/movie";
 
 interface BannerHomeProps {
   data?: TMDBMovieSummary[];

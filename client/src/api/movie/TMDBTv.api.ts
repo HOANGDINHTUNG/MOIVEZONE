@@ -22,7 +22,7 @@ import type {
   TMDBTvVideosResponse,
   TMDBTvWatchProvidersResponse,
   TMDBLatestTvResponse,
-} from "../../types/interface/tv";
+} from "../../module/movies/database/interface/tv";
 
 import type {
   TMDBTvAiringTodayResponse,

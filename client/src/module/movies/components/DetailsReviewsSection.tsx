@@ -1,4 +1,3 @@
-// src/module/movies/components/DetailsReviewsSection.tsx
 import { Link } from "react-router-dom";
 
 type ReviewItem = {

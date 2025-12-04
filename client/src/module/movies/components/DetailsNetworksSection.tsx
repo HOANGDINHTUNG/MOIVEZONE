@@ -1,4 +1,3 @@
-// src/module/movies/components/DetailsNetworksSection.tsx
 import { Link } from "react-router-dom";
 import type { TvNetworkSummary } from "../pages/MoiveDetailsPage";
 import Divider from "../../../components/common/ux/Divider";

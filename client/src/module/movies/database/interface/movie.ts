@@ -1,148 +1,329 @@
-// export interface Genre {
-//   id: number;
-//   name: string;
-// }
+// ===== Common =====
+export interface TMDBPaginatedResponse<T> {
+  page: number;
+  results: T[];
+  total_pages: number;
+  total_results: number;
+}
 
-// export interface BelongsToCollection {
-//   id: number;
-//   name: string;
-//   poster_path: string | null;
-//   backdrop_path: string | null;
-// }
+export interface TMDBGenre {
+  id: number;
+  name: string;
+}
 
-// export interface ProductionCompany {
-//   id: number;
-//   logo_path: string | null;
-//   name: string;
-//   origin_country: string;
-// }
+export interface TMDBProductionCompany {
+  id: number;
+  logo_path: string;
+  name: string;
+  origin_country: string;
+}
 
-// export interface ProductionCountry {
-//   iso_3166_1: string;
-//   name: string;
-// }
+export interface TMDBProductionCountry {
+  iso_3166_1: string;
+  name: string;
+}
 
-// export interface SpokenLanguage {
-//   english_name: string;
-//   iso_639_1: string;
-//   name: string;
-// }
+export interface TMDBSpokenLanguage {
+  english_name: string;
+  iso_639_1: string;
+  name: string;
+}
 
-// import type { AccountStates } from "../../../../types/interface/movies/account_states";
-// // ==== Import các module chi tiết theo từng endpoint ====
+// ===== Details: GET /movie/{movie_id} =====
+export interface TMDBMovieDetailsResponse {
+  adult: boolean;
+  backdrop_path: string;
+  belongs_to_collection: string; // docs ghi string
+  budget: number;
+  genres: TMDBGenre[];
+  homepage: string;
+  id: number;
+  imdb_id: string;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
 
-// import type { AlternativeTitles } from "../../../../types/interface/movies/alternative_titles";
-// import type { MovieChanges } from "../../../../types/interface/movies/changes";
-// import type { MovieCreditsResponse } from "../../../../types/interface/movies/credits";
-// import type { ExternalIDs } from "../../../../types/interface/movies/external_ids";
-// import type { MovieImages } from "../../../../types/interface/movies/images";
-// import type { MovieKeywords } from "../../../../types/interface/movies/keywords";
-// import type { MovieListsResponse } from "../../../../types/interface/movies/list";
-// import type { WatchProvidersResponse } from "../../../../types/interface/movies/providers";
-// import type { MovieReleaseDatesResponse } from "../../../../types/interface/movies/release_dates";
-// import type { MovieReviewsResponse } from "../../../../types/interface/movies/reviews";
-// import type { MovieTranslationsResponse } from "../../../../types/interface/movies/translations";
-// import type { MovieVideosResponse } from "../../../../types/interface/movies/videos";
+  production_companies: TMDBProductionCompany[];
+  production_countries: TMDBProductionCountry[];
 
-// // ==== MovieDetail: dữ liệu chi tiết của một phim ====
+  release_date: string;
+  revenue: number;
+  runtime: number;
 
-// export interface MovieDetail {
-//   // Phần core
-//   adult: boolean;
-//   backdrop_path: string | null;
-//   belongs_to_collection: BelongsToCollection | null;
+  spoken_languages: TMDBSpokenLanguage[];
 
-//   budget: number;
-//   genres: Genre[];
-//   homepage: string | null;
-//   id: number;
-//   imdb_id: string | null;
-//   original_language: string;
-//   original_title: string;
-//   overview: string | null;
-//   popularity: number;
-//   poster_path: string | null;
+  status: string;
+  tagline: string;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+}
 
-//   production_companies: ProductionCompany[];
-//   production_countries: ProductionCountry[];
+// ===== Similar: GET /movie/{movie_id}/similar =====
+export interface TMDBMovieSummary {
+  adult: boolean;
+  backdrop_path: string | null;
+  genre_ids: number[];
+  id: number;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string | null;
+  release_date: string;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+}
 
-//   release_date: string;
-//   revenue: number;
-//   runtime: number | null;
+export type TMDBMovieSimilarResponse = TMDBPaginatedResponse<TMDBMovieSummary>;
 
-//   spoken_languages: SpokenLanguage[];
+// ===== Account states: GET /movie/{movie_id}/account_states =====
+export interface TMDBMovieAccountStatesResponse {
+  id: number;
+  favorite: boolean;
+  rated: {
+    value: number;
+  };
+  watchlist: boolean;
+}
 
-//   status: string;
-//   tagline: string | null;
-//   title: string;
-//   video: boolean;
-//   vote_average: number;
-//   vote_count: number;
+// ===== Alternative titles: GET /movie/{movie_id}/alternative_titles =====
+export interface TMDBMovieAlternativeTitle {
+  iso_3166_1: string;
+  title: string;
+  type: string;
+}
 
-//   // ==== Phần “append_to_response” – các endpoint con ====
-//   // Tất cả đều optional vì chỉ có nếu bạn append_to_response khi call API
+export interface TMDBMovieAlternativeTitlesResponse {
+  id: number;
+  titles: TMDBMovieAlternativeTitle[];
+}
 
-//   /** /movie/{id}/account_states */
-//   account_states?: AccountStates;
+// ===== Changes: GET /movie/{movie_id}/changes =====
+export interface TMDBMovieChangeItemValue {
+  id: string;
+  action: string;
+  time: string;
+  iso_639_1: string;
+  iso_3166_1: string;
+  value: Record<string, unknown>;
 
-//   /** /movie/{id}/alternative_titles */
-//   alternative_titles?: AlternativeTitles;
+  // docs có example value.poster.file_path
+  // bạn có thể narrow ở nơi dùng nếu cần.
+}
 
-//   /** /movie/{id}/changes */
-//   changes?: MovieChanges;
+export interface TMDBMovieChangeItem {
+  key: string;
+  items: TMDBMovieChangeItemValue[];
+}
 
-//   /** /movie/{id}/credits */
-//   credits?: MovieCreditsResponse;
+export interface TMDBMovieChangesResponse {
+  changes: TMDBMovieChangeItem[];
+}
 
-//   /** /movie/{id}/external_ids */
-//   external_ids?: ExternalIDs;
+// ===== Credits: GET /movie/{movie_id}/credits =====
+export interface TMDBMovieCast {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
 
-//   /** /movie/{id}/images */
-//   images?: MovieImages;
+  cast_id: number;
+  character: string;
+  credit_id: string;
+  order: number;
+}
 
-//   /** /movie/{id}/keywords */
-//   keywords?: MovieKeywords;
+export interface TMDBMovieCrew {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
 
-//   /** /movie/{id}/lists */
-//   lists?: MovieListsResponse;
+  credit_id: string;
+  department: string;
+  job: string;
+}
 
-//   /** /movie/{id}/watch/providers */
-//   "watch/providers"?: WatchProvidersResponse;
+export interface TMDBMovieCreditsResponse {
+  id: number;
+  cast: TMDBMovieCast[];
+  crew: TMDBMovieCrew[];
+}
 
-//   /** /movie/{id}/release_dates */
-//   release_dates?: MovieReleaseDatesResponse;
+// ===== External IDs: GET /movie/{movie_id}/external_ids =====
+export interface TMDBMovieExternalIdsResponse {
+  id: number;
+  imdb_id: string;
+  wikidata_id: string;
+  facebook_id: string;
+  instagram_id: string;
+  twitter_id: string;
+}
 
-//   /** /movie/{id}/reviews */
-//   reviews?: MovieReviewsResponse;
+// ===== Images: GET /movie/{movie_id}/images =====
+export interface TMDBMediaImage {
+  aspect_ratio: number;
+  height: number;
+  iso_639_1: string; // docs ghi string
+  file_path: string;
+  vote_average: number;
+  vote_count: number;
+  width: number;
+}
 
-//   /** /movie/{id}/translations */
-//   translations?: MovieTranslationsResponse;
+export interface TMDBMovieImagesResponse {
+  id: number;
+  backdrops: TMDBMediaImage[];
+  logos: TMDBMediaImage[];
+  posters: TMDBMediaImage[];
+}
 
-//   /** /movie/{id}/videos */
-//   videos?: MovieVideosResponse;
-// }
+// ===== Keywords: GET /movie/{movie_id}/keywords =====
+export interface TMDBMovieKeyword {
+  id: number;
+  name: string;
+}
 
-// // ==== Dạng “list item” dùng cho các API list: now_playing, popular,... ====
-// // Đây là kiểu tóm lược (summary) của Movie, dùng cho list + card
+export interface TMDBMovieKeywordsResponse {
+  id: number;
+  keywords: TMDBMovieKeyword[];
+}
 
-// export interface MovieSummary {
-//   id: number;
-//   title: string;
-//   original_title: string;
-//   overview: string | null;
+// ===== Latest: GET /movie/latest =====
+export type TMDBLatestMovieResponse = TMDBMovieDetailsResponse;
 
-//   poster_path: string | null;
-//   backdrop_path: string | null;
+// ===== Lists: GET /movie/{movie_id}/lists =====
+export interface TMDBListSummary {
+  description: string;
+  favorite_count: number;
+  id: number;
+  item_count: number;
+  iso_639_1: string;
+  list_type: string;
+  name: string;
+  poster_path: string;
+}
 
-//   release_date: string;
-//   original_language: string;
+export interface TMDBMovieListsResponse extends TMDBPaginatedResponse<TMDBListSummary> {
+  id: number;
+}
 
-//   popularity: number;
-//   vote_average: number;
-//   vote_count: number;
+// ===== Recommendations: GET /movie/{movie_id}/recommendations =====
+export type TMDBMovieRecommendationsResponse = TMDBPaginatedResponse<TMDBMovieSummary>;
 
-//   adult: boolean;
-//   video: boolean;
+// ===== Release dates: GET /movie/{movie_id}/release_dates =====
+export interface TMDBMovieReleaseDateItem {
+  certification: string;
+  descriptors: string[];
+  iso_639_1: string;
+  note: string;
+  release_date: string;
+  type: number;
+}
 
-//   genre_ids: number[];
-// }
+export interface TMDBMovieReleaseDatesByCountry {
+  iso_3166_1: string;
+  release_dates: TMDBMovieReleaseDateItem[];
+}
+
+export interface TMDBMovieReleaseDatesResponse {
+  id: number;
+  results: TMDBMovieReleaseDatesByCountry[];
+}
+
+// ===== Reviews: GET /movie/{movie_id}/reviews =====
+export interface TMDBReviewAuthorDetails {
+  name: string;
+  username: string;
+  avatar_path: string;
+  rating: string; // docs bạn paste ghi string
+}
+
+export interface TMDBMovieReview {
+  author: string;
+  author_details: TMDBReviewAuthorDetails;
+  content: string;
+  created_at: string;
+  id: string;
+  updated_at: string;
+  url: string;
+}
+
+export interface TMDBMovieReviewsResponse extends TMDBPaginatedResponse<TMDBMovieReview> {
+  id: number;
+}
+
+// ===== Translations: GET /movie/{movie_id}/translations =====
+export interface TMDBMovieTranslationData {
+  homepage: string;
+  overview: string;
+  runtime: number;
+  tagline: string;
+  title: string;
+}
+
+export interface TMDBMovieTranslation {
+  iso_3166_1: string;
+  iso_639_1: string;
+  name: string;
+  english_name: string;
+  data: TMDBMovieTranslationData;
+}
+
+export interface TMDBMovieTranslationsResponse {
+  id: number;
+  translations: TMDBMovieTranslation[];
+}
+
+// ===== Videos: GET /movie/{movie_id}/videos =====
+export interface TMDBMovieVideo {
+  iso_639_1: string;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: string;
+  size: number;
+  type: string;
+  official: boolean;
+  published_at: string;
+  id: string;
+}
+
+export interface TMDBMovieVideosResponse {
+  id: number;
+  results: TMDBMovieVideo[];
+}
+
+// ===== Watch providers: GET /movie/{movie_id}/watch/providers =====
+export interface TMDBWatchProvider {
+  logo_path: string;
+  provider_id: number;
+  provider_name: string;
+  display_priority: number;
+}
+
+export interface TMDBWatchProviderRegion {
+  link: string;
+  flatrate: TMDBWatchProvider[];
+  rent: TMDBWatchProvider[];
+  buy: TMDBWatchProvider[];
+}
+
+export interface TMDBMovieWatchProvidersResponse {
+  id: number;
+  results: Record<string, TMDBWatchProviderRegion>;
+}

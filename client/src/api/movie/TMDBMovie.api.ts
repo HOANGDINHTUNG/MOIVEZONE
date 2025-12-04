@@ -17,7 +17,7 @@ import type {
   TMDBMovieListsResponse,
   TMDBMovieTranslationsResponse,
   TMDBMovieWatchProvidersResponse,
-} from "../../types/interface/movie";
+} from "../../module/movies/database/interface/movie";
 
 import type {
   TMDBNowPlayingResponse,
@@ -60,15 +60,18 @@ export const tmdbMoviesApi = {
     return res.data;
   },
 
-    async getTopRated(
-      page = 1,
-      language: AppLanguage = defaultLanguage
-    ): Promise<TMDBTopRatedMoviesResponse> {
-      const res = await axiosTMDB.get<TMDBTopRatedMoviesResponse>("/movie/top_rated", {
+  async getTopRated(
+    page = 1,
+    language: AppLanguage = defaultLanguage
+  ): Promise<TMDBTopRatedMoviesResponse> {
+    const res = await axiosTMDB.get<TMDBTopRatedMoviesResponse>(
+      "/movie/top_rated",
+      {
         params: { page, language },
-      });
-      return res.data;
-    },
+      }
+    );
+    return res.data;
+  },
 
   async getUpcoming(
     page = 1,

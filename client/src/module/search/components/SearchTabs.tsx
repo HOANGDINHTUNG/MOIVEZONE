@@ -1,4 +1,3 @@
-// src/module/search/components/SearchTabs.tsx
 import type { SearchCategory } from "../../../api/movie/TMDBSearch.api";
 import clsx from "clsx";
 

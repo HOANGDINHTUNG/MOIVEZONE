@@ -1,5 +1,3 @@
-// src/module/movies/pages/AllMoviesPage.tsx
-
 import { useEffect, useState, type JSX } from "react";
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
 import Card from "../../../components/common/Card";

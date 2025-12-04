@@ -1,4 +1,3 @@
-// src/module/movies/components/TrendingTrailerHeader.tsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";

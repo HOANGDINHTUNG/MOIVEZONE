@@ -1,4 +1,3 @@
-
 export interface TMDBNetworkDetails {
   headquarters: string | null;
   homepage: string | null;
@@ -22,8 +21,8 @@ export interface TMDBNetworkLogo {
   aspect_ratio: number;
   file_path: string;
   height: number;
-  id: string;          // TMDB trả dạng string
-  file_type: string;   // "png" | "svg"
+  id: string; // TMDB trả dạng string
+  file_type: string; // "png" | "svg"
   vote_average: number;
   vote_count: number;
   width: number;

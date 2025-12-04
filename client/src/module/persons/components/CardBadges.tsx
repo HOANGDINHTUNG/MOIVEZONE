@@ -1,4 +1,3 @@
-// src/components/common/CardBadges.tsx
 import { memo } from "react";
 import type { CardMediaType } from "./Card";
 

@@ -1,4 +1,3 @@
-// src/module/reviews/components/ReviewContent.tsx
 import type { TMDBReviewDetails } from "../database/interface/review";
 
 interface ReviewContentProps {

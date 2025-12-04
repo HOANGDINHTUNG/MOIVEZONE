@@ -1,4 +1,3 @@
-// src/components/VideoPlay.tsx
 import { IoClose } from "react-icons/io5";
 import { createPortal } from "react-dom";
 

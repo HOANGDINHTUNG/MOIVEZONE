@@ -1,5 +1,3 @@
-// src/module/collections/components/CollectionHero.tsx
-
 import { useMemo } from "react";
 import type {
   TMDBCollectionDetailsResponse,

@@ -1,4 +1,3 @@
-// src/module/configuration/store/configurationSlice.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type {
   TMDBConfigurationResponse,

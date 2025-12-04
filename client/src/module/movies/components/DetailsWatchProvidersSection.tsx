@@ -1,4 +1,3 @@
-// src/pages/DetailsWatchProvidersSection.tsx
 import Divider from "../../../components/common/ux/Divider";
 
 type WatchProviderItem = {

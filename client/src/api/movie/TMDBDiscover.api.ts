@@ -4,8 +4,8 @@ import type {
   TMDBDiscoverTvResponse,
 } from "../../module/discovers/database/interface/discover";
 import type { AppLanguage } from "../../module/movies/store/languageSlice";
-import type { TMDBMovieListsResponse } from "../../types/interface/movie";
-import type { TMDBTvListsResponse } from "../../types/interface/tv";
+import type { TMDBMovieListsResponse } from "../../module/movies/database/interface/movie";
+import type { TMDBTvListsResponse } from "../../module/movies/database/interface/tv";
 
 export interface DiscoverMovieParams {
   page?: number;

@@ -3,11 +3,6 @@ import { Outlet } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./hooks/UseCustomeRedux";
 import { useEffect, useState } from "react";
 import axiosTMDB from "./app/axiosTMDB";
-import type {
-  TMDBConfigurationResponse,
-  TMDBListResponse,
-} from "./module/movies/database/interface/tmdb";
-import type { MovieSummary } from "./module/movies/database/interface/movie";
 import { setBannerData, setImageURL } from "./module/movies/store/moviesSlice";
 
 import Header from "./components/header/Header";
@@ -17,6 +12,9 @@ import ScrollToTop from "./components/common/ux/ScrollToTop";
 import { setPageLoading } from "./stores/appSlice";
 import PageLoader from "./components/common/ux/PageLoader";
 import SmoothScrollLayout from "./components/common/ux/SmoothScrollLayout";
+import type { TMDBListResponse } from "./module/movies/database/interface/movieLists";
+import type { TMDBConfigurationResponse } from "./module/configuration/database/interface/configuration";
+import type { TMDBMovieSummary } from "./module/movies/database/interface/movie";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -30,7 +28,7 @@ function App() {
     const fetchTrendingAndConfig = async () => {
       try {
         const [trendingRes, configRes] = await Promise.all([
-          axiosTMDB.get<TMDBListResponse<MovieSummary>>(
+          axiosTMDB.get<TMDBListResponse<TMDBMovieSummary>>(
             "/trending/movie/week",
             {
               params: { language },

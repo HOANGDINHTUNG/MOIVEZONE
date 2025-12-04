@@ -1,4 +1,3 @@
-// src/pages/DetailsHero.tsx
 import { Link } from "react-router-dom";
 import Divider from "../../../components/common/ux/Divider";
 import type { DetailGenre } from "../pages/MoiveDetailsPage";

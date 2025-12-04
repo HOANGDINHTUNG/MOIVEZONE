@@ -1,4 +1,3 @@
-// src/pages/DetailsPage.tsx
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import moment from "moment";
@@ -45,7 +44,7 @@ import type {
   TMDBGenre,
   TMDBProductionCompany,
   TMDBMovieReleaseDatesByCountry,
-} from "../../../types/interface/movie";
+} from "../database/interface/movie";
 
 // ===== TV TYPES (chính thức) =====
 import type {
@@ -76,9 +75,9 @@ import type {
   TMDBTvNetwork,
   TMDBTvSimilarItem,
   TMDBTvRecommendationItem,
-} from "../../../types/interface/tv";
+} from "../database/interface/tv";
 
-import type { TMDBWatchProviderRegion } from "../../../types/interface/tv"; // bạn đang dùng chung common ở file tv
+import type { TMDBWatchProviderRegion } from "../database/interface/tv"; // bạn đang dùng chung common ở file tv
 
 // =======================
 // Kiểu dùng trong trang

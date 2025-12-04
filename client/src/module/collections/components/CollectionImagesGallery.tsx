@@ -1,5 +1,3 @@
-// src/module/collections/components/CollectionImagesGallery.tsx
-
 import { useState, useMemo } from "react";
 import type { TMDBCollectionImagesResponse } from "../database/interface/collection";
 

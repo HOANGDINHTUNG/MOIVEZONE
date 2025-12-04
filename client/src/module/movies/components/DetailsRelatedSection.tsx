@@ -1,4 +1,3 @@
-// src/pages/DetailsRelatedSection.tsx
 import Divider from "../../../components/common/ux/Divider";
 import HorizontalScollCard from "../../../components/HorizontalScollCard";
 import type { TMDBMediaBase } from "../database/interface/movieLists";

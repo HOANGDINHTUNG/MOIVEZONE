@@ -1,4 +1,3 @@
-// src/module/search/store/searchSlice.ts
 import {
   createAsyncThunk,
   createSlice,

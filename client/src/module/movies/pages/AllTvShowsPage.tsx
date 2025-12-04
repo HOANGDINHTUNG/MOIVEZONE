@@ -1,5 +1,3 @@
-// src/module/movies/pages/AllTvShowsPage.tsx
-
 import { useEffect, useState, type JSX } from "react";
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
 
@@ -66,10 +64,7 @@ const AllTvShowsPage = () => {
 
       // --- Call page 1 ---
       if (totalFromApi === null || tmdbPage1 <= totalFromApi) {
-        const res1 = await tmdbDiscoverApi.discoverTvShows(
-          tmdbPage1,
-          language
-        );
+        const res1 = await tmdbDiscoverApi.discoverTvShows(tmdbPage1, language);
 
         // lần đầu: lấy total_pages từ API
         if (totalFromApi === null) {
@@ -83,10 +78,7 @@ const AllTvShowsPage = () => {
 
       // --- Call page 2 ---
       if (totalFromApi !== null && tmdbPage2 <= totalFromApi) {
-        const res2 = await tmdbDiscoverApi.discoverTvShows(
-          tmdbPage2,
-          language
-        );
+        const res2 = await tmdbDiscoverApi.discoverTvShows(tmdbPage2, language);
         page2Results = (res2.results ?? []) as unknown as UITvShow[];
       }
 

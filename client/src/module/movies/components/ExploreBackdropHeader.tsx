@@ -1,4 +1,3 @@
-// src/module/movies/components/ExploreBackdropHeader.tsx
 import { useEffect, useState } from "react";
 import type {
   TMDBListResponse,

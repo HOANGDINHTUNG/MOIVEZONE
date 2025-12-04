@@ -1,4 +1,3 @@
-// src/module/credits/pages/CreditDetailsPage.tsx
 import { useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks/UseCustomeRedux";

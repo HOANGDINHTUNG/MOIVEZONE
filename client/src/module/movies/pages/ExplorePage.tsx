@@ -1,4 +1,3 @@
-// src/module/movies/pages/ExplorePage.tsx
 import { useEffect, useState, type JSX } from "react";
 import { useParams } from "react-router-dom";
 
@@ -6,7 +5,7 @@ import axiosTMDB from "../../../app/axiosTMDB";
 import Card from "../../../components/common/Card";
 
 import ExploreBackdropHeader from "../components/ExploreBackdropHeader";
-import type { TMDBMovieSummary } from "../../../types/interface/movie";
+import type { TMDBMovieSummary } from "../database/interface/movie";
 import type { TMDBTvSummary } from "../database/interface/tvList";
 import type { TMDBListResponse } from "../database/interface/movieLists";
 

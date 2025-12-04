@@ -1,4 +1,3 @@
-// src/module/person/pages/PersonListPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { tmdbPersonApi } from "../../../api/movie/TMDBPerson.api";

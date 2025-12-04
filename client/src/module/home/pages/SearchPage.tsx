@@ -1,9 +1,8 @@
-// src/pages/SearchPage.tsx
 import { useCallback, useEffect, useMemo, useState, type JSX } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosTMDB from "../../../app/axiosTMDB";
 import Card from "../../../components/common/Card";
-import type { TMDBMovieSummary } from "../../../types/interface/movie";
+import type { TMDBMovieSummary } from "../../movies/database/interface/movie";
 import type { TMDBTvSummary } from "../../movies/database/interface/tvList";
 import type { TMDBPaginatedResponse } from "../../movies/database/interface/movieLists";
 

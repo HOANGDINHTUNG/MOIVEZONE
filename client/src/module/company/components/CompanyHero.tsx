@@ -1,5 +1,3 @@
-// src/module/companies/components/CompanyHero.tsx
-
 import type { TMDBCompanyDetailsResponse } from "../database/interface/company";
 
 interface CompanyHeroProps {

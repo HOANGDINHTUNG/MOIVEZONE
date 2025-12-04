@@ -1,4 +1,3 @@
-// src/module/reviews/store/reviewSlice.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { tmdbReviewApi } from "../../../api/movie/TMDBReview.api";
 import type { TMDBReviewDetails } from "../database/interface/review";

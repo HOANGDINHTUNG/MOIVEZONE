@@ -1,4 +1,3 @@
-// src/module/reviews/components/ReviewHero.tsx
 import { Link } from "react-router-dom";
 import type { TMDBReviewDetails } from "../database/interface/review";
 

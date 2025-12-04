@@ -1,4 +1,3 @@
-// src/stores/languageSlice.ts
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export type AppLanguage = "vi-VN" | "en-US";

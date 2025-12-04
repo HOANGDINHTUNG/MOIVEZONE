@@ -1,5 +1,3 @@
-// src/module/configuration/types/tmdbConfig.ts
-
 export interface TMDBImageConfig {
   base_url: string;
   secure_base_url: string;

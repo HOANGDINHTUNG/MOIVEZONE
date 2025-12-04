@@ -1,4 +1,3 @@
-// src/module/movies/store/moviesCategorySlice.ts
 import {
   createAsyncThunk,
   createSlice,

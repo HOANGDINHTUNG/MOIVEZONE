@@ -1,4 +1,3 @@
-// src/module/changes/pages/TMDBChangesPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/UseCustomeRedux";
 import type { TMDBChangeMediaType } from "../database/interface/changes";

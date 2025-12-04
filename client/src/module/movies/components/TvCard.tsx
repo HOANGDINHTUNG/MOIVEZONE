@@ -1,4 +1,3 @@
-// src/module/movies/components/TvCard.tsx
 import { useNavigate } from "react-router-dom";
 import type { TMDBTvSummary } from "../database/interface/tvList";
 

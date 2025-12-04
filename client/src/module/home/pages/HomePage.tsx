@@ -9,7 +9,7 @@ import LatestTrailersSection, {
 
 import VideoPlay from "../../../components/VideoPlay";
 import axiosTMDB from "../../../app/axiosTMDB";
-import type { TMDBMovieSummary } from "../../../types/interface/movie";
+import type { TMDBMovieSummary } from "../../movies/database/interface/movie";
 import type { TMDBTvSummary } from "../../movies/database/interface/tvList";
 import type { TMDBPaginatedResponse } from "../../movies/database/interface/movieLists";
 // TMDB video type đơn giản cho /videos

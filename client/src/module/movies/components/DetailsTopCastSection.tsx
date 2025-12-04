@@ -1,4 +1,3 @@
-// src/module/movies/components/DetailsTopCastSection.tsx
 import React, { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Divider from "../../../components/common/ux/Divider";

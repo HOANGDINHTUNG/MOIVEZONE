@@ -1,11 +1,3 @@
-// src/module/collections/interface/collection.ts
-
-/**
- * =========================
- *  COLLECTION DETAILS
- * =========================
- */
-
 export interface TMDBCollectionPart {
   adult: boolean;
   backdrop_path: string | null;
@@ -35,12 +27,6 @@ export interface TMDBCollectionDetailsResponse {
   parts: TMDBCollectionPart[]; // danh sách phim trong bộ sưu tập
 }
 
-/**
- * =========================
- *  COLLECTION IMAGES
- * =========================
- */
-
 export interface TMDBImage {
   aspect_ratio: number;
   height: number;
@@ -57,14 +43,6 @@ export interface TMDBCollectionImagesResponse {
   posters: TMDBImage[];
 }
 
-/**
- * =========================
- *  COLLECTION TRANSLATIONS
- * =========================
- */
-
-// data bên trong TMDB có thể thay đổi theo loại content,
-// nên để generic nhưng KHÔNG dùng any.
 export interface TMDBCollectionTranslationData {
   title?: string | null;
   overview?: string | null;

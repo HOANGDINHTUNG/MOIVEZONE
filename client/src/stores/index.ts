@@ -1,6 +1,5 @@
-// src/store/store.ts
 import { configureStore } from "@reduxjs/toolkit";
-import moviesReducer from "../module/movies/store/moviesSlice";
+import moviesReducer from "../module/movies/store/moviesSlice"
 import languageReducer from "../module/movies/store/languageSlice";
 import collectionReducer from "../module/collections/store/collectionSlice";
 import companyReducer from "../module/company/store/companySlice";

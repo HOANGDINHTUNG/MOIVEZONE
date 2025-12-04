@@ -1,4 +1,3 @@
-// src/components/common/Card.tsx
 import { memo, type MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlay, FaStar } from "react-icons/fa";

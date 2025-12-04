@@ -1,4 +1,3 @@
-// src/router/ProtectedRoute.tsx
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAppSelector } from "../hooks/UseCustomeRedux";
 

@@ -1,5 +1,3 @@
-// src/module/collections/components/SkeletonCollectionPage.tsx
-
 const SkeletonCollectionPage = () => {
   return (
     <div className="space-y-8 animate-pulse">

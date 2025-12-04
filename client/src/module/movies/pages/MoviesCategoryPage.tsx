@@ -1,4 +1,3 @@
-// src/module/movies/pages/MoviesCategoryPage.tsx
 import { useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/UseCustomeRedux";
 import { fetchMoviesCategories } from "../store/moviesCategorySlice";

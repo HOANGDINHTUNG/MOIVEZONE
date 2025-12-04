@@ -1,4 +1,3 @@
-// src/pages/DetailsKeywordsSection.tsx
 import Divider from "../../../components/common/ux/Divider";
 
 type KeywordItem = { id: number; name: string };

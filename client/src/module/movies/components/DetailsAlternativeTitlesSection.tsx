@@ -1,4 +1,3 @@
-// src/pages/DetailsAlternativeTitlesSection.tsx
 import Divider from "../../../components/common/ux/Divider";
 
 type AltTitleItem = { iso_3166_1: string; title: string };

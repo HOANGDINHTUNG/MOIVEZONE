@@ -1,4 +1,3 @@
-// src/pages/DetailsTrailerSection.tsx
 import Divider from "../../../components/common/ux/Divider";
 
 type TrailerInfo = {

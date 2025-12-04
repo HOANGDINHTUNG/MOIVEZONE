@@ -1,4 +1,3 @@
-// src/module/configuration/components/TimezonesSection.tsx
 import { useMemo, useState } from "react";
 import type { TMDBTimezone } from "../database/interface/configuration";
 

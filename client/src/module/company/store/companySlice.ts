@@ -1,5 +1,3 @@
-// src/module/companies/store/companySlice.ts
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "../../../stores";
 

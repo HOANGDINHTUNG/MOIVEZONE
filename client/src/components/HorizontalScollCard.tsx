@@ -1,10 +1,11 @@
-// src/components/HorizontalScollCard.tsx
-
 import { useRef } from "react";
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 
 import Card from "./common/Card";
-import type { MediaType, TMDBMediaBase } from "../module/movies/database/interface/movieLists";
+import type {
+  MediaType,
+  TMDBMediaBase,
+} from "../module/movies/database/interface/movieLists";
 
 // Card dùng kiểu media base chung
 type CardMovie = TMDBMediaBase;

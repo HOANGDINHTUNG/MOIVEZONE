@@ -1,4 +1,3 @@
-// src/module/reviews/pages/ReviewDetailsPage.tsx
 import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks/UseCustomeRedux";

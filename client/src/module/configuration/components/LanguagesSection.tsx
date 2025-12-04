@@ -1,4 +1,3 @@
-// src/module/configuration/components/LanguagesSection.tsx
 import { useMemo, useState } from "react";
 import type { TMDBLanguage } from "../database/interface/configuration";
 

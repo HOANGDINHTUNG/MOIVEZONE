@@ -1,4 +1,3 @@
-// src/components/common/CardImage.tsx
 import { memo } from "react";
 
 interface CardImageProps {

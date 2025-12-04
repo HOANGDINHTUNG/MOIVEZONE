@@ -1,4 +1,3 @@
-// src/module/movies/components/MovieCard.tsx
 import { useNavigate } from "react-router-dom";
 import type { TMDBMovieListItem } from "../database/interface/movieLists";
 

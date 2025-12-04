@@ -1,4 +1,3 @@
-// src/module/person/components/PersonCard.tsx
 import { Link } from "react-router-dom";
 import type {
   TMDBPersonSummary,

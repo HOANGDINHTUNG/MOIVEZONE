@@ -1,5 +1,3 @@
-// src/module/collections/components/CollectionPartsList.tsx
-
 import { Link } from "react-router-dom";
 import moment from "moment";
 import type { TMDBCollectionPart } from "../database/interface/collection";

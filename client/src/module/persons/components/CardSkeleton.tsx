@@ -1,4 +1,3 @@
-// src/components/common/CardSkeleton.tsx
 const CardSkeleton = () => {
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-neutral-800/80 bg-neutral-900/80">

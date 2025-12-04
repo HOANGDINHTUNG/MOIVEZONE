@@ -1,4 +1,3 @@
-// src/module/search/pages/SearchPage.tsx
 import { useCallback, useEffect, useMemo, useState, type JSX } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks/UseCustomeRedux";

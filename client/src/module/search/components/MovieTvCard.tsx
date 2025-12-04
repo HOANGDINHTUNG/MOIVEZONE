@@ -1,4 +1,3 @@
-// src/module/search/components/MovieTvCard.tsx
 import type {
   TMDBSearchMovieItem,
   TMDBSearchTvItem,

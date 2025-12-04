@@ -1,6 +1,5 @@
-// src/module/home/components/LatestTrailersSection.tsx (ví dụ đường dẫn)
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { TMDBMovieSummary } from "../../../types/interface/movie";
+import type { TMDBMovieSummary } from "../../movies/database/interface/movie";
 
 type TrailerItem = TMDBMovieSummary;
 

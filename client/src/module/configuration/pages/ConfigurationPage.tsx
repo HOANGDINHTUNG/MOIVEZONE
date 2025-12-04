@@ -1,4 +1,3 @@
-// src/module/configuration/pages/ConfigurationPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/UseCustomeRedux";
 import {

@@ -1,5 +1,3 @@
-// src/module/collections/store/collectionSlice.ts
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "../../../stores";
 import {

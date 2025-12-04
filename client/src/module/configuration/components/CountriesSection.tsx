@@ -1,4 +1,3 @@
-// src/module/configuration/components/CountriesSection.tsx
 import { useMemo, useState } from "react";
 import type { TMDBCountry } from "../database/interface/configuration";
 

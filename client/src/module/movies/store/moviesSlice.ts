@@ -1,5 +1,3 @@
-// src/module/movies/store/moviesSlice.ts
-
 import {
   createAsyncThunk,
   createSlice,
@@ -11,12 +9,12 @@ import type { RootState } from "../../../stores";
 import type {
   TMDBMovieSummary,
   TMDBMovieDetailsResponse,
-} from "../../../types/interface/movie";
+} from "../database/interface/movie";
 
-import type { TMDBTvDetailsResponse } from "../../../types/interface/tv";
 import type { TMDBTvSummary } from "../database/interface/tvList";
 import { tmdbMoviesApi } from "../../../api/movie/TMDBMovie.api";
 import { tmdbTvApi } from "../../../api/movie/TMDBTv.api";
+import type { TMDBTvDetailsResponse } from "../database/interface/tv";
 
 // ================== STATE TYPE ==================
 
@@ -138,7 +136,6 @@ export const fetchOnTheAirTvShows = createAsyncThunk<
   const res = await tmdbTvApi.getOnTheAirTv(1, language);
   return res.results as TMDBTvSummary[];
 });
-
 
 // ================== SLICE ==================
 
