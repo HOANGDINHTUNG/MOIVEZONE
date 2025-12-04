@@ -17,17 +17,33 @@ const DetailsTrailerSection: React.FC<DetailsTrailerSectionProps> = ({
   return (
     <>
       <Divider />
-      <div className="mt-4" id="trailer">
+      <section className="mt-4" id="trailer">
         <h2 className="font-semibold mb-1 text-sm md:text-base">Trailer</h2>
-        <p className="text-xs text-neutral-400 mb-2">{trailer.name}</p>
+
+        {/* Tên trailer – responsive text */}
+        <p className="text-xs md:text-sm text-neutral-400 mb-2">
+          {trailer.name}
+        </p>
+
+        {/* Nút xem trailer – responsive size + hiệu ứng */}
         <button
           type="button"
           onClick={onOpenTrailer}
-          className="px-4 py-2 text-sm rounded bg-red-600 text-white hover:bg-red-700 transition"
+          className="
+            flex items-center gap-2
+            px-4 py-2
+            text-xs md:text-sm font-semibold
+            rounded-full bg-red-600
+            text-white shadow-md shadow-red-900/40
+            transition-all
+            hover:bg-red-500 hover:shadow-red-700/60
+            active:scale-[0.97]
+          "
         >
-          ▶ Xem trailer
+          <span className="text-base md:text-lg">▶</span>
+          <span>▶ Xem trailer</span>
         </button>
-      </div>
+      </section>
     </>
   );
 };

@@ -5,31 +5,39 @@ import {
   createSlice,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import { tmdbApi } from "../../../api/movie/TMDB.api";
-import type { MovieDetail, MovieSummary } from "../database/interface/movie";
-import type { TvDetail, TvSummary } from "../database/interface/tv";
 import type { RootState } from "../../../stores";
+
+// ====== TMDB TYPES MỚI ======
+import type {
+  TMDBMovieSummary,
+  TMDBMovieDetailsResponse,
+} from "../../../types/interface/movie";
+
+import type { TMDBTvDetailsResponse } from "../../../types/interface/tv";
+import type { TMDBTvSummary } from "../database/interface/tvList";
+import { tmdbMoviesApi } from "../../../api/movie/TMDBMovie.api";
+import { tmdbTvApi } from "../../../api/movie/TMDBTv.api";
 
 // ================== STATE TYPE ==================
 
 export interface MoviesState {
   // Config & banner
   imageURL: string;
-  bannerData: MovieSummary[];
+  bannerData: TMDBMovieSummary[];
 
   // Movie lists (home)
-  nowPlaying: MovieSummary[];
-  upcoming: MovieSummary[];
-  popular: MovieSummary[];
-  topRated: MovieSummary[];
+  nowPlaying: TMDBMovieSummary[];
+  upcoming: TMDBMovieSummary[];
+  popular: TMDBMovieSummary[];
+  topRated: TMDBMovieSummary[];
 
   // TV lists (home)
-  popularTv: TvSummary[];
-  onTheAirTv: TvSummary[];
+  popularTv: TMDBTvSummary[];
+  onTheAirTv: TMDBTvSummary[];
 
   // Detail
-  selectedMovie: MovieDetail | null;
-  selectedTv: TvDetail | null;
+  selectedMovie: TMDBMovieDetailsResponse | null;
+  selectedTv: TMDBTvDetailsResponse | null;
 
   // Loading / error
   loadingBanner: boolean;
@@ -70,87 +78,67 @@ const getLanguage = (state: RootState) => state.language.current;
 
 // Movie list
 export const fetchNowPlayingMovies = createAsyncThunk<
-  MovieSummary[],
+  TMDBMovieSummary[],
   void,
   { state: RootState }
 >("movies/fetchNowPlayingMovies", async (_unused, { getState }) => {
   const language = getLanguage(getState());
-  const res = await tmdbApi.getNowPlaying(1, language);
-  return res.results;
+  const res = await tmdbMoviesApi.getNowPlaying(1, language); // 👈 bỏ generic
+  return res.results; // TMDBNowPlayingResponse.results => TMDBMovieSummary[]
 });
 
 export const fetchUpcomingMovies = createAsyncThunk<
-  MovieSummary[],
+  TMDBMovieSummary[],
   void,
   { state: RootState }
 >("movies/fetchUpcomingMovies", async (_unused, { getState }) => {
   const language = getLanguage(getState());
-  const res = await tmdbApi.getUpcoming(1, language);
+  const res = await tmdbMoviesApi.getUpcoming(1, language); // 👈 bỏ generic
   return res.results;
 });
 
 export const fetchPopularMovies = createAsyncThunk<
-  MovieSummary[],
+  TMDBMovieSummary[],
   void,
   { state: RootState }
 >("movies/fetchPopularMovies", async (_unused, { getState }) => {
   const language = getLanguage(getState());
-  const res = await tmdbApi.getPopular(1, language);
+  const res = await tmdbMoviesApi.getPopular(1, language); // 👈 bỏ generic
   return res.results;
 });
 
 export const fetchTopRatedMovies = createAsyncThunk<
-  MovieSummary[],
+  TMDBMovieSummary[],
   void,
   { state: RootState }
 >("movies/fetchTopRatedMovies", async (_unused, { getState }) => {
   const language = getLanguage(getState());
-  const res = await tmdbApi.getTopRated(1, language);
+  const res = await tmdbMoviesApi.getTopRated(1, language); // 👈 bỏ generic
   return res.results;
 });
 
 // TV list
 export const fetchPopularTvShows = createAsyncThunk<
-  TvSummary[],
+  TMDBTvSummary[],
   void,
   { state: RootState }
 >("movies/fetchPopularTvShows", async (_unused, { getState }) => {
   const language = getLanguage(getState());
-  const res = await tmdbApi.getPopularTv(1, language);
-  return res.results;
+  const res = await tmdbTvApi.getPopularTv(1, language);
+  // giả sử getPopularTv đã trả TMDBPaginatedResponse<TMDBTvSummary>
+  return res.results as TMDBTvSummary[];
 });
 
 export const fetchOnTheAirTvShows = createAsyncThunk<
-  TvSummary[],
+  TMDBTvSummary[],
   void,
   { state: RootState }
 >("movies/fetchOnTheAirTvShows", async (_unused, { getState }) => {
   const language = getLanguage(getState());
-  const res = await tmdbApi.getOnTheAirTv(1, language);
-  return res.results;
+  const res = await tmdbTvApi.getOnTheAirTv(1, language);
+  return res.results as TMDBTvSummary[];
 });
 
-// Movie detail
-export const fetchMovieDetailById = createAsyncThunk<
-  MovieDetail,
-  number,
-  { state: RootState }
->("movies/fetchMovieDetailById", async (id, { getState }) => {
-  const language = getLanguage(getState());
-  const res = await tmdbApi.getMovieDetail(id, language);
-  return res;
-});
-
-// TV detail
-export const fetchTvDetailById = createAsyncThunk<
-  TvDetail,
-  number,
-  { state: RootState }
->("movies/fetchTvDetailById", async (id, { getState }) => {
-  const language = getLanguage(getState());
-  const res = await tmdbApi.getTvDetail(id, language);
-  return res;
-});
 
 // ================== SLICE ==================
 
@@ -164,7 +152,7 @@ const moviesSlice = createSlice({
     },
 
     // Dữ liệu banner (trending movie) – App.tsx sẽ dispatch
-    setBannerData(state, action: PayloadAction<MovieSummary[]>) {
+    setBannerData(state, action: PayloadAction<TMDBMovieSummary[]>) {
       state.bannerData = action.payload;
     },
 
@@ -271,38 +259,38 @@ const moviesSlice = createSlice({
           action.error.message ?? "Failed to load on-the-air tv shows";
       });
 
-    // ===== MOVIE DETAIL =====
-    builder
-      .addCase(fetchMovieDetailById.pending, (state) => {
-        state.loadingDetail = true;
-        state.errorDetail = null;
-        state.selectedMovie = null;
-      })
-      .addCase(fetchMovieDetailById.fulfilled, (state, action) => {
-        state.loadingDetail = false;
-        state.selectedMovie = action.payload;
-      })
-      .addCase(fetchMovieDetailById.rejected, (state, action) => {
-        state.loadingDetail = false;
-        state.errorDetail =
-          action.error.message ?? "Failed to load movie detail";
-      });
+    // // ===== MOVIE DETAIL =====
+    // builder
+    //   .addCase(fetchMovieDetailById.pending, (state) => {
+    //     state.loadingDetail = true;
+    //     state.errorDetail = null;
+    //     state.selectedMovie = null;
+    //   })
+    //   .addCase(fetchMovieDetailById.fulfilled, (state, action) => {
+    //     state.loadingDetail = false;
+    //     state.selectedMovie = action.payload;
+    //   })
+    //   .addCase(fetchMovieDetailById.rejected, (state, action) => {
+    //     state.loadingDetail = false;
+    //     state.errorDetail =
+    //       action.error.message ?? "Failed to load movie detail";
+    //   });
 
-    // ===== TV DETAIL =====
-    builder
-      .addCase(fetchTvDetailById.pending, (state) => {
-        state.loadingDetail = true;
-        state.errorDetail = null;
-        state.selectedTv = null;
-      })
-      .addCase(fetchTvDetailById.fulfilled, (state, action) => {
-        state.loadingDetail = false;
-        state.selectedTv = action.payload;
-      })
-      .addCase(fetchTvDetailById.rejected, (state, action) => {
-        state.loadingDetail = false;
-        state.errorDetail = action.error.message ?? "Failed to load tv detail";
-      });
+    // // ===== TV DETAIL =====
+    // builder
+    //   .addCase(fetchTvDetailById.pending, (state) => {
+    //     state.loadingDetail = true;
+    //     state.errorDetail = null;
+    //     state.selectedTv = null;
+    //   })
+    //   .addCase(fetchTvDetailById.fulfilled, (state, action) => {
+    //     state.loadingDetail = false;
+    //     state.selectedTv = action.payload;
+    //   })
+    //   .addCase(fetchTvDetailById.rejected, (state, action) => {
+    //     state.loadingDetail = false;
+    //     state.errorDetail = action.error.message ?? "Failed to load tv detail";
+    //   });
   },
 });
 

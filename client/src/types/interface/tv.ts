@@ -1,11 +1,6 @@
-// src/module/tv/interface/tv.ts
-
-/**
- * ===================================================================
- *  COMMON
- * ===================================================================
- */
-
+// ======================
+// Common (reuse from Movie)
+// ======================
 export interface TMDBPaginatedResponse<T> {
   page: number;
   results: T[];
@@ -13,134 +8,176 @@ export interface TMDBPaginatedResponse<T> {
   total_results: number;
 }
 
-/**
- * ===================================================================
- *  TV DETAILS  (GET /tv/{series_id})
- * ===================================================================
- */
-
-export interface TMDBTvCreator {
-  id: number;
-  credit_id: string;
-  name: string;
-  gender: number;
-  profile_path: string | null;
-}
-
-export interface TMDBTvGenre {
+export interface TMDBGenre {
   id: number;
   name: string;
 }
 
-export interface TMDBTvNetwork {
+export interface TMDBProductionCompany {
   id: number;
-  logo_path: string | null;
+  logo_path: string;
   name: string;
   origin_country: string;
 }
 
-export interface TMDBTvProductionCompany {
-  id: number;
-  logo_path: string | null;
-  name: string;
-  origin_country: string;
-}
-
-export interface TMDBTvProductionCountry {
+export interface TMDBProductionCountry {
   iso_3166_1: string;
   name: string;
 }
 
-export interface TMDBTvSpokenLanguage {
+export interface TMDBSpokenLanguage {
   english_name: string;
   iso_639_1: string;
   name: string;
 }
 
+export interface TMDBWatchProvider {
+  logo_path: string;
+  provider_id: number;
+  provider_name: string;
+  display_priority: number;
+}
+
+export interface TMDBWatchProviderRegion {
+  link: string;
+  flatrate?: TMDBWatchProvider[];
+  rent?: TMDBWatchProvider[];
+  buy?: TMDBWatchProvider[];
+}
+
+export interface TMDBTvWatchProvidersResponse {
+  id: number;
+  results: Record<string, TMDBWatchProviderRegion>;
+}
+
+export interface TMDBMediaImage {
+  aspect_ratio: number;
+  height: number;
+  iso_639_1: string;
+  file_path: string;
+  vote_average: number;
+  vote_count: number;
+  width: number;
+}
+
+// ======================
+// TV Details: GET /tv/{series_id}
+// ======================
+export interface TMDBTvCreatedBy {
+  id: number;
+  credit_id: string;
+  name: string;
+  gender: number;
+  profile_path: string;
+}
+
+export interface TMDBTvNetwork {
+  id: number;
+  logo_path: string;
+  name: string;
+  origin_country: string;
+}
+
 export interface TMDBTvSeasonSummary {
-  air_date: string | null;
+  air_date: string;
   episode_count: number;
   id: number;
   name: string;
   overview: string;
-  poster_path: string | null;
+  poster_path: string;
   season_number: number;
-  vote_average: number;
+  vote_average: number; // docs hiển thị integer nhưng dùng number cho an toàn
 }
 
-export interface TMDBTvEpisodeBrief {
+export interface TMDBTvEpisodeToAir {
   id: number;
   name: string;
   overview: string;
   vote_average: number;
   vote_count: number;
+
   air_date: string;
   episode_number: number;
   production_code: string;
-  runtime: number | null;
+  runtime: number;
   season_number: number;
   show_id: number;
-  still_path: string | null;
+  still_path: string;
 }
 
-export interface TMDBTvDetails {
+export interface TMDBTvDetailsResponse {
   adult: boolean;
-  backdrop_path: string | null;
-  created_by: TMDBTvCreator[];
+  backdrop_path: string;
+
+  created_by: TMDBTvCreatedBy[];
+
   episode_run_time: number[];
   first_air_date: string;
-  genres: TMDBTvGenre[];
-  homepage: string | null;
+
+  genres: TMDBGenre[];
+
+  homepage: string;
   id: number;
+
   in_production: boolean;
   languages: string[];
+
   last_air_date: string;
-  last_episode_to_air: TMDBTvEpisodeBrief | null;
-  next_episode_to_air: TMDBTvEpisodeBrief | null;
+
+  last_episode_to_air: TMDBTvEpisodeToAir;
+
+  name: string;
+
+  next_episode_to_air: string; // docs ghi string (thực tế hay object, nhưng bạn bảo bám docs)
+
   networks: TMDBTvNetwork[];
+
   number_of_episodes: number;
   number_of_seasons: number;
+
   origin_country: string[];
+
   original_language: string;
   original_name: string;
+
   overview: string;
+
   popularity: number;
-  poster_path: string | null;
-  production_companies: TMDBTvProductionCompany[];
-  production_countries: TMDBTvProductionCountry[];
+
+  poster_path: string;
+
+  production_companies: TMDBProductionCompany[];
+  production_countries: TMDBProductionCountry[];
+
   seasons: TMDBTvSeasonSummary[];
-  spoken_languages: TMDBTvSpokenLanguage[];
+
+  spoken_languages: TMDBSpokenLanguage[];
+
   status: string;
   tagline: string;
   type: string;
+
   vote_average: number;
   vote_count: number;
 }
 
-/**
- * ===================================================================
- *  ACCOUNT STATES  (/tv/{id}/account_states)
- * ===================================================================
- */
+// Latest TV: GET /tv/latest
+export type TMDBLatestTvResponse = TMDBTvDetailsResponse;
 
-export interface TMDBTvAccountStatesRated {
-  value: number;
-}
-
-export interface TMDBTvAccountStates {
+// ======================
+// Account States: GET /tv/{series_id}/account_states
+// ======================
+export interface TMDBTvAccountStatesResponse {
   id: number;
   favorite: boolean;
-  rated: TMDBTvAccountStatesRated | null;
+  rated: { value: number };
   watchlist: boolean;
 }
 
-/**
- * ===================================================================
- *  AGGREGATE CREDITS  (/tv/{id}/aggregate_credits)
- * ===================================================================
- */
-
-export interface TMDBTvAggregateRole {
+// ======================
+// Aggregate Credits: GET /tv/{series_id}/aggregate_credits
+// ======================
+export interface TMDBTvAggregateCastRole {
   credit_id: string;
   character: string;
   episode_count: number;
@@ -154,13 +191,15 @@ export interface TMDBTvAggregateCast {
   name: string;
   original_name: string;
   popularity: number;
-  profile_path: string | null;
-  roles: TMDBTvAggregateRole[];
+  profile_path: string;
+
+  roles: TMDBTvAggregateCastRole[];
+
   total_episode_count: number;
   order: number;
 }
 
-export interface TMDBTvAggregateJob {
+export interface TMDBTvAggregateCrewJob {
   credit_id: string;
   job: string;
   episode_count: number;
@@ -174,24 +213,24 @@ export interface TMDBTvAggregateCrew {
   name: string;
   original_name: string;
   popularity: number;
-  profile_path: string | null;
-  jobs: TMDBTvAggregateJob[];
+  profile_path: string;
+
+  jobs: TMDBTvAggregateCrewJob[];
+
   department: string;
   total_episode_count: number;
 }
 
-export interface TMDBTvAggregateCredits {
+export interface TMDBTvAggregateCreditsResponse {
   cast: TMDBTvAggregateCast[];
   crew: TMDBTvAggregateCrew[];
+  id: number;
 }
 
-/**
- * ===================================================================
- *  ALTERNATIVE TITLES  (/tv/{id}/alternative_titles)
- * ===================================================================
- */
-
-export interface TMDBTvAlternativeTitle {
+// ======================
+// Alternative Titles: GET /tv/{series_id}/alternative_titles
+// ======================
+export interface TMDBTvAlternativeTitleItem {
   iso_3166_1: string;
   title: string;
   type: string;
@@ -199,62 +238,48 @@ export interface TMDBTvAlternativeTitle {
 
 export interface TMDBTvAlternativeTitlesResponse {
   id: number;
-  results: TMDBTvAlternativeTitle[];
+  results: TMDBTvAlternativeTitleItem[];
 }
 
-/**
- * ===================================================================
- *  CHANGES  (/tv/{id}/changes)
- * ===================================================================
- */
-
-export interface TMDBTvChangeValue {
-  [key: string]: unknown;
-}
-
-export interface TMDBTvChangeItem {
+// ======================
+// Changes: GET /tv/{series_id}/changes
+// ======================
+export interface TMDBTvChangesItemValue {
   id: string;
   action: string;
   time: string;
-  iso_639_1?: string;
-  iso_3166_1?: string;
-  value?: TMDBTvChangeValue;
-  original_value?: TMDBTvChangeValue;
+  iso_639_1: string;
+  iso_3166_1: string;
+  value: Record<string, unknown>;
+  original_value?: Record<string, unknown>;
 }
 
-export interface TMDBTvChange {
+export interface TMDBTvChangesItem {
   key: string;
-  items: TMDBTvChangeItem[];
+  items: TMDBTvChangesItemValue[];
 }
 
 export interface TMDBTvChangesResponse {
-  changes: TMDBTvChange[];
+  changes: TMDBTvChangesItem[];
 }
 
-/**
- * ===================================================================
- *  CONTENT RATINGS  (/tv/{id}/content_ratings)
- * ===================================================================
- */
-
-export interface TMDBTvContentRating {
-  descriptors: unknown[];
+// ======================
+// Content Ratings: GET /tv/{series_id}/content_ratings
+// ======================
+export interface TMDBTvContentRatingItem {
+  descriptors: string[];
   iso_3166_1: string;
   rating: string;
-  id: number;
 }
 
 export interface TMDBTvContentRatingsResponse {
-  results: TMDBTvContentRating[];
   id: number;
+  results: TMDBTvContentRatingItem[];
 }
 
-/**
- * ===================================================================
- *  CREDITS  (/tv/{id}/credits)
- * ===================================================================
- */
-
+// ======================
+// Credits (latest season): GET /tv/{series_id}/credits
+// ======================
 export interface TMDBTvCast {
   adult: boolean;
   gender: number;
@@ -263,7 +288,8 @@ export interface TMDBTvCast {
   name: string;
   original_name: string;
   popularity: number;
-  profile_path: string | null;
+  profile_path: string;
+
   character: string;
   credit_id: string;
   order: number;
@@ -277,94 +303,73 @@ export interface TMDBTvCrew {
   name: string;
   original_name: string;
   popularity: number;
-  profile_path: string | null;
+  profile_path: string;
+
   credit_id: string;
   department: string;
   job: string;
 }
 
-export interface TMDBTvCredits {
+export interface TMDBTvCreditsResponse {
+  id: number;
   cast: TMDBTvCast[];
   crew: TMDBTvCrew[];
-  id: number;
 }
 
-/**
- * ===================================================================
- *  EPISODE GROUPS  (/tv/{id}/episode_groups)
- * ===================================================================
- */
-
+// ======================
+// Episode Groups: GET /tv/{series_id}/episode_groups
+// ======================
 export interface TMDBTvEpisodeGroupNetwork {
   id: number;
-  name?: string;
-  logo_path?: string | null;
-  origin_country?: string;
+  logo_path: string;
+  name: string;
+  origin_country: string;
 }
 
-export interface TMDBTvEpisodeGroupSummary {
+export interface TMDBTvEpisodeGroupItem {
   description: string;
   episode_count: number;
   group_count: number;
   id: string;
   name: string;
-  network: TMDBTvEpisodeGroupNetwork | null;
+  network: TMDBTvEpisodeGroupNetwork;
   type: number;
 }
 
 export interface TMDBTvEpisodeGroupsResponse {
-  results: TMDBTvEpisodeGroupSummary[];
   id: number;
+  results: TMDBTvEpisodeGroupItem[];
 }
 
-/**
- * ===================================================================
- *  EXTERNAL IDS  (/tv/{id}/external_ids)
- * ===================================================================
- */
-
-export interface TMDBTvExternalIds {
+// ======================
+// External IDs: GET /tv/{series_id}/external_ids
+// ======================
+export interface TMDBTvExternalIdsResponse {
   id: number;
-  imdb_id: string | null;
-  freebase_mid: string | null;
-  freebase_id: string | null;
-  tvdb_id: number | null;
-  tvrage_id: number | null;
-  wikidata_id: string | null;
-  facebook_id: string | null;
-  instagram_id: string | null;
-  twitter_id: string | null;
+  imdb_id: string;
+  freebase_mid: string;
+  freebase_id: string;
+  tvdb_id: number;
+  tvrage_id: number;
+  wikidata_id: string;
+  facebook_id: string;
+  instagram_id: string;
+  twitter_id: string;
 }
 
-/**
- * ===================================================================
- *  IMAGES  (/tv/{id}/images)
- * ===================================================================
- */
-
-export interface TMDBTvImage {
-  aspect_ratio: number;
-  height: number;
-  iso_639_1: string | null;
-  file_path: string;
-  vote_average: number;
-  vote_count: number;
-  width: number;
-}
-
+// ======================
+// Images: GET /tv/{series_id}/images
+// ======================
 export interface TMDBTvImagesResponse {
   id: number;
-  backdrops: TMDBTvImage[];
-  logos: TMDBTvImage[];
-  posters: TMDBTvImage[];
+  backdrops: TMDBMediaImage[];
+  logos: TMDBMediaImage[];
+  posters: TMDBMediaImage[];
 }
 
-/**
- * ===================================================================
- *  KEYWORDS  (/tv/{id}/keywords)
- * ===================================================================
- */
-
+// ======================
+// Keywords: GET /tv/{series_id}/keywords
+// ======================
 export interface TMDBTvKeyword {
   id: number;
   name: string;
@@ -375,21 +380,10 @@ export interface TMDBTvKeywordsResponse {
   results: TMDBTvKeyword[];
 }
 
-/**
- * ===================================================================
- *  LATEST TV  (/tv/latest)
- * ===================================================================
- */
-
-export type TMDBTvLatestResponse = TMDBTvDetails;
-
-/**
- * ===================================================================
- *  LISTS  (/tv/{id}/lists)
- * ===================================================================
- */
-
-export interface TMDBTvListItem {
+// ======================
+// Lists: GET /tv/{series_id}/lists
+// ======================
+export interface TMDBTvListSummary {
   description: string;
   favorite_count: number;
   id: number;
@@ -397,30 +391,27 @@ export interface TMDBTvListItem {
   iso_639_1: string;
   iso_3166_1: string;
   name: string;
-  poster_path: string | null;
+  poster_path: string;
 }
 
-export interface TMDBTvListsResponse
-  extends TMDBPaginatedResponse<TMDBTvListItem> {
+export interface TMDBTvListsResponse extends TMDBPaginatedResponse<TMDBTvListSummary> {
   id: number;
 }
 
-/**
- * ===================================================================
- *  RECOMMENDATIONS  (/tv/{id}/recommendations)
- * ===================================================================
- */
-
-export interface TMDBTvSummary {
+// ======================
+// Recommendations: GET /tv/{series_id}/recommendations
+// (docs: results item có media_type)
+// ======================
+export interface TMDBTvRecommendationItem {
   adult: boolean;
-  backdrop_path: string | null;
+  backdrop_path: string;
   id: number;
   name: string;
   original_language: string;
   original_name: string;
   overview: string;
-  poster_path: string | null;
-  media_type?: string;
+  poster_path: string;
+  media_type: string;
   genre_ids: number[];
   popularity: number;
   first_air_date: string;
@@ -429,23 +420,19 @@ export interface TMDBTvSummary {
   origin_country: string[];
 }
 
-export type TMDBTvRecommendationsResponse =
-  TMDBPaginatedResponse<TMDBTvSummary>;
+export type TMDBTvRecommendationsResponse = TMDBPaginatedResponse<TMDBTvRecommendationItem>;
 
-/**
- * ===================================================================
- *  REVIEWS  (/tv/{id}/reviews)
- * ===================================================================
- */
-
+// ======================
+// Reviews: GET /tv/{series_id}/reviews
+// ======================
 export interface TMDBTvReviewAuthorDetails {
   name: string;
   username: string;
-  avatar_path: string | null;
-  rating: number | null;
+  avatar_path: string;
+  rating: number;
 }
 
-export interface TMDBTvReviewItem {
+export interface TMDBTvReview {
   author: string;
   author_details: TMDBTvReviewAuthorDetails;
   content: string;
@@ -455,17 +442,13 @@ export interface TMDBTvReviewItem {
   url: string;
 }
 
-export interface TMDBTvReviewsResponse
-  extends TMDBPaginatedResponse<TMDBTvReviewItem> {
+export interface TMDBTvReviewsResponse extends TMDBPaginatedResponse<TMDBTvReview> {
   id: number;
 }
 
-/**
- * ===================================================================
- *  SCREENED THEATRICALLY  (/tv/{id}/screened_theatrically)
- * ===================================================================
- */
-
+// ======================
+// Screened Theatrically: GET /tv/{series_id}/screened_theatrically
+// ======================
 export interface TMDBTvScreenedTheatricallyItem {
   id: number;
   episode_number: number;
@@ -477,22 +460,36 @@ export interface TMDBTvScreenedTheatricallyResponse {
   results: TMDBTvScreenedTheatricallyItem[];
 }
 
-/**
- * ===================================================================
- *  SIMILAR  (/tv/{id}/similar)
- * ===================================================================
- */
+// ======================
+// Similar: GET /tv/{series_id}/similar
+// ======================
+export interface TMDBTvSimilarItem {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids: number[];
+  id: number;
+  origin_country: string[];
+  original_language: string;
+  original_name: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  first_air_date: string;
+  name: string;
+  vote_average: number; // docs hiển thị integer nhưng dùng number cho an toàn
+  vote_count: number;
+}
 
-export type TMDBTvSimilarResponse = TMDBPaginatedResponse<TMDBTvSummary>;
+export type TMDBTvSimilarResponse = TMDBPaginatedResponse<TMDBTvSimilarItem>;
 
-/**
- * ===================================================================
- *  TRANSLATIONS  (/tv/{id}/translations)
- * ===================================================================
- */
-
+// ======================
+// Translations: GET /tv/{series_id}/translations
+// ======================
 export interface TMDBTvTranslationData {
-  [key: string]: unknown;
+  name: string;
+  overview: string;
+  homepage: string;
+  tagline: string;
 }
 
 export interface TMDBTvTranslation {
@@ -508,20 +505,17 @@ export interface TMDBTvTranslationsResponse {
   translations: TMDBTvTranslation[];
 }
 
-/**
- * ===================================================================
- *  VIDEOS  (/tv/{id}/videos)
- * ===================================================================
- */
-
+// ======================
+// Videos: GET /tv/{series_id}/videos
+// ======================
 export interface TMDBTvVideoItem {
   iso_639_1: string;
   iso_3166_1: string;
   name: string;
   key: string;
-  site: string; // YouTube, Vimeo, ...
+  site: string;
   size: number;
-  type: string; // Trailer, Teaser, Clip, ...
+  type: string;
   official: boolean;
   published_at: string;
   id: string;
@@ -530,29 +524,4 @@ export interface TMDBTvVideoItem {
 export interface TMDBTvVideosResponse {
   id: number;
   results: TMDBTvVideoItem[];
-}
-
-/**
- * ===================================================================
- *  WATCH PROVIDERS  (/tv/{id}/watch/providers)
- * ===================================================================
- */
-
-export interface TMDBWatchProviderOffer {
-  logo_path: string | null;
-  provider_id: number;
-  provider_name: string;
-  display_priority: number;
-}
-
-export interface TMDBWatchProviderCountry {
-  link: string;
-  flatrate?: TMDBWatchProviderOffer[];
-  rent?: TMDBWatchProviderOffer[];
-  buy?: TMDBWatchProviderOffer[];
-}
-
-export interface TMDBTvWatchProvidersResponse {
-  id: number;
-  results: Record<string, TMDBWatchProviderCountry>;
 }

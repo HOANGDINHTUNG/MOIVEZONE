@@ -3,14 +3,22 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
 
-import type { TMDBTvVideoItem } from "../../../types/interface/tv";
+import { tmdbTrendingApi } from "../../../api/movie/TMDBTrending.api";
+
 import type {
   TMDBTrendingMovieItem,
   TMDBTrendingTvItem,
 } from "../../trending/database/interface/trending";
-import { tmdbApi } from "../../../api/movie/TMDB.api";
+import { tmdbMoviesApi } from "../../../api/movie/TMDBMovie.api";
+import { tmdbTvApi } from "../../../api/movie/TMDBTv.api";
 
 type BaseTrendingItem = TMDBTrendingMovieItem | TMDBTrendingTvItem;
+
+type TMDBVideoItem = {
+  key: string;
+  site: string;
+  type: string;
+};
 
 type TrailerItem = BaseTrendingItem & {
   trailerKey: string;
@@ -70,7 +78,7 @@ const TrendingTrailerHeader = ({ mode }: TrendingTrailerHeaderProps) => {
       try {
         setLoading(true);
 
-        const trending = await tmdbApi.getTrendingAll("day");
+        const trending = await tmdbTrendingApi.getTrendingAll("day");
 
         const filtered = trending.results.filter(
           (item): item is BaseTrendingItem => item.media_type === mode
@@ -91,11 +99,11 @@ const TrendingTrailerHeader = ({ mode }: TrendingTrailerHeaderProps) => {
           try {
             const videos =
               mode === "movie"
-                ? await tmdbApi.getMovieVideos(item.id, language)
-                : await tmdbApi.getTvVideos(item.id, language);
+                ? await tmdbMoviesApi.getMovieVideos(item.id, language)
+                : await tmdbTvApi.getTvVideos(item.id, language);
 
             const trailer = videos.results.find(
-              (v: TMDBTvVideoItem) =>
+              (v: TMDBVideoItem) =>
                 v.site === "YouTube" &&
                 (v.type === "Trailer" || v.type === "Teaser")
             );
@@ -143,8 +151,8 @@ const TrendingTrailerHeader = ({ mode }: TrendingTrailerHeaderProps) => {
   if (loading && !trailers.length) {
     return (
       <div className="w-full bg-black">
-        <div className="mx-auto max-w-6xl px-3 py-6">
-          <div className="h-40 animate-pulse rounded-xl bg-neutral-800" />
+        <div className="mx-auto max-w-6xl px-3 py-4 sm:py-6">
+          <div className="h-32 sm:h-40 animate-pulse rounded-xl bg-neutral-800" />
         </div>
       </div>
     );
@@ -191,7 +199,7 @@ const TrendingTrailerHeader = ({ mode }: TrendingTrailerHeaderProps) => {
       <div className="relative w-full">
         {/* Video full chiều ngang - giữ tỉ lệ 16:9 */}
         <div className="relative w-full aspect-video overflow-hidden">
-          {/* VIDEO / YOUTUBE (không cho hover trực tiếp vào player) */}
+          {/* VIDEO / YOUTUBE (disable click trực tiếp) */}
           <div className="absolute inset-0 pointer-events-none">
             <iframe
               className="h-full w-full"
@@ -206,16 +214,16 @@ const TrendingTrailerHeader = ({ mode }: TrendingTrailerHeaderProps) => {
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black via-black/70 to-transparent" />
 
           {/* Info + controls */}
-          <div className="pointer-events-none absolute inset-0 flex flex-col justify-end px-4 pb-4 pt-8 md:px-8 md:pb-6">
-            <div className="max-w-xl space-y-2 md:space-y-3">
-              <div className="flex flex-wrap items-center gap-2 text-[11px] md:text-xs text-neutral-300">
+          <div className="pointer-events-none absolute inset-0 flex flex-col justify-end px-3 pb-3 pt-6 sm:px-4 sm:pb-4 md:px-8 md:pb-6">
+            <div className="max-w-sm space-y-1.5 sm:max-w-md sm:space-y-2 md:max-w-xl md:space-y-3">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] md:text-xs text-neutral-300">
                 {year && (
                   <span className="rounded-full bg-white/10 px-2 py-0.5">
                     {year}
                   </span>
                 )}
                 {vote && (
-                  <span className="rounded-full bg-red-500/90 px-2 py-0.5 font-semibold text-[11px]">
+                  <span className="rounded-full bg-red-500/90 px-2 py-0.5 font-semibold text-[10px] sm:text-[11px]">
                     ★ {vote} / 10
                   </span>
                 )}
@@ -229,23 +237,23 @@ const TrendingTrailerHeader = ({ mode }: TrendingTrailerHeaderProps) => {
                 </span>
               </div>
 
-              <h1 className="text-xl font-bold tracking-tight md:text-3xl lg:text-4xl">
+              <h1 className="text-base font-bold tracking-tight sm:text-xl md:text-3xl lg:text-4xl">
                 {title}
               </h1>
 
               {current.overview && (
-                <p className="line-clamp-3 text-xs text-neutral-200 md:line-clamp-3 md:text-sm">
+                <p className="line-clamp-2 text-[11px] text-neutral-200 sm:line-clamp-3 sm:text-xs md:text-sm">
                   {current.overview}
                 </p>
               )}
 
-              <div className="flex flex-wrap items-center gap-2 md:gap-3">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <Link
                   to={detailPath}
-                  className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-[0_0_20px_rgba(248,113,113,0.7)] transition hover:bg-red-500"
+                  className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-red-600 px-3 py-1.5 text-[11px] sm:px-4 sm:py-2 sm:text-xs font-semibold uppercase tracking-wide text-white shadow-[0_0_20px_rgba(248,113,113,0.7)] transition hover:bg-red-500"
                 >
                   Xem chi tiết
-                  <span className="text-lg leading-none">›</span>
+                  <span className="text-base leading-none sm:text-lg">›</span>
                 </Link>
 
                 {backdropUrl && (
@@ -253,7 +261,7 @@ const TrendingTrailerHeader = ({ mode }: TrendingTrailerHeaderProps) => {
                     href={backdropUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="pointer-events-auto inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-medium text-neutral-100 backdrop-blur hover:bg-white/20"
+                    className="pointer-events-auto inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-[10px] sm:text-[11px] font-medium text-neutral-100 backdrop-blur hover:bg-white/20"
                   >
                     Xem ảnh nền
                   </a>
@@ -262,9 +270,9 @@ const TrendingTrailerHeader = ({ mode }: TrendingTrailerHeaderProps) => {
             </div>
 
             {/* === THANH CONTROL Ở DƯỚI: dots + mute + prev/next === */}
-            <div className="mt-4 flex items-center justify-between gap-4">
+            <div className="mt-3 flex items-center justify-between gap-2 sm:mt-4 sm:gap-4">
               {/* Dots progress */}
-              <div className="flex items-center gap-1 md:gap-1.5">
+              <div className="flex items-center gap-1 sm:gap-1.5">
                 {trailers.map((_, idx) => (
                   <span
                     key={idx}
@@ -279,12 +287,12 @@ const TrendingTrailerHeader = ({ mode }: TrendingTrailerHeaderProps) => {
               </div>
 
               {/* Controls góc dưới bên phải */}
-              <div className="pointer-events-auto flex items-center gap-2 md:gap-3">
+              <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2 md:gap-3">
                 {/* Mute */}
                 <button
                   type="button"
                   onClick={handleToggleMute}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-xs md:h-9 md:w-9 border border-white/40 hover:bg-black/90"
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-[11px] sm:h-8 sm:w-8 sm:text-xs md:h-9 md:w-9 border border-white/40 hover:bg-black/90"
                 >
                   {isMuted ? "🔇" : "🔊"}
                 </button>
@@ -293,14 +301,14 @@ const TrendingTrailerHeader = ({ mode }: TrendingTrailerHeaderProps) => {
                 <button
                   type="button"
                   onClick={handlePrev}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-lg md:h-9 md:w-9 border border-white/40 hover:bg-black/90"
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-sm sm:h-8 sm:w-8 sm:text-base md:h-9 md:w-9 border border-white/40 hover:bg-black/90"
                 >
                   ‹
                 </button>
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-lg md:h-9 md:w-9 border border-white/40 hover:bg-black/90"
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-sm sm:h-8 sm:w-8 sm:text-base md:h-9 md:w-9 border border-white/40 hover:bg-black/90"
                 >
                   ›
                 </button>
@@ -309,16 +317,16 @@ const TrendingTrailerHeader = ({ mode }: TrendingTrailerHeaderProps) => {
           </div>
         </div>
 
-        {/* Dòng nhỏ dưới video (có thể xoá nếu không muốn) */}
-        <div className="flex items-center justify-between border-t border-neutral-800/60 bg-linear-to-r from-black/80 via-black/60 to-black/80 px-4 py-2 text-[11px] md:px-5 md:text-xs">
-          <div className="flex items-center gap-2 text-neutral-300">
+        {/* Dòng nhỏ dưới video */}
+        <div className="flex flex-col gap-1 border-t border-neutral-800/60 bg-linear-to-r from-black/80 via-black/60 to-black/80 px-3 py-2 text-[10px] sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:text-[11px] md:px-5 md:text-xs">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-neutral-300">
             <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
             <span className="font-semibold uppercase tracking-wide text-neutral-200">
               Đang phát trailer:
             </span>
             <span className="line-clamp-1 text-neutral-100">{title}</span>
           </div>
-          <div className="text-neutral-400">
+          <div className="text-neutral-400 text-[10px] sm:text-[11px] hidden xs:block">
             Tự chuyển sau ~{TRAILER_DURATION}s
           </div>
         </div>

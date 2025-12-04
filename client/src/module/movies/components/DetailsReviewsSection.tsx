@@ -7,7 +7,7 @@ type ReviewItem = {
   content: string;
   created_at: string;
   author_details?: {
-    rating?: number | null;
+    rating?: number | string | null;
     username?: string;
     avatar_path?: string | null;
   };
@@ -21,7 +21,7 @@ const DetailsReviewsSection = ({ reviews }: DetailsReviewsSectionProps) => {
   if (!reviews.length) {
     return (
       <section className="mt-8">
-        <h2 className="text-lg font-semibold tracking-tight text-neutral-50 md:text-xl">
+        <h2 className="text-lg font-semibold tracking-tight text-neutral-50 md:text-xl container">
           Reviews
         </h2>
         <p className="mt-2 text-sm text-neutral-400">
@@ -44,10 +44,15 @@ const DetailsReviewsSection = ({ reviews }: DetailsReviewsSectionProps) => {
 
       <div className="space-y-4">
         {reviews.map((review) => {
-          const rating = review.author_details?.rating ?? null;
-          const createdDate = new Date(
-            review.created_at
-          ).toLocaleDateString();
+          const rawRating = review.author_details?.rating ?? null;
+          const rating =
+            rawRating === null || rawRating === undefined
+              ? null
+              : typeof rawRating === "string"
+              ? Number(rawRating)
+              : rawRating;
+
+          const createdDate = new Date(review.created_at).toLocaleDateString();
 
           // cắt content cho gọn, full thì qua trang /review/:id xem
           const shortContent =

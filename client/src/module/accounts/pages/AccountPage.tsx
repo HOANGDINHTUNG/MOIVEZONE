@@ -247,7 +247,7 @@ const AccountPage = ({ apiKey, sessionId, accountId }: AccountPageProps) => {
         {activeList.length === 0 ? (
           <EmptyState text="Chưa có đánh giá nào cho loại này." />
         ) : ratedKind === "episode" ? (
-          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {episodes.map((ep) => (
               <div
                 key={ep.id}
@@ -408,9 +408,9 @@ const AccountPage = ({ apiKey, sessionId, accountId }: AccountPageProps) => {
         </header>
 
         {/* MAIN CARD */}
-        <main className="flex min-h-[420px] flex-col overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-950/95 shadow-[0_24px_80px_rgba(15,23,42,0.95)]">
+        <main className="flex min-h-[360px] sm:min-h-[420px] flex-col overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-950/95 shadow-[0_24px_80px_rgba(15,23,42,0.95)]">
           {/* Tabs */}
-          <div className="flex gap-2 border-b border-slate-800/80 bg-slate-950/95 px-2 pt-2 sm:px-4">
+          <div className="flex gap-2 border-b border-slate-800/80 bg-slate-950/95 px-2 pt-2 sm:px-4 overflow-x-auto scrollbar-none">
             <AccountTabButton
               id="overview"
               active={activeTab}
@@ -614,7 +614,7 @@ const MediaGrid = ({
   showRatingFromItem,
   showRatingFromRatingField,
 }: MediaGridProps) => (
-  <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+  <div className="grid gap-3 grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
     {items.map((item) => (
       <MediaCard
         key={item.id}
@@ -668,10 +668,10 @@ const MediaCard = ({ kind, item, rating }: MediaCardProps) => {
         </div>
       </div>
       <div className="flex flex-1 flex-col gap-1.5 px-3 pb-3 pt-2">
-        <h3 className="line-clamp-2 text-sm font-semibold text-slate-50">
+        <h3 className="line-clamp-2 text-xs sm:text-sm font-semibold text-slate-50">
           {title}
         </h3>
-        <p className="text-[11px] text-slate-400">{date}</p>
+        <p className="text-[10px] sm:text-[11px] text-slate-400">{date}</p>
         <div className="mt-1 flex flex-wrap gap-1.5">
           <span className="inline-flex items-center rounded-full border border-slate-700/80 px-2 py-0.5 text-[10px] uppercase tracking-wide text-slate-300">
             {kind}

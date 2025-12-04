@@ -5,13 +5,13 @@ import { useParams } from "react-router-dom";
 import axiosTMDB from "../../../app/axiosTMDB";
 import Card from "../../../components/common/Card";
 
-import type { TMDBListResponse } from "../database/interface/tmdb";
-import type { MovieSummary } from "../database/interface/movie";
-import type { TvSummary } from "../database/interface/tv";
 import ExploreBackdropHeader from "../components/ExploreBackdropHeader";
+import type { TMDBMovieSummary } from "../../../types/interface/movie";
+import type { TMDBTvSummary } from "../database/interface/tvList";
+import type { TMDBListResponse } from "../database/interface/movieLists";
 
 // Dữ liệu cho Card: có thể là movie hoặc tv summary
-type CardMovie = MovieSummary | TvSummary;
+type CardMovie = TMDBMovieSummary | TMDBTvSummary;
 type ItemsByPage = Record<number, CardMovie[]>;
 
 const ExplorePage = () => {
@@ -42,7 +42,6 @@ const ExplorePage = () => {
     if (!dateStr) return 0;
     const t = Date.parse(dateStr);
     return Number.isNaN(t) ? 0 : t;
-    // return new Date(dateStr).getTime() || 0; // cách khác
   };
 
   // ---------------------------
@@ -61,15 +60,17 @@ const ExplorePage = () => {
 
       let totalFromApi: number | null = tmdbTotalPages;
 
-      let res1: TMDBListResponse<MovieSummary | TvSummary> | null = null;
-      let res2: TMDBListResponse<MovieSummary | TvSummary> | null = null;
+      let res1: TMDBListResponse<TMDBMovieSummary | TMDBTvSummary> | null =
+        null;
+      let res2: TMDBListResponse<TMDBMovieSummary | TMDBTvSummary> | null =
+        null;
 
       // helper gọi TMDB theo mediaType
       const fetchPage = async (
         page: number
-      ): Promise<TMDBListResponse<MovieSummary | TvSummary>> => {
+      ): Promise<TMDBListResponse<TMDBMovieSummary | TMDBTvSummary>> => {
         if (mediaType === "movie") {
-          const res = await axiosTMDB.get<TMDBListResponse<MovieSummary>>(
+          const res = await axiosTMDB.get<TMDBListResponse<TMDBMovieSummary>>(
             `/discover/movie`,
             {
               params: {
@@ -80,7 +81,7 @@ const ExplorePage = () => {
           );
           return res.data;
         } else {
-          const res = await axiosTMDB.get<TMDBListResponse<TvSummary>>(
+          const res = await axiosTMDB.get<TMDBListResponse<TMDBTvSummary>>(
             `/discover/tv`,
             {
               params: {
@@ -119,11 +120,11 @@ const ExplorePage = () => {
         let db = 0;
 
         if (mediaType === "movie") {
-          da = parseDate((a as MovieSummary).release_date);
-          db = parseDate((b as MovieSummary).release_date);
+          da = parseDate((a as TMDBMovieSummary).release_date);
+          db = parseDate((b as TMDBMovieSummary).release_date);
         } else {
-          da = parseDate((a as TvSummary).first_air_date);
-          db = parseDate((b as TvSummary).first_air_date);
+          da = parseDate((a as TMDBTvSummary).first_air_date);
+          db = parseDate((b as TMDBTvSummary).first_air_date);
         }
 
         if (db !== da) return db - da;
@@ -198,7 +199,8 @@ const ExplorePage = () => {
         <button
           key={p}
           onClick={() => handlePageChange(p)}
-          className={`px-3 py-1.5 rounded-full text-xs md:text-sm font-medium transition ${
+          className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition 
+          ${
             p === currentPage
               ? "bg-red-600 text-white shadow-[0_0_15px_rgba(248,113,113,0.6)]"
               : "bg-neutral-800/80 text-neutral-200 hover:bg-neutral-700"
@@ -219,19 +221,26 @@ const ExplorePage = () => {
   const headingLabel = mediaType === "movie" ? "Movies" : "TV Shows";
 
   return (
-    <div className="min-h-screen bg-neutral-950">
+    <div className="min-h-screen bg-neutral-950 text-neutral-50">
       {/* HEADER BACKDROP 3D */}
       <ExploreBackdropHeader />
 
-      {/* GRID */}
-      <div className="container mx-auto px-3 py-4">
-        <div className="mb-4 flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
-          <h2 className="text-2xl font-semibold capitalize text-neutral-100">
-            Explore {headingLabel}
-          </h2>
+      {/* CONTENT WRAPPER */}
+      <div className="mx-auto w-full max-w-6xl px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
+        {/* TITLE + INFO */}
+        <div className="mb-4 sm:mb-6 flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+          <div>
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold capitalize text-neutral-100">
+              Explore {headingLabel}
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm text-neutral-400">
+              Khám phá danh sách {headingLabel.toLowerCase()} được sắp xếp theo
+              ngày phát hành và độ nổi bật.
+            </p>
+          </div>
 
           {totalPages > 1 && (
-            <p className="text-xs md:text-sm text-neutral-400">
+            <p className="text-xs sm:text-sm text-neutral-400">
               Trang{" "}
               <span className="font-semibold text-neutral-50">
                 {currentPage}
@@ -243,7 +252,7 @@ const ExplorePage = () => {
 
         {/* GRID + FADE */}
         <div
-          className={`grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 
+          className={`grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 
           transition-opacity duration-300 ${
             gridVisible ? "opacity-100" : "opacity-0"
           }`}
@@ -259,29 +268,33 @@ const ExplorePage = () => {
 
         {/* Loading nhỏ */}
         {loading && (
-          <div className="mt-4 flex justify-center gap-2 text-sm text-neutral-300">
+          <div className="mt-4 flex justify-center gap-2 text-xs sm:text-sm text-neutral-300">
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-red-500 border-t-transparent" />
-            Đang tải...
+            <span>Đang tải...</span>
           </div>
         )}
 
         {/* PHÂN TRANG */}
         {totalPages > 1 && (
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs md:text-sm">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center text-xs sm:text-sm">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={!canPrev || loading}
-              className="rounded-full border border-neutral-600 px-3 py-1.5 font-medium text-neutral-100 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full sm:w-auto rounded-full border border-neutral-600 px-4 py-1.5 font-medium 
+              text-neutral-100 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               ‹ Trước
             </button>
 
-            {renderPageNumbers()}
+            <div className="flex flex-wrap justify-center gap-2">
+              {renderPageNumbers()}
+            </div>
 
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={!canNext || loading}
-              className="rounded-full border border-neutral-600 px-3 py-1.5 font-medium text-neutral-100 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full sm:w-auto rounded-full border border-neutral-600 px-4 py-1.5 font-medium 
+              text-neutral-100 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Sau ›
             </button>

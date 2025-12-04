@@ -1,4 +1,3 @@
-// src/components/header/Header.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -105,10 +104,10 @@ export default function Header({ admin }: HeaderProps) {
         showHeader ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 md:px-8 py-2">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-3 sm:px-4 md:px-8 py-2.5 gap-2">
         {/* Logo + tên site */}
         <Link to="/" className="inline-flex items-center gap-2">
-          <div className="w-12 h-12 overflow-hidden grid place-items-center">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 overflow-hidden grid place-items-center">
             <img
               src={logo}
               alt="Cinema"
@@ -116,10 +115,10 @@ export default function Header({ admin }: HeaderProps) {
             />
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="text-sm font-semibold uppercase tracking-[0.18em]">
+            <span className="text-xs sm:text-sm md:text-base font-semibold uppercase tracking-[0.18em]">
               Galaxy Cinema
             </span>
-            <span className="text-[11px] text-white/60">
+            <span className="text-[10px] sm:text-[11px] text-white/60">
               Movies • TV • Showtimes
             </span>
           </div>
@@ -225,7 +224,9 @@ export default function Header({ admin }: HeaderProps) {
                   </p>
                   <HoveredLink href="/explore">All</HoveredLink>
                   <HoveredLink href="/trending">Trending</HoveredLink>
-                  <HoveredLink href="/search_advanced">Advanced search</HoveredLink>
+                  <HoveredLink href="/search_advanced">
+                    Advanced search
+                  </HoveredLink>
                   <HoveredLink href="/person">Person</HoveredLink>
                 </div>
                 <div className="flex flex-col space-y-2">
@@ -265,7 +266,7 @@ export default function Header({ admin }: HeaderProps) {
         </div>
 
         {/* Search nhỏ + toggles + auth */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="hidden md:block">
             <NeonHeaderSearch />
           </div>
@@ -292,8 +293,8 @@ export default function Header({ admin }: HeaderProps) {
       </nav>
 
       {/* Nav mobile */}
-      <div className="md:hidden px-4 pb-3 flex items-center justify-between text-[12px] uppercase tracking-wide text-white/80">
-        <div className="flex items-center gap-3">
+      <div className="md:hidden px-3 pb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-[11px] sm:text-[12px] uppercase tracking-wide text-white/80">
+        <div className="flex items-center gap-3 overflow-x-auto scrollbar-none">
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -329,7 +330,7 @@ export default function Header({ admin }: HeaderProps) {
         </div>
 
         {/* Auth mobile */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 justify-end">
           {!isAuthenticated ? (
             <>
               <Link to="/login" className="text-white/80">

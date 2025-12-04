@@ -41,8 +41,6 @@ export function useFetchDetails<T>(
       } catch (err: unknown) {
         const axiosErr = err as AxiosError;
 
-        console.error("useFetchDetails error:", axiosErr);
-
         // Lấy message từ axios hoặc fallback
         setError(
           axiosErr.response?.status

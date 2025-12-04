@@ -1,9 +1,10 @@
 // src/module/movies/components/ExploreBackdropHeader.tsx
 import { useEffect, useState } from "react";
+import type {
+  TMDBListResponse,
+  TMDBMediaBase,
+} from "../database/interface/movieLists";
 import axiosTMDB from "../../../app/axiosTMDB";
-import type { TMDBListResponse } from "../database/interface/tmdb";
-import type { MovieSummary } from "../database/interface/movie";
-import type { TvSummary } from "../database/interface/tv";
 
 type BackdropItem = {
   id: number;
@@ -13,6 +14,20 @@ type BackdropItem = {
   rating: number;
   popularity: number;
   releaseYear: string;
+};
+
+type DiscoverMovieItem = TMDBMediaBase & {
+  title?: string;
+  original_title?: string;
+  release_date?: string;
+  popularity?: number;
+};
+
+type DiscoverTvItem = TMDBMediaBase & {
+  name?: string;
+  original_name?: string;
+  first_air_date?: string;
+  popularity?: number;
 };
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
@@ -88,7 +103,7 @@ const ExploreBackdropHeader = () => {
       try {
         setLoading(true);
 
-        const moviePromise = axiosTMDB.get<TMDBListResponse<MovieSummary>>(
+        const moviePromise = axiosTMDB.get<TMDBListResponse<DiscoverMovieItem>>(
           "/discover/movie",
           {
             params: {
@@ -100,7 +115,7 @@ const ExploreBackdropHeader = () => {
           }
         );
 
-        const tvPromise = axiosTMDB.get<TMDBListResponse<TvSummary>>(
+        const tvPromise = axiosTMDB.get<TMDBListResponse<DiscoverTvItem>>(
           "/discover/tv",
           {
             params: {
@@ -182,7 +197,7 @@ const ExploreBackdropHeader = () => {
 
       <div className="relative mx-auto max-w-6xl px-3">
         {/* HÀNG TRÊN: TIÊU ĐỀ BÊN TRÁI, NÚT BÊN PHẢI */}
-        <div className="mb-4 flex items-start justify-between gap-4">
+        <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-4">
           {/* Tiêu đề bên trái */}
           <div className="text-left z-10">
             <h2 className="flex items-center gap-3 text-lg md:text-4xl font-extrabold tracking-tight text-white">
@@ -197,18 +212,18 @@ const ExploreBackdropHeader = () => {
           </div>
 
           {/* Nút bên phải */}
-          <div className="flex flex-wrap gap-3 text-xs justify-end z-10">
-            <button className="rounded-full bg-red-600 px-4 py-1.5 font-semibold text-white transition hover:bg-red-700">
+          <div className="flex flex-wrap gap-2 text-xs justify-start md:justify-end z-10">
+            <button className="rounded-full bg-red-600 px-3 py-1.5 md:px-4 md:py-1.5 font-semibold text-white transition hover:bg-red-700">
               Xem hot nhất
             </button>
-            <button className="rounded-full border border-neutral-600 bg-neutral-900/80 px-4 py-1.5 font-medium text-neutral-100 transition hover:bg-neutral-800">
+            <button className="rounded-full border border-neutral-600 bg-neutral-900/80 px-3 py-1.5 md:px-4 md:py-1.5 font-medium text-neutral-100 transition hover:bg-neutral-800">
               Lọc theo thể loại
             </button>
           </div>
         </div>
 
         {/* KHUNG 3 HÀNG – CĂNG GIỮA */}
-        <div className="relative h-[260px] sm:h-[290px] md:h-80 lg:h-[360px] overflow-visible">
+        <div className="relative h-[220px] sm:h-[260px] md:h-80 lg:h-[360px] overflow-visible">
           <div className="h-full perspective-[1800px] perspective-origin-center">
             <div
               className="

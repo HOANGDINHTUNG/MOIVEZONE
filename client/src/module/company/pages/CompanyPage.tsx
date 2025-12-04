@@ -1,5 +1,3 @@
-// src/module/companies/pages/CompanyPage.tsx
-
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 

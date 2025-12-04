@@ -29,8 +29,8 @@ export const fetchTvCategories = createAsyncThunk(
   async () => {
     const [airingToday, onTheAir, popular, topRated] = await Promise.all([
       tmdbTvApi.getAiringToday(),
-      tmdbTvApi.getOnTheAir(),
-      tmdbTvApi.getPopular(),
+      tmdbTvApi.getOnTheAirTv(),
+      tmdbTvApi.getPopularTv(),
       tmdbTvApi.getTopRated(),
     ]);
 

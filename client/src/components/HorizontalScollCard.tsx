@@ -3,20 +3,11 @@
 import { useRef } from "react";
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 
-import type { MediaType } from "../module/movies/database/interface/tmdb";
-import type {
-  MovieSummary,
-  MovieDetail,
-} from "../module/movies/database/interface/movie";
-import type {
-  TvSummary,
-  TvDetail,
-} from "../module/movies/database/interface/tv";
-
 import Card from "./common/Card";
+import type { MediaType, TMDBMediaBase } from "../module/movies/database/interface/movieLists";
 
-// Dùng chung kiểu CardMovie đã định nghĩa trong Card.tsx
-type CardMovie = MovieSummary | MovieDetail | TvSummary | TvDetail;
+// Card dùng kiểu media base chung
+type CardMovie = TMDBMediaBase;
 
 interface HorizontalScrollCardProps {
   data?: CardMovie[];
@@ -56,9 +47,9 @@ const HorizontalScollCard = ({
   };
 
   return (
-    <div className="container mx-auto px-3 my-10">
+    <div className="container mx-auto px-2 sm:px-3 my-6 sm:my-10">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-xl lg:text-2xl font-bold text-neutral-900 dark:text-white capitalize">
+        <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-neutral-900 dark:text-white capitalize">
           {heading}
         </h2>
 
@@ -85,7 +76,7 @@ const HorizontalScollCard = ({
       <div className="relative">
         <div
           ref={containerRef}
-          className="flex items-stretch gap-4 overflow-x-auto scrollbar-none pb-2 scroll-smooth"
+          className="flex items-stretch gap-3 sm:gap-4 overflow-x-auto scrollbar-none pb-2 scroll-smooth"
         >
           {data.map((item, index) => (
             <Card
@@ -99,7 +90,7 @@ const HorizontalScollCard = ({
         </div>
 
         {/* Mobile arrows overlay */}
-        <div className="md:hidden absolute inset-y-0 flex justify-between items-center pointer-events-none">
+        <div className="md:hidden absolute inset-y-0 flex justify-between items-center px-1 pointer-events-none">
           <button
             onClick={handlePrevious}
             className="bg-white dark:bg-black/70 text-black dark:text-white p-1 rounded-full ml-1 pointer-events-auto
