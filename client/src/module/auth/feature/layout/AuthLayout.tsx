@@ -25,8 +25,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ videoSrc }) => {
 
   const displayTitle = title.replace(", ", "\n");
 
-  const fallbackVideo =
-    "https://res.cloudinary.com/dmzvum1lp/video/upload/v1764555606/2715412-uhd_3840_2160_30fps_wpl7ra.mp4";
+  const fallbackVideo = "https://res.cloudinary.com/dmzvum1lp/video/upload/v1764555606/2715412-uhd_3840_2160_30fps_wpl7ra.mp4"
 
   // Dùng chung 1 video cho cả background và VideoText
   const effectiveVideo = videoSrc || fallbackVideo;
@@ -48,8 +47,6 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ videoSrc }) => {
             className={[
               "relative hidden w-full max-w-sm overflow-hidden border-red-900/40 md:flex",
               "transition-all duration-700 ease-out",
-              // Login: order-first (bên trái), border-r
-              // Register: order-last (bên phải), border-l
               isRegister
                 ? "order-last border-l brightness-110"
                 : "order-first border-r brightness-100",
@@ -115,8 +112,6 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ videoSrc }) => {
             className={[
               "flex-1 px-5 py-6 sm:px-8 sm:py-8",
               "transition-all duration-700 ease-out",
-              // Login: form bên phải
-              // Register: form bên trái
               isRegister ? "order-first" : "order-last",
             ].join(" ")}
           >

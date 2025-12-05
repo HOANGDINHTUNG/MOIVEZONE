@@ -16,17 +16,16 @@ interface Slide {
   title2: string;
   description: string;
   image: string;
-  detailPath: string; // đường dẫn để đi đến chi tiết
+  detailPath: string;
 }
 
 // Gom hết field có thể có của movie/tv để khỏi dùng any
-// 🔁 SỬA: extend từ TMDBMovieSummary mới
 interface MovieWithOptionalFields extends Partial<TMDBMovieSummary> {
   id?: number;
   backdrop_path?: string;
   poster_path?: string;
   title?: string;
-  name?: string; // giữ lại để phòng khi dùng với TV / multi
+  name?: string;
   original_title?: string;
   original_name?: string;
   overview?: string;
@@ -42,7 +41,6 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
 
   // Dùng size lớn nhất của TMDB để hạn chế mờ
   const hiResBase = useMemo(() => {
-    // fallback cứng sang TMDB nếu redux chưa có
     const fallback = "https://image.tmdb.org/t/p/original/";
 
     if (!imageURL) return fallback;
@@ -50,87 +48,76 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
     if (imageURL.includes("image.tmdb.org")) {
       let base = imageURL.trim();
 
-      // nếu đã là original rồi thì thôi
       if (base.includes("/original")) {
         return base.endsWith("/") ? base : base + "/";
       }
 
-      // đổi mọi /w500, /w780, /w1280 ... thành /original/
       base = base.replace(/\/w\d+\/?/, "/original/");
 
-      // đảm bảo có / ở cuối
       if (!base.endsWith("/")) base += "/";
 
       return base;
     }
 
-    // trường hợp xài CDN khác thì cứ dùng như cũ
     return imageURL.endsWith("/") ? imageURL : imageURL + "/";
   }, [imageURL]);
 
   // convert movie data -> slide cho GSAP
   const slides: Slide[] = useMemo(() => {
-    return (
-      data
-        .slice(0, 6) // lấy tối đa 6 phim cho hero
-        .map((m) => {
-          const movie = m as MovieWithOptionalFields;
+    return data
+      .slice(0, 6)
+      .map((m) => {
+        const movie = m as MovieWithOptionalFields;
 
-          const backdrop = movie.backdrop_path;
-          const poster = movie.poster_path;
-          const title = movie.title || movie.name || "Untitled";
-          const originalTitle =
-            movie.original_title || movie.original_name || "";
-          const overviewRaw = movie.overview?.trim() ?? "";
+        const backdrop = movie.backdrop_path;
+        const poster = movie.poster_path;
+        const title = movie.title || movie.name || "Untitled";
+        const originalTitle = movie.original_title || movie.original_name || "";
+        const overviewRaw = movie.overview?.trim() ?? "";
 
-          // luôn có mô tả
-          const overview =
-            overviewRaw.length > 0
-              ? overviewRaw
-              : "Hiện chưa có mô tả cho phim này.";
+        const overview =
+          overviewRaw.length > 0
+            ? overviewRaw
+            : "Hiện chưa có mô tả cho phim này.";
 
-          const releaseDate = movie.release_date || movie.first_air_date || "";
-          const year = releaseDate ? releaseDate.slice(0, 4) : "";
+        const releaseDate = movie.release_date || movie.first_air_date || "";
+        const year = releaseDate ? releaseDate.slice(0, 4) : "";
 
-          const lang = movie.original_language
-            ? movie.original_language.toUpperCase()
-            : "MOVIE";
+        const lang = movie.original_language
+          ? movie.original_language.toUpperCase()
+          : "MOVIE";
 
-          // ƯU TIÊN backdrop (ảnh ngang chất lượng cao)
-          const imagePath = backdrop || poster || "";
-          const fullImageUrl = imagePath
-            ? hiResBase + imagePath.replace(/^\//, "")
-            : "";
+        const imagePath = backdrop || poster || "";
+        const fullImageUrl = imagePath
+          ? hiResBase + imagePath.replace(/^\//, "")
+          : "";
 
-          // Xác định media type & path chi tiết
-          const id = movie.id;
-          const mediaTypeRaw = movie.media_type;
-          const isMovieGuess =
-            !!movie.title || !!movie.original_title || mediaTypeRaw === "movie";
-          let mediaType: "movie" | "tv" = isMovieGuess ? "movie" : "tv";
+        const id = movie.id;
+        const mediaTypeRaw = movie.media_type;
+        const isMovieGuess =
+          !!movie.title || !!movie.original_title || mediaTypeRaw === "movie";
+        let mediaType: "movie" | "tv" = isMovieGuess ? "movie" : "tv";
 
-          if (mediaTypeRaw === "tv" || mediaTypeRaw === "movie") {
-            mediaType = mediaTypeRaw;
-          }
+        if (mediaTypeRaw === "tv" || mediaTypeRaw === "movie") {
+          mediaType = mediaTypeRaw;
+        }
 
-          const detailPath =
-            id !== undefined ? `/${mediaType}/${id.toString()}` : "";
+        const detailPath =
+          id !== undefined ? `/${mediaType}/${id.toString()}` : "";
 
-          return {
-            place: year ? `${lang} • ${year}` : lang,
-            title,
-            title2:
-              originalTitle && originalTitle !== title
-                ? originalTitle
-                : "Now Showing",
-            description: overview,
-            image: fullImageUrl,
-            detailPath,
-          };
-        })
-        // chỉ giữ slide có ảnh & có đường dẫn chi tiết
-        .filter((s) => !!s.image && !!s.detailPath)
-    );
+        return {
+          place: year ? `${lang} • ${year}` : lang,
+          title,
+          title2:
+            originalTitle && originalTitle !== title
+              ? originalTitle
+              : "Now Showing",
+          description: overview,
+          image: fullImageUrl,
+          detailPath,
+        };
+      })
+      .filter((s) => !!s.image && !!s.detailPath);
   }, [data, hiResBase]);
 
   useEffect(() => {
@@ -164,7 +151,7 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
             <div class="font-['Oswald',sans-serif] text-[12px] md:text-[14px] text-white/70 leading-tight line-clamp-2">
               ${i.title2}
             </div>
-            <div class="mt-3 text-[11px] md:text-[12px] leading-snug text-white/80 line-clamp-2">
+            <div class=" text-[11px] md:text-[12px] leading-snug text-white/80 line-clamp-2">
               ${i.description}
             </div>
             <div class="cta mt-4 flex items-center max-w-[500px] gap-4 pointer-events-auto">
@@ -193,7 +180,6 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
     const demoCardsEl = _("demo-cards");
     const slideNumbersEl = _("slide-numbers");
 
-    // clear cũ nếu effect chạy lại
     demoCardsEl.innerHTML = "";
     slideNumbersEl.innerHTML = "";
 
@@ -228,7 +214,7 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
     const order = range(slides.length);
     let detailsEven = true;
 
-    // 👉 GẮN CLICK CHO NÚT "Xem chi tiết phim" TRONG CARD NHỎ
+    // GẮN CLICK CHO NÚT "Xem chi tiết phim" TRONG CARD NHỎ
     {
       const cardDetailButtons = demoCardsEl.querySelectorAll(
         ".card-content .discover"
@@ -241,13 +227,13 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
         });
       });
 
-      // 👉 GẮN CLICK CHO NÚT "Xem chi tiết phim" TRONG DETAILS-EVEN / DETAILS-ODD
+      // GẮN CLICK CHO NÚT "Xem chi tiết phim" TRONG DETAILS-EVEN / DETAILS-ODD
       const detailsButtons = document.querySelectorAll(
         "#details-even .discover, #details-odd .discover"
       );
       detailsButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
-          const activeIndex = order[0]; // slide đang active ở đầu mảng order
+          const activeIndex = order[0];
           const slide = slides[activeIndex];
           if (!slide || !slide.detailPath) return;
           navigate(slide.detailPath);
@@ -267,7 +253,6 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
     const numberSize = 50;
     const ease = "sine.inOut";
 
-    // flag chặn double animation
     let isAnimating = false;
 
     function updateDetails(detailsSelector: string, index: number) {
@@ -300,8 +285,8 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
       const { innerHeight: height, innerWidth: width } = window;
 
       // hero full màn hình
-      offsetTop = height - cardHeight - 32; // cách bottom 32px
-      offsetLeft = width - (cardWidth + gap) * rest.length - 32; // thumbnail hàng ngang từ phải sang trái
+      offsetTop = height - cardHeight - 32;
+      offsetLeft = width - (cardWidth + gap) * rest.length - 32;
 
       // card active full screen
       set(getCard(active), {
@@ -325,29 +310,48 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
         width: 260 * (1 / order.length) * (active + 1),
       });
 
-      // set vị trí thumbnail: 1 hàng ở góc dưới phải
-      rest.forEach((i, index) => {
-        const x = offsetLeft + index * (cardWidth + gap);
-        set(getCard(i), {
-          x,
-          y: offsetTop,
-          width: cardWidth,
-          height: cardHeight,
-          zIndex: 30,
-          borderRadius: 14,
-        });
-        set(getCardContent(i), {
-          x,
-          y: offsetTop,
-          zIndex: 40,
-        });
-        set(getSliderItem(i), { x: (index + 1) * numberSize });
-      });
+      const { innerWidth: w } = window;
+      set(".indicator", { x: -w });
 
-      set(".indicator", { x: -width });
+      if (!isMobile) {
+        // DESKTOP: giữ thumbnail như cũ
+        rest.forEach((i, index) => {
+          const x = offsetLeft + index * (cardWidth + gap);
+          set(getCard(i), {
+            x,
+            y: offsetTop,
+            width: cardWidth,
+            height: cardHeight,
+            zIndex: 30,
+            borderRadius: 14,
+          });
+          set(getCardContent(i), {
+            x,
+            y: offsetTop,
+            zIndex: 40,
+          });
+          set(getSliderItem(i), { x: (index + 1) * numberSize });
+        });
 
-      // hiển thị detail slide đầu tiên
-      gsap.to(detailsActive, { opacity: 1, x: 0, ease, delay: 0.2 });
+        gsap.to(detailsActive, { opacity: 1, x: 0, ease, delay: 0.2 });
+      } else {
+        // MOBILE: ẩn card nhỏ + số
+        rest.forEach((i) => {
+          set(getCard(i), {
+            opacity: 0,
+            pointerEvents: "none",
+          });
+          set(getCardContent(i), {
+            opacity: 0,
+            pointerEvents: "none",
+          });
+          set(getSliderItem(i), { opacity: 0 });
+        });
+
+        set("#slide-numbers", { opacity: 0 });
+
+        gsap.to(detailsActive, { opacity: 1, x: 0, ease, delay: 0.2 });
+      }
 
       updateDetails(detailsActive, order[0]);
     }
@@ -407,7 +411,8 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
         const offsetTopLocal = height - cardHeight - 32;
         const offsetLeftLocal = width - (cardWidth + gap) * rest.length - 32;
 
-        // card prev zoom lên chút rồi quay về thumbnail
+        set(getCard(active), { opacity: 1, pointerEvents: "auto" });
+
         set(getCard(prv), { zIndex: 10 });
         set(getCard(active), { zIndex: 20 });
         gsap.to(getCard(prv), { scale: 1.5, ease });
@@ -424,7 +429,6 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
           ease,
         });
 
-        // card active full-screen
         gsap.to(getCard(active), {
           x: 0,
           y: 0,
@@ -433,27 +437,37 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
           height,
           borderRadius: 0,
           onComplete: () => {
-            const xNew =
-              offsetLeftLocal + (rest.length - 1) * (cardWidth + gap);
-            set(getCard(prv), {
-              x: xNew,
-              y: offsetTopLocal,
-              width: cardWidth,
-              height: cardHeight,
-              zIndex: 30,
-              borderRadius: 14,
-              scale: 1,
-            });
+            if (!isMobile) {
+              // DESKTOP: đặt lại prev thành thumbnail
+              const xNew =
+                offsetLeftLocal + (rest.length - 1) * (cardWidth + gap);
+              set(getCard(prv), {
+                x: xNew,
+                y: offsetTopLocal,
+                width: cardWidth,
+                height: cardHeight,
+                zIndex: 30,
+                borderRadius: 14,
+                scale: 1,
+              });
 
-            set(getCardContent(prv), {
-              x: xNew,
-              y: offsetTopLocal,
-              opacity: 1,
-              zIndex: 40,
-            });
-            set(getSliderItem(prv), {
-              x: rest.length * numberSize,
-            });
+              set(getCardContent(prv), {
+                x: xNew,
+                y: offsetTopLocal,
+                opacity: 1,
+                zIndex: 40,
+              });
+              set(getSliderItem(prv), {
+                x: rest.length * numberSize,
+              });
+            } else {
+              // MOBILE: prev vẫn ẩn
+              set(getCard(prv), { opacity: 0, pointerEvents: "none" });
+              set(getCardContent(prv), {
+                opacity: 0,
+                pointerEvents: "none",
+              });
+            }
 
             set(detailsInactive, { opacity: 0 });
             set(`${detailsInactive} .text`, { y: 100 });
@@ -467,35 +481,37 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
           },
         });
 
-        // reposition lại các thumbnail còn lại: luôn bám góc dưới phải
-        rest.forEach((i, index) => {
-          if (i !== prv) {
-            const xNew = offsetLeftLocal + index * (cardWidth + gap);
-            set(getCard(i), { zIndex: 30 });
-            gsap.to(getCard(i), {
-              x: xNew,
-              y: offsetTopLocal,
-              width: cardWidth,
-              height: cardHeight,
-              borderRadius: 14,
-              ease,
-              delay: 0.05 * (index + 1),
-            });
+        if (!isMobile) {
+          // reposition lại thumbnail chỉ trên desktop
+          rest.forEach((i, index) => {
+            if (i !== prv) {
+              const xNew = offsetLeftLocal + index * (cardWidth + gap);
+              set(getCard(i), { zIndex: 30 });
+              gsap.to(getCard(i), {
+                x: xNew,
+                y: offsetTopLocal,
+                width: cardWidth,
+                height: cardHeight,
+                borderRadius: 14,
+                ease,
+                delay: 0.05 * (index + 1),
+              });
 
-            gsap.to(getCardContent(i), {
-              x: xNew,
-              y: offsetTopLocal,
-              opacity: 1,
-              zIndex: 40,
-              ease,
-              delay: 0.05 * (index + 1),
-            });
-            gsap.to(getSliderItem(i), {
-              x: (index + 1) * numberSize,
-              ease,
-            });
-          }
-        });
+              gsap.to(getCardContent(i), {
+                x: xNew,
+                y: offsetTopLocal,
+                opacity: 1,
+                zIndex: 40,
+                ease,
+                delay: 0.05 * (index + 1),
+              });
+              gsap.to(getSliderItem(i), {
+                x: (index + 1) * numberSize,
+                ease,
+              });
+            }
+          });
+        }
       });
     }
 
@@ -525,7 +541,6 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
       return Promise.all(promises);
     }
 
-    // ---- Event click cho mũi tên ----
     const arrowLeft = document.querySelector<HTMLDivElement>(".arrow-left");
     const arrowRight = document.querySelector<HTMLDivElement>(".arrow-right");
 
@@ -537,7 +552,6 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
 
     const handlePrev = () => {
       if (isAnimating || order.length <= 1) return;
-      // xoay order -2 rồi dùng step() (+1) => net là -1 (đi lùi 1 slide)
       const last1 = order.pop();
       if (last1 !== undefined) order.unshift(last1);
       const last2 = order.pop();
@@ -552,7 +566,7 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
       try {
         await loadImages();
         init();
-        loop(); // nếu muốn chỉ manual, comment dòng này
+        loop();
       } catch (error) {
         console.error("One or more images failed to load", error);
       }
@@ -560,7 +574,6 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
 
     start();
 
-    // cleanup
     return () => {
       gsap.globalTimeline.clear();
       demoCardsEl.innerHTML = "";
@@ -570,9 +583,9 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
     };
   }, [slides, navigate]);
 
-  // layout hero full màn hình
+  // layout hero: mobile ~70% màn hình, desktop full
   return (
-    <div className="relative min-h-[520px] md:h-screen w-full bg-black text-white overflow-hidden font-sans">
+    <div className="relative h-[70vh] md:h-screen w-full bg-black text-white overflow-hidden font-sans">
       {/* thanh vàng chạy trên đầu */}
       <div className="indicator fixed left-0 right-0 top-0 h-[5px] bg-[#ecad29] z-40" />
 
@@ -638,7 +651,7 @@ const BannerHome: React.FC<BannerHomeProps> = ({ data = [] }) => {
         {/* pagination + progress + slide numbers */}
         <div
           id="pagination"
-          className="pagination absolute left-4 md:left-6 bottom-4 md:bottom-6 inline-flex items-center gap-4 md:gap-5 z-80 pointer-events-auto"
+          className="pagination hidden md:inline-flex absolute left-4 md:left-6 bottom-4 md:bottom-6  items-center gap-4 md:gap-5 z-80 pointer-events-auto"
         >
           <div className="arrow arrow-left w-10 h-10 md:w-[46px] md:h-[46px] rounded-full border-2 border-white/30 grid place-items-center bg-black/40 backdrop-blur hover:border-white/70 transition-colors cursor-pointer">
             <svg

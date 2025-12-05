@@ -86,7 +86,7 @@ function App() {
       <SmoothScrollLayout ease={0.08}>
         <main className="min-h-screen bg-slate-50 text-slate-900 dark:bg-neutral-900 dark:text-neutral-100 lg:pb-0">
           <ScrollToTop />
-          <div className="min-h-[90vh] pt-18">
+          <div className="min-h-[90vh] pt-13 md:pt-19">
             <Outlet />
           </div>
           <Footer />

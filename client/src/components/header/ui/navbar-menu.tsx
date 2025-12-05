@@ -98,7 +98,7 @@ export const Menu: React.FC<MenuProps> = ({ setActive, children }) => {
   return (
     <nav
       onMouseLeave={() => setActive(null)}
-      className="relative flex items-center gap-10"
+      className="relative flex items-center gap-8"
     >
       {children}
     </nav>

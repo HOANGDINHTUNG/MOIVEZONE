@@ -13,6 +13,7 @@ import { logout } from "../../module/auth/store/authSlice";
 import UserMenu from "./components/UserMenu";
 import NeonHeaderSearch from "./components/NeonHeaderSearch";
 import { HoveredLink, Menu, MenuItem, ProductItem } from "./ui/navbar-menu";
+import { BiLogIn, BiUserPlus } from "react-icons/bi";
 
 interface HeaderProps {
   admin?: boolean;
@@ -104,10 +105,11 @@ export default function Header({ admin }: HeaderProps) {
         showHeader ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-3 sm:px-4 md:px-8 py-2.5 gap-2">
+      {/* Nav desktop */}
+      <nav className="mx-auto hidden md:flex max-w-6xl items-center justify-between px-3 sm:px-4 md:px-8 py-2.5 gap-2">
         {/* Logo + tên site */}
-        <Link to="/" className="inline-flex items-center gap-2">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 overflow-hidden grid place-items-center">
+        <Link to="/" className="hidden md:flex items-center gap-2">
+          <div className="md:w-12 md:h-12 overflow-hidden grid place-items-center">
             <img
               src={logo}
               alt="Cinema"
@@ -293,68 +295,124 @@ export default function Header({ admin }: HeaderProps) {
       </nav>
 
       {/* Nav mobile */}
-      <div className="md:hidden px-3 pb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-[11px] sm:text-[12px] uppercase tracking-wide text-white/80">
-        <div className="flex items-center gap-3 overflow-x-auto scrollbar-none">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `mr-2 ${isActive ? "text-white font-semibold" : ""}`
-            }
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/explore"
-            className={({ isActive }) =>
-              `mr-2 ${isActive ? "text-white font-semibold" : ""}`
-            }
-          >
-            Explore
-          </NavLink>
-          <NavLink
-            to="/movie"
-            className={({ isActive }) =>
-              `mr-2 ${isActive ? "text-white font-semibold" : ""}`
-            }
-          >
-            Movies
-          </NavLink>
-          <NavLink
-            to="/tv"
-            className={({ isActive }) =>
-              `${isActive ? "text-white font-semibold" : ""}`
-            }
-          >
-            TV
-          </NavLink>
-        </div>
+      <nav className="md:hidden px-3 py-2 bg-neutral-950/80 border-b border-neutral-800 backdrop-blur">
+        {/* HÀNG 1: LOGO + NAV (THẲNG HÀNG) */}
+        <div className="flex items-center justify-around gap-3">
+          {/* Logo */}
+          <Link to="/" className="inline-flex items-center">
+            <div className="w-9 h-9 overflow-hidden grid place-items-center ">
+              <img
+                src={logo}
+                alt="Cinema"
+                className="h-full w-full object-contain"
+              />
+            </div>
+          </Link>
 
-        {/* Auth mobile */}
-        <div className="flex items-center gap-2 justify-end">
-          {!isAuthenticated ? (
-            <>
-              <Link to="/login" className="text-white/80">
-                Login
-              </Link>
-              <Link to="/register" className="text-[#ecad29]">
-                Reg
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link to="/profile" className="text-white">
-                {displayName}
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="text-red-400 font-semibold"
+          {/* Navigation pill */}
+          <div className="flex items-center overflow-x-auto scrollbar-none">
+            <div className="inline-flex items-center gap-2 px-2 py-1">
+              {/* HOME */}
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  [
+                    "p-1.5 text-[11px] rounded-full uppercase tracking-wide whitespace-nowrap transition-all duration-200",
+                    isActive
+                      ? "bg-linear-to-r from-red-500 via-orange-500 to-yellow-400 text-black font-semibold shadow-md shadow-yellow-500/30"
+                      : "text-neutral-300 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20",
+                  ].join(" ")
+                }
               >
-                Out
-              </button>
-            </>
-          )}
+                Home
+              </NavLink>
+
+              {/* EXPLORE */}
+              <NavLink
+                to="/explore"
+                className={({ isActive }) =>
+                  [
+                    "p-1.5 text-[11px] rounded-full uppercase tracking-wide whitespace-nowrap transition-all duration-200",
+                    isActive
+                      ? "bg-linear-to-r from-red-500 via-orange-500 to-yellow-400 text-black font-semibold shadow-md shadow-yellow-500/30"
+                      : "text-neutral-300 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20",
+                  ].join(" ")
+                }
+              >
+                Explore
+              </NavLink>
+
+              {/* MOVIES */}
+              <NavLink
+                to="/movie"
+                className={({ isActive }) =>
+                  [
+                    "p-1.5 text-[11px] rounded-full uppercase tracking-wide whitespace-nowrap transition-all duration-200",
+                    isActive
+                      ? "bg-linear-to-r from-red-500 via-orange-500 to-yellow-400 text-black font-semibold shadow-md shadow-yellow-500/30"
+                      : "text-neutral-300 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20",
+                  ].join(" ")
+                }
+              >
+                Movies
+              </NavLink>
+
+              {/* TV */}
+              <NavLink
+                to="/tv"
+                className={({ isActive }) =>
+                  [
+                    "p-1.5 text-[11px] rounded-full uppercase tracking-wide whitespace-nowrap transition-all duration-200",
+                    isActive
+                      ? "bg-linear-to-r from-red-500 via-orange-500 to-yellow-400 text-black font-semibold shadow-md shadow-yellow-500/30"
+                      : "text-neutral-300 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20",
+                  ].join(" ")
+                }
+              >
+                TV
+              </NavLink>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-1">
+            {!isAuthenticated ? (
+              <>
+                <Link
+                  to="/login"
+                  className="text-[12px] text-white/80 uppercase tracking-wide"
+                >
+                  <BiLogIn />
+                </Link>
+
+                <Link
+                  to="/register"
+                  className="px-1.5 py-1.5 rounded-full border border-[#ecad29]/70 
+          text-[#ecad29] text-[12px] font-semibold uppercase tracking-wide 
+          shadow-sm shadow-[#ecad29]/20"
+                >
+                  <BiUserPlus />
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/profile"
+                  className="text-white text-[7px] font-medium"
+                >
+                  {displayName}
+                </Link>
+
+                <button
+                  onClick={handleLogout}
+                  className="text-[7px] font-semibold uppercase tracking-wide text-red-400"
+                >
+                  Logout
+                </button>
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      </nav>
     </header>
   );
 }
