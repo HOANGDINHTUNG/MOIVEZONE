@@ -203,13 +203,13 @@ const LatestTrailersSection = ({
 
                           {/* Play icon */}
                           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black/60 backdrop-blur group-hover:bg-black/80">
+                            <div className="flex h-7 w-7 md:h-12 md:w-12 items-center justify-center rounded-full bg-black/60 backdrop-blur group-hover:bg-black/80">
                               <div className="ml-0.5 border-l-12 border-y-[7px] border-l-white border-y-transparent" />
                             </div>
                           </div>
 
                           {/* Dots */}
-                          <div className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-black/90 text-white/80">
+                          <div className="absolute right-3 top-3 hidden md:flex h-7 w-7 items-center justify-center rounded-full bg-black/90 text-white/80 ">
                             <span className="text-lg leading-none">⋯</span>
                           </div>
                         </div>

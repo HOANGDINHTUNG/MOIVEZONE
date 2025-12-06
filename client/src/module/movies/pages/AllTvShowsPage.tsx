@@ -20,7 +20,7 @@ type UITvShow = {
 
 type ShowsByPage = Record<number, UITvShow[]>;
 
-const AllTvShowsPage = () => {
+const AllTvShowsPage = (): JSX.Element => {
   const language = useAppSelector((state) => state.language.current);
 
   const [showsByPage, setShowsByPage] = useState<ShowsByPage>({});
@@ -31,6 +31,28 @@ const AllTvShowsPage = () => {
 
   // trạng thái để fade grid
   const [gridVisible, setGridVisible] = useState(true);
+
+  // detect mobile để render 39 item cho đẹp
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      // < 640px (theo tailwind sm) coi là mobile
+      if (typeof window === "undefined") return;
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    handleResize(); // chạy lần đầu
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
+      }
+    };
+  }, []);
 
   const scrollToTopSmooth = () => {
     if (typeof window === "undefined") return;
@@ -46,7 +68,9 @@ const AllTvShowsPage = () => {
     return Number.isNaN(t) ? 0 : t;
   };
 
-  // Mỗi trang UI = 2 trang TMDB (40 TV show)
+  // ===============================
+  // Mỗi trang UI = 2 trang TMDB
+  // ===============================
   const loadPage = async (uiPage: number) => {
     if (loading) return;
 
@@ -180,6 +204,9 @@ const AllTvShowsPage = () => {
 
   const currentShows = showsByPage[currentPage] ?? [];
 
+  // Mobile: chỉ render 39 item cho grid 3 cột đẹp; desktop/tablet: full
+  const showsForGrid = isMobile ? currentShows.slice(0, 39) : currentShows;
+
   return (
     <>
       {/* Header trailer dùng chung – mode='tv' */}
@@ -208,14 +235,14 @@ const AllTvShowsPage = () => {
           )}
         </header>
 
-        {/* GRID + FADE (responsive 2–3–4–5 cột) */}
+        {/* GRID + FADE (responsive 3–3–4–5 cột) */}
         <div
-          className={`grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4
+          className={`grid grid-cols-3 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4
           transition-opacity duration-300 ${
             gridVisible ? "opacity-100" : "opacity-0"
           }`}
         >
-          {currentShows.map((show) => (
+          {showsForGrid.map((show) => (
             <Card key={show.id} data={show} media_type="tv" />
           ))}
         </div>
@@ -230,26 +257,38 @@ const AllTvShowsPage = () => {
 
         {/* PHÂN TRANG */}
         {totalPages > 1 && (
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs md:text-sm">
-            <button
-              type="button"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={!canPrev || loading}
-              className="rounded-full border border-neutral-700 px-3 py-1.5 font-medium text-neutral-200 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              ‹ Trước
-            </button>
+          <div className="mt-8 flex flex-col items-center">
+            {/* Hàng chính chứa Prev — PageNumbers — Next */}
+            <div className="flex flex-wrap items-center justify-center gap-3 text-xs md:text-sm">
+              {/* Prev */}
+              <button
+                type="button"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={!canPrev || loading}
+                className="rounded-full border border-neutral-700 px-3 py-1.5 font-medium 
+                   text-neutral-200 transition hover:bg-neutral-800 
+                   disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                ‹ Trước
+              </button>
 
-            {renderPageNumbers()}
+              {/* Page numbers (tự động wrap & luôn căn giữa) */}
+              <div className="flex flex-wrap justify-center gap-2">
+                {renderPageNumbers()}
+              </div>
 
-            <button
-              type="button"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={!canNext || loading}
-              className="rounded-full border border-neutral-700 px-3 py-1.5 font-medium text-neutral-200 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Sau ›
-            </button>
+              {/* Next */}
+              <button
+                type="button"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={!canNext || loading}
+                className="rounded-full border border-neutral-700 px-3 py-1.5 font-medium 
+                   text-neutral-200 transition hover:bg-neutral-800 
+                   disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Sau ›
+              </button>
+            </div>
           </div>
         )}
       </section>

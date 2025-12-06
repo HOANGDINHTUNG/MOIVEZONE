@@ -4,7 +4,7 @@ export const StyledWrapper = styled.div`
   position: relative;
   /* cho nó nhỏ gọn trong header */
   transform: scale(0.8);
-  transform-origin: right center;
+  transform-origin: center center;
 
   #poda {
     display: flex;

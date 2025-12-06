@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState, type JSX } from "react";
 import BannerHome from "../../../components/common/ui/BannerHome";
 import HorizontalScollCard from "../../../components/HorizontalScollCard";
-import { useAppSelector } from "../../../hooks/UseCustomeRedux";
+import { useAppSelector, useAppDispatch } from "../../../hooks/UseCustomeRedux";
 import { useFetch } from "../../../hooks/useFetch";
 import LatestTrailersSection, {
   type TrailerItem,
@@ -9,9 +9,27 @@ import LatestTrailersSection, {
 
 import VideoPlay from "../../../components/VideoPlay";
 import axiosTMDB from "../../../app/axiosTMDB";
+
 import type { TMDBMovieSummary } from "../../movies/database/interface/movie";
 import type { TMDBTvSummary } from "../../movies/database/interface/tvList";
-import type { TMDBPaginatedResponse } from "../../movies/database/interface/movieLists";
+import type {
+  TMDBPaginatedResponse,
+  TMDBMediaBase,
+  MediaType,
+} from "../../movies/database/interface/movieLists";
+
+import {
+  fetchTrending,
+  setCategory,
+  setTimeWindow,
+} from "../../trending/store/trendingSlice";
+
+import type {
+  TMDBTimeWindow,
+  TMDBTrendingAllItem,
+  TMDBTrendingMovieItem,
+} from "../../trending/database/interface/trending";
+
 // TMDB video type đơn giản cho /videos
 interface TMDBVideo {
   id: string;
@@ -22,12 +40,69 @@ interface TMDBVideo {
   official?: boolean;
 }
 
-const HomePage = () => {
-  const trendingData = useAppSelector((state) => state.moviesData.bannerData);
+const HomePage = (): JSX.Element => {
+  const dispatch = useAppDispatch();
+
+  // Banner hero dùng data trending từ store riêng
+  const bannerData = useAppSelector((state) => state.moviesData.bannerData);
   const language = useAppSelector((state) => state.language.current);
 
-  // Fetch using correct types
-  // Fetch using correct types
+  // Lấy state trending từ trendingSlice (dùng chung với TrendingPage)
+  const {
+    timeWindow,
+    category,
+    items: trendingItems,
+  } = useAppSelector((s) => s.trending);
+
+  // Đảm bảo category cho Home trending strip là "movie"
+  useEffect(() => {
+    if (category !== "movie") {
+      dispatch(setCategory("movie"));
+    }
+  }, [category, dispatch]);
+
+  // Fetch trending movie theo timeWindow + language (giống TrendingPage)
+  useEffect(() => {
+    const tw: TMDBTimeWindow = timeWindow ?? "day";
+
+    dispatch(
+      fetchTrending({
+        category: "movie",
+        timeWindow: tw,
+        page: 1,
+        language,
+      })
+    );
+  }, [timeWindow, language, dispatch]);
+
+  // Map trendingItems -> TMDBMediaBase[] để phù hợp với HorizontalScollCard
+  const trendingForCard: TMDBMediaBase[] = useMemo(
+    () =>
+      (trendingItems as TMDBTrendingAllItem[])
+        .filter((item) => item.media_type === "movie")
+        .map((item) => {
+          const m = item as TMDBTrendingMovieItem;
+
+          const base: TMDBMediaBase = {
+            id: m.id,
+            poster_path: m.poster_path ?? null,
+            backdrop_path: m.backdrop_path ?? null,
+            title: m.title,
+            // nếu TMDBMediaBase có field name thì có thể gán undefined
+            name: undefined as unknown as string,
+            overview: m.overview ?? "",
+            vote_average: m.vote_average ?? 0,
+            vote_count: m.vote_count ?? 0,
+            // nếu TMDBMediaBase có media_type
+            media_type: "movie" as MediaType,
+          };
+
+          return base;
+        }),
+    [trendingItems]
+  );
+
+  // Movies cho các block khác
   const { data: nowPlayingData } =
     useFetch<TMDBMovieSummary>("/movie/now_playing");
   const { data: topRatedData } = useFetch<TMDBMovieSummary>("/movie/top_rated");
@@ -76,15 +151,19 @@ const HomePage = () => {
 
   return (
     <>
-      {/* Banner dùng Redux (trending movies) */}
-      <BannerHome data={trendingData} />
+      {/* Banner dùng Redux (trending movies cho hero) */}
+      <BannerHome data={bannerData} />
 
-      {/* Trending */}
+      {/* Trending Movies – dùng Redux timeWindow giống TrendingPage */}
       <HorizontalScollCard
-        data={trendingData}
-        heading="Trending"
+        data={trendingForCard}
+        heading="Trending Movies"
+        headingTo="/trending"
         trending
         media_type="movie"
+        showTimeToggle
+        timeWindow={timeWindow ?? "day"}
+        onTimeWindowChange={(tw) => dispatch(setTimeWindow(tw))}
       />
 
       {/* Latest Trailers (Popular / In Theaters) */}
@@ -99,6 +178,7 @@ const HomePage = () => {
         data={nowPlayingData}
         heading="Now Playing"
         media_type="movie"
+        headingTo="/category_movie/now_playing"
       />
 
       {/* Top Rated Movies */}
@@ -106,6 +186,7 @@ const HomePage = () => {
         data={topRatedData}
         heading="Top Rated Movies"
         media_type="movie"
+        headingTo="/category_movie/top_rated"
       />
 
       {/* Popular TV Shows */}
@@ -113,6 +194,7 @@ const HomePage = () => {
         data={popularTvShowData}
         heading="Popular TV Shows"
         media_type="tv"
+        headingTo="/category_tv/popular"
       />
 
       {/* On The Air */}
@@ -120,6 +202,7 @@ const HomePage = () => {
         data={onTheAirShowData}
         heading="On The Air"
         media_type="tv"
+        headingTo="/category_tv/on_the_air"
       />
 
       {/* Popup video trailer */}

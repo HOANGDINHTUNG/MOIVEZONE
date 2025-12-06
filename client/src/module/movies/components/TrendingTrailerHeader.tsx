@@ -214,7 +214,13 @@ const TrendingTrailerHeader = ({ mode }: TrendingTrailerHeaderProps) => {
 
           {/* Info + controls */}
           <div className="pointer-events-none absolute inset-0 flex flex-col justify-end px-3 pb-3 pt-6 sm:px-4 sm:pb-4 md:px-8 md:pb-6">
-            <div className="max-w-sm space-y-1.5 sm:max-w-md sm:space-y-2 md:max-w-xl md:space-y-3">
+            <div
+              className="max-w-sm space-y-1.5 sm:max-w-md sm:space-y-2 md:max-w-xl md:space-y-3
+                          opacity-0 pointer-events-none
+                          group-hover:opacity-100 group-hover:pointer-events-auto
+                          sm:opacity-100 sm:pointer-events-auto
+                          transition-all duration-300"
+            >
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] md:text-xs text-neutral-300">
                 {year && (
                   <span className="rounded-full bg-white/10 px-2 py-0.5">

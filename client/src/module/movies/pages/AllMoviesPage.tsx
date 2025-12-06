@@ -20,7 +20,7 @@ type UIMovie = {
 
 type MoviesByPage = Record<number, UIMovie[]>;
 
-const AllMoviesPage = () => {
+const AllMoviesPage = (): JSX.Element => {
   const language = useAppSelector((state) => state.language.current);
 
   const [moviesByPage, setMoviesByPage] = useState<MoviesByPage>({});
@@ -31,6 +31,28 @@ const AllMoviesPage = () => {
 
   // trạng thái để fade in/out grid
   const [gridVisible, setGridVisible] = useState(true);
+
+  // detect mobile để render 39 item cho đẹp (3 cột x 13 hàng)
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window === "undefined") return;
+      // < 640px (theo tailwind sm) coi là mobile
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    handleResize(); // chạy lần đầu
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
+      }
+    };
+  }, []);
 
   // Cuộn lên đầu trang — mượt
   const scrollToTopSmooth = () => {
@@ -190,6 +212,9 @@ const AllMoviesPage = () => {
 
   const currentMovies = moviesByPage[currentPage] ?? [];
 
+  // 🔥 Mobile: chỉ render 39 item cho grid 3 cột đẹp; desktop/tablet: full
+  const moviesForGrid = isMobile ? currentMovies.slice(0, 39) : currentMovies;
+
   return (
     <>
       {/* HEADER TRAILER (full width, responsive) */}
@@ -220,11 +245,11 @@ const AllMoviesPage = () => {
           )}
         </div>
 
-        {/* GRID MOVIES + FADE (responsive 2–3–4–5 cột) */}
+        {/* GRID MOVIES + FADE (responsive 3–3–4–5 cột) */}
         <div
           className={`
             grid gap-3 sm:gap-4
-            grid-cols-2
+            grid-cols-3
             sm:grid-cols-3
             md:grid-cols-4
             lg:grid-cols-5
@@ -232,7 +257,7 @@ const AllMoviesPage = () => {
             ${gridVisible ? "opacity-100" : "opacity-0"}
           `}
         >
-          {currentMovies.map((movie) => (
+          {moviesForGrid.map((movie) => (
             <Card key={movie.id} data={movie} media_type="movie" />
           ))}
         </div>
@@ -247,24 +272,35 @@ const AllMoviesPage = () => {
 
         {/* PAGINATION */}
         {totalPages > 1 && (
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs md:text-sm">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={!canPrev || loading}
-              className="rounded-full border border-neutral-700 px-3 py-1.5 font-medium text-neutral-200 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              ‹ Trước
-            </button>
+          <div className="mt-8 flex flex-col items-center">
+            <div className="flex flex-wrap items-center justify-center gap-3 text-xs md:text-sm">
+              {/* Prev */}
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={!canPrev || loading}
+                className="rounded-full border border-neutral-700 px-3 py-1.5 font-medium 
+                   text-neutral-200 transition hover:bg-neutral-800 
+                   disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                ‹ Trước
+              </button>
 
-            {renderPageNumbers()}
+              {/* Page number list (always centered) */}
+              <div className="flex flex-wrap justify-center gap-2">
+                {renderPageNumbers()}
+              </div>
 
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={!canNext || loading}
-              className="rounded-full border border-neutral-700 px-3 py-1.5 font-medium text-neutral-200 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Sau ›
-            </button>
+              {/* Next */}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={!canNext || loading}
+                className="rounded-full border border-neutral-700 px-3 py-1.5 font-medium 
+                   text-neutral-200 transition hover:bg-neutral-800 
+                   disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Sau ›
+              </button>
+            </div>
           </div>
         )}
       </section>

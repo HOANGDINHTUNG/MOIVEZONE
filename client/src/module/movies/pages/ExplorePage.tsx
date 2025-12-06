@@ -1,3 +1,5 @@
+// src/module/discovers/pages/ExplorePage.tsx
+
 import { useEffect, useState, type JSX } from "react";
 import { useParams } from "react-router-dom";
 
@@ -29,6 +31,21 @@ const ExplorePage = () => {
 
   // hiệu ứng fade grid
   const [gridVisible, setGridVisible] = useState(true);
+
+  // detect mobile để giới hạn item render (39 item)
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      // < 640px (theo breakpoint sm của Tailwind) coi là mobile
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    handleResize(); // chạy lần đầu
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const scrollToTopSmooth = () => {
     window.scrollTo({
@@ -217,6 +234,12 @@ const ExplorePage = () => {
   const canNext = totalPages ? currentPage < totalPages : false;
 
   const currentItems = itemsByPage[currentPage] ?? [];
+
+  // 🔥 mobile chỉ render 39 item để grid 3 cột đẹp, desktop/tablet render full
+  const itemsForGrid = isMobile
+    ? currentItems.slice(0, 39)
+    : currentItems;
+
   const headingLabel = mediaType === "movie" ? "Movies" : "TV Shows";
 
   return (
@@ -251,12 +274,12 @@ const ExplorePage = () => {
 
         {/* GRID + FADE */}
         <div
-          className={`grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 
+          className={`grid grid-cols-3 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 
           transition-opacity duration-300 ${
             gridVisible ? "opacity-100" : "opacity-0"
           }`}
         >
-          {currentItems.map((item) => (
+          {itemsForGrid.map((item) => (
             <Card
               key={item.id + "exploreSection"}
               data={item}
@@ -275,28 +298,36 @@ const ExplorePage = () => {
 
         {/* PHÂN TRANG */}
         {totalPages > 1 && (
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center text-xs sm:text-sm">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={!canPrev || loading}
-              className="w-full sm:w-auto rounded-full border border-neutral-600 px-4 py-1.5 font-medium 
-              text-neutral-100 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              ‹ Trước
-            </button>
+          <div className="mt-8 flex flex-col items-center gap-3 text-xs sm:text-sm">
+            {/* Hàng chứa cả Prev / numbers / Next */}
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+              {/* Prev button */}
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={!canPrev || loading}
+                className="rounded-full border border-neutral-600 px-4 py-1.5 font-medium 
+                text-neutral-100 transition hover:bg-neutral-800 
+                disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                ‹ Trước
+              </button>
 
-            <div className="flex flex-wrap justify-center gap-2">
-              {renderPageNumbers()}
+              {/* Page numbers */}
+              <div className="flex flex-wrap justify-center gap-2">
+                {renderPageNumbers()}
+              </div>
+
+              {/* Next button */}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={!canNext || loading}
+                className="rounded-full border border-neutral-600 px-4 py-1.5 font-medium 
+                text-neutral-100 transition hover:bg-neutral-800 
+                disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Sau ›
+              </button>
             </div>
-
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={!canNext || loading}
-              className="w-full sm:w-auto rounded-full border border-neutral-600 px-4 py-1.5 font-medium 
-              text-neutral-100 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Sau ›
-            </button>
           </div>
         )}
       </div>
