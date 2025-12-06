@@ -1,4 +1,4 @@
-import type { TMDBTvSeasonVideo } from "../database/interface/tv_season";
+import type { TMDBTvSeasonVideo } from "../../database/interface/tv_season";
 
 interface VideosSectionProps {
   videos: TMDBTvSeasonVideo[];

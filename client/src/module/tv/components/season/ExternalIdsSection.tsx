@@ -1,4 +1,4 @@
-import type { TMDBTvSeasonExternalIds } from "../database/interface/tv_season";
+import type { TMDBTvSeasonExternalIds } from "../../database/interface/tv_season";
 
 interface ExternalIdsSectionProps {
   external: TMDBTvSeasonExternalIds | null;

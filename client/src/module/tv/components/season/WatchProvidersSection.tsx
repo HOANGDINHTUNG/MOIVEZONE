@@ -1,4 +1,4 @@
-import type { TMDBTvSeasonWatchProviderCountry } from "../database/interface/tv_season";
+import type { TMDBTvSeasonWatchProviderCountry } from "../../database/interface/tv_season";
 
 const IMAGE_BASE = "https://image.tmdb.org/t/p";
 

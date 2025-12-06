@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { TMDBTvSeasonPoster } from "../database/interface/tv_season";
+import type { TMDBTvSeasonPoster } from "../../database/interface/tv_season";
 
 interface ImagesSectionProps {
   posters: TMDBTvSeasonPoster[];

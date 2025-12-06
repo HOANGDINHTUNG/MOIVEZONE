@@ -1,3 +1,4 @@
+// src/module/tv/pages/TvSeasonPage.tsx
 import { useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks/UseCustomeRedux";
@@ -13,21 +14,23 @@ import type {
   TMDBTvSeasonVideo,
   TMDBTvSeasonPoster,
 } from "../database/interface/tv_season";
-import SeasonHero from "../components/SeasonHero";
-import CastCrewSection from "../components/CastCrewSection";
-import WatchProvidersSection from "../components/WatchProvidersSection";
-import ExternalIdsSection from "../components/ExternalIdsSection";
-import VideosSection from "../components/VideosSection";
-import ImagesSection from "../components/ImagesSection";
-import TranslationsSection from "../components/TranslationsSection";
-import ChangesSection from "../components/ChangesSection";
-import EpisodesList from "../components/EpisodesList";
+
+import SeasonHero from "../components/season/SeasonHero";
+import CastCrewSection from "../components/season/CastCrewSection";
+import WatchProvidersSection from "../components/season/WatchProvidersSection";
+import ExternalIdsSection from "../components/season/ExternalIdsSection";
+import VideosSection from "../components/season/VideosSection";
+import ImagesSection from "../components/season/ImagesSection";
+import TranslationsSection from "../components/season/TranslationsSection";
+import ChangesSection from "../components/season/ChangesSection";
+import EpisodesList from "../components/season/EpisodesList";
 
 const TvSeasonPage = () => {
   // Lấy params từ URL
-  const params = useParams();
-  const seriesId = params.seriesId;
-  const seasonNumber = params.seasonNumber;
+  const { seriesId, seasonNumber } = useParams<{
+    seriesId?: string;
+    seasonNumber?: string;
+  }>();
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -96,7 +99,7 @@ const TvSeasonPage = () => {
   // ======== GUARD ROUTE PARAMS ========
   if (!seriesId || !seasonNumber) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-50">
         <p className="text-sm text-slate-300">
           Missing seriesId / seasonNumber in route.
         </p>
@@ -107,7 +110,7 @@ const TvSeasonPage = () => {
   // (Optional) trạng thái loading khi chưa có detail
   if (loading && !detail) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-50">
         <p className="text-sm text-slate-300">Loading season data…</p>
       </div>
     );
@@ -116,8 +119,8 @@ const TvSeasonPage = () => {
   // (Optional) error khi không load được gì
   if (error && !detail) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-50 flex items-center justify-center">
-        <div className="max-w-md px-4 text-center space-y-3">
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-50">
+        <div className="max-w-md space-y-3 px-4 text-center">
           <p className="text-sm text-red-300">Error: {error}</p>
           <button
             className="mt-2 rounded-full border border-slate-600 px-4 py-1.5 text-xs text-slate-100 hover:bg-slate-800"
@@ -149,7 +152,7 @@ const TvSeasonPage = () => {
       />
 
       {/* CONTENT SECTIONS */}
-      <div className="max-w-6xl mx-auto px-4 pb-16 space-y-8">
+      <div className="mx-auto max-w-6xl space-y-8 px-4 pb-16">
         {/* Loading trạng thái nhỏ (khi đang refetch nhưng đã có detail) */}
         {loading && detail && (
           <div className="text-[11px] text-slate-400">
@@ -192,7 +195,11 @@ const TvSeasonPage = () => {
 
         {/* Episodes list riêng phía dưới */}
         <div className="mt-4">
-          <EpisodesList episodes={episodes} />
+          <EpisodesList
+            episodes={episodes}
+            seriesId={Number(seriesId)}
+            seasonNumber={Number(seasonNumber)}
+          />
         </div>
       </div>
     </div>

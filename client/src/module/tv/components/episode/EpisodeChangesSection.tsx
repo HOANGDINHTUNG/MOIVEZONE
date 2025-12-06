@@ -1,14 +1,16 @@
-import type { TMDBTvSeasonChange } from "../database/interface/tv_season";
+import type { TMDBTvEpisodeChange } from "../../database/interface/tv_episode";
 
-interface ChangesSectionProps {
-  changeGroups: TMDBTvSeasonChange[];
+interface EpisodeChangesSectionProps {
+  changeGroups: TMDBTvEpisodeChange[];
 }
 
-const ChangesSection = ({ changeGroups }: ChangesSectionProps) => {
+const EpisodeChangesSection = ({
+  changeGroups,
+}: EpisodeChangesSectionProps) => {
   if (!changeGroups.length) {
     return (
       <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-        <p className="text-xs uppercase tracking-wide text-slate-400 mb-2">
+        <p className="mb-2 text-xs uppercase tracking-wide text-slate-400">
           Changes
         </p>
         <p className="text-[11px] text-slate-400">No recent changes.</p>
@@ -24,22 +26,22 @@ const ChangesSection = ({ changeGroups }: ChangesSectionProps) => {
       }))
     )
     .sort((a, b) => a.time.localeCompare(b.time))
-    .slice(0, 10);
+    .slice(0, 15);
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-      <p className="text-xs uppercase tracking-wide text-slate-400 mb-3">
+    <div className="mt-2 rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
+      <p className="mb-3 text-xs uppercase tracking-wide text-slate-400">
         Changes ({flatItems.length})
       </p>
-      <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
+      <div className="max-h-64 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
         {flatItems.map((c) => (
           <div
             key={c.id}
             className="flex gap-3 rounded-xl bg-slate-900/80 px-3 py-2 text-[11px]"
           >
-            <div className="w-1 shrink-0 rounded-full bg-sky-500/70 mt-0.5" />
+            <div className="mt-0.5 h-4 w-1 shrink-0 rounded-full bg-sky-500/70" />
             <div className="flex-1">
-              <div className="flex items-center justify-between gap-2 mb-1">
+              <div className="mb-1 flex items-center justify-between gap-2">
                 <span className="font-semibold text-slate-100">{c.key}</span>
                 <span className="text-[10px] text-slate-400">
                   {new Date(c.time).toLocaleString()}
@@ -60,4 +62,4 @@ const ChangesSection = ({ changeGroups }: ChangesSectionProps) => {
   );
 };
 
-export default ChangesSection;
+export default EpisodeChangesSection;

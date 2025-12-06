@@ -1,7 +1,7 @@
 import type {
   TMDBTvSeasonAggregateCast,
   TMDBTvSeasonAggregateCrew,
-} from "../database/interface/tv_season";
+} from "../../database/interface/tv_season";
 
 const IMAGE_BASE = "https://image.tmdb.org/t/p";
 

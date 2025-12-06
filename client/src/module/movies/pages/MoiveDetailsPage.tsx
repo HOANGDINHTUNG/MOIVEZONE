@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 
 import { useFetchDetails } from "../../../hooks/useFetchDetails";
@@ -78,6 +78,7 @@ import type {
 } from "../database/interface/tv";
 
 import type { TMDBWatchProviderRegion } from "../database/interface/tv"; // bạn đang dùng chung common ở file tv
+import DetailsSeasonsSection from "../components/DetailsSeasonsSection";
 
 // =======================
 // Kiểu dùng trong trang
@@ -142,6 +143,8 @@ type DetailsPageProps = {
   mediaType?: "movie" | "tv";
 };
 
+type TvSeasonSummary = NonNullable<TMDBTvDetailsResponse["seasons"]>[number];
+
 export type DetailGenre = TMDBGenre;
 
 export type TvNetworkSummary = {
@@ -173,6 +176,8 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
 
   const imageURL = useAppSelector((state) => state.moviesData.imageURL);
   const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
 
   const [liked, setLiked] = useState(false);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
@@ -642,6 +647,16 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
   }, [data, isTv]);
 
   // ========================
+  // TV Season (chỉ TV)
+  // ========================
+
+  const tvSeasons = useMemo<TvSeasonSummary[]>(() => {
+    if (!data || !isTv(data)) return [];
+    const tvData = data as TvDetailsWithAppend;
+    return tvData.seasons ?? [];
+  }, [data, isTv]);
+
+  // ========================
   // Loading / Error
   // ========================
 
@@ -713,6 +728,18 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
         {/* Networks (TV only) */}
         {resolvedMediaType === "tv" && tvNetworks.length > 0 && (
           <DetailsNetworksSection networks={tvNetworks} imageURL={TMDB_IMAGE} />
+        )}
+
+        {/* Seasons (TV only) */}
+        {resolvedMediaType === "tv" && tvSeasons.length > 0 && (
+          <DetailsSeasonsSection
+            seasons={tvSeasons}
+            onSelectSeason={(seasonNumber) => {
+              // id lấy từ useParams ở đầu file
+              if (!id) return;
+              navigate(`/tv/${id}/season/${seasonNumber}`);
+            }}
+          />
         )}
 
         {/* Keywords */}

@@ -1,12 +1,24 @@
-import type { TMDBTvSeasonEpisode } from "../database/interface/tv_season";
+// src/module/tvSeason/components/EpisodesList.tsx
+import { useNavigate } from "react-router-dom";
+import type { TMDBTvSeasonEpisode } from "../../database/interface/tv_season";
 
 const IMAGE_BASE = "https://image.tmdb.org/t/p";
 
 interface EpisodesListProps {
   episodes: TMDBTvSeasonEpisode[];
+  seriesId: number;
+  seasonNumber: number;
 }
 
-const EpisodesList = ({ episodes }: EpisodesListProps) => {
+const EpisodesList = ({ episodes, seriesId, seasonNumber }: EpisodesListProps) => {
+  const navigate = useNavigate();
+
+  const handleEpisodeClick = (episodeNumber: number) => {
+    navigate(
+      `/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}`
+    );
+  };
+
   if (!episodes.length) {
     return (
       <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4 text-sm text-slate-300">
@@ -17,14 +29,14 @@ const EpisodesList = ({ episodes }: EpisodesListProps) => {
 
   return (
     <div className="rounded-2xl border border-slate-800 bg-slate-950/80 backdrop-blur-sm">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
+      <div className="flex items-center justify-between border-b border-slate-800 px-4 py-3">
         <p className="text-xs uppercase tracking-wide text-slate-400">
           Episodes
         </p>
         <p className="text-[11px] text-slate-400">{episodes.length} total</p>
       </div>
 
-      <div className="divide-y divide-slate-800 max-h-[460px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
+      <div className="max-h-[460px] divide-y divide-slate-800 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
         {episodes.map((ep) => {
           const still = ep.still_path
             ? `${IMAGE_BASE}/w300${ep.still_path}`
@@ -34,18 +46,19 @@ const EpisodesList = ({ episodes }: EpisodesListProps) => {
           return (
             <div
               key={ep.id}
-              className="flex gap-3 px-4 py-3 hover:bg-slate-900/80 transition-colors"
+              onClick={() => handleEpisodeClick(ep.episode_number)}
+              className="flex cursor-pointer gap-3 px-4 py-3 transition-colors hover:bg-slate-900/80"
             >
-              <div className="w-24 shrink-0 overflow-hidden rounded-xl bg-slate-900 border border-slate-800">
+              <div className="w-24 shrink-0 overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
                 {still ? (
                   <img
                     src={still}
                     alt={ep.name}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                     loading="lazy"
                   />
                 ) : (
-                  <div className="aspect-video flex items-center justify-center text-[10px] text-slate-500">
+                  <div className="flex aspect-video items-center justify-center text-[10px] text-slate-500">
                     No image
                   </div>
                 )}
@@ -60,6 +73,7 @@ const EpisodesList = ({ episodes }: EpisodesListProps) => {
                     {ep.runtime ? `${ep.runtime} min` : "—"}
                   </p>
                 </div>
+
                 <p className="text-sm font-medium text-slate-50">
                   {ep.name || "Untitled episode"}
                 </p>
@@ -77,7 +91,7 @@ const EpisodesList = ({ episodes }: EpisodesListProps) => {
                     </span>
                   )}
                   {ep.vote_average ? (
-                    <span className="rounded-full bg-emerald-500/80 text-slate-950 font-semibold px-2 py-0.5">
+                    <span className="rounded-full bg-emerald-500/80 px-2 py-0.5 font-semibold text-slate-950">
                       ★ {ep.vote_average.toFixed(1)}
                     </span>
                   ) : null}
