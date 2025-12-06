@@ -79,6 +79,7 @@ import type {
 
 import type { TMDBWatchProviderRegion } from "../database/interface/tv"; // bạn đang dùng chung common ở file tv
 import DetailsSeasonsSection from "../components/DetailsSeasonsSection";
+import DetailsEpisodeGroupsSection from "../components/DetailsEpisodeGroupsSection";
 
 // =======================
 // Kiểu dùng trong trang
@@ -145,6 +146,15 @@ type DetailsPageProps = {
 
 type TvSeasonSummary = NonNullable<TMDBTvDetailsResponse["seasons"]>[number];
 
+export type TvEpisodeGroupSummary = {
+  id: string;
+  name: string;
+  order: number;
+  episode_count: number;
+  group_count: number;
+  type: number;
+};
+
 export type DetailGenre = TMDBGenre;
 
 export type TvNetworkSummary = {
@@ -198,24 +208,34 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
 
   const endpoint = id ? `/${resolvedMediaType}/${id}` : "";
 
+  // 👇 TẠO LIST append_to_response TUỲ THEO LOẠI
+  const appendParts: string[] = [
+    "account_states",
+    "alternative_titles",
+    "changes",
+    "credits",
+    "external_ids",
+    "images",
+    "keywords",
+    "lists",
+    "reviews",
+    "translations",
+    "videos",
+    "watch/providers",
+    "similar",
+    "recommendations",
+  ];
+
+  if (resolvedMediaType === "movie") {
+    appendParts.push("release_dates");
+  }
+
+  if (resolvedMediaType === "tv") {
+    appendParts.push("episode_groups");
+  }
+
   const { data, loading } = useFetchDetails<MediaDetail>(endpoint, {
-    append_to_response: [
-      "account_states",
-      "alternative_titles",
-      "changes",
-      "credits",
-      "external_ids",
-      "images",
-      "keywords",
-      "lists",
-      "release_dates",
-      "reviews",
-      "translations",
-      "videos",
-      "watch/providers",
-      "similar",
-      "recommendations",
-    ].join(","),
+    append_to_response: appendParts.join(","),
   });
 
   const isMovie = useCallback(
@@ -656,6 +676,24 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return tvData.seasons ?? [];
   }, [data, isTv]);
 
+  const tvEpisodeGroups = useMemo<TvEpisodeGroupSummary[]>(() => {
+    if (!data || !isTv(data)) return [];
+
+    const tvData = data as TvDetailsWithAppend;
+    const eg = tvData.episode_groups as TMDBTvEpisodeGroupsResponse | undefined;
+
+    if (!eg?.results?.length) return [];
+
+    return eg.results.map((g) => ({
+      id: g.id,
+      name: g.name,
+      order: g.order, 
+      episode_count: g.episode_count,
+      group_count: g.group_count,
+      type: g.type,
+    }));
+  }, [data, isTv]);
+
   // ========================
   // Loading / Error
   // ========================
@@ -728,6 +766,11 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
         {/* Networks (TV only) */}
         {resolvedMediaType === "tv" && tvNetworks.length > 0 && (
           <DetailsNetworksSection networks={tvNetworks} imageURL={TMDB_IMAGE} />
+        )}
+
+        {/* Episode Groups (TV only) */}
+        {resolvedMediaType === "tv" && tvEpisodeGroups.length > 0 && (
+          <DetailsEpisodeGroupsSection episodeGroups={tvEpisodeGroups} />
         )}
 
         {/* Seasons (TV only) */}

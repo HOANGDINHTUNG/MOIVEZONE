@@ -20,7 +20,8 @@ import personReducer from "../module/persons/store/personSlice";
 import reviewReducer from "../module/review/store/reviewSlice";
 import searchReducer from "../module/search/store/searchSlice";
 import tvSeasonReducer from "../module/tv/store/tvSeasonSlice";
-import tvEpisodeReducer from "../module/tv/store/tvEpisodeSlice"
+import tvEpisodeReducer from "../module/tv/store/tvEpisodeSlice";
+import tvEpisodeGroupReducer from "../module/tv/store/tvEpisodeGroupSlice";
 
 export const store = configureStore({
   reducer: {
@@ -46,6 +47,7 @@ export const store = configureStore({
     search: searchReducer,
     tvSeason: tvSeasonReducer,
     tvEpisode: tvEpisodeReducer,
+    tvEpisodeGroup: tvEpisodeGroupReducer,
   },
 });
 

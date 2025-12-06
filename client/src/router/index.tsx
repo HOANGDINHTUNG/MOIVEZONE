@@ -29,6 +29,7 @@ import ReviewDetailsPage from "../module/review/pages/ReviewDetailsPage";
 import SearchAdvancedPage from "../module/search/pages/SearchAdvancedPage";
 import TvSeasonPage from "../module/tv/pages/TvSeasonPage";
 import TvEpisodePage from "../module/tv/pages/TvEpisodePage";
+import TvEpisodeGroupPage from "../module/tv/pages/TvEpisodeGroupPage";
 
 const router = createBrowserRouter([
   // Layout chính của app
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
           {
             path: "tv/:seriesId/season/:seasonNumber/episode/:episodeNumber",
             element: <TvEpisodePage />,
+          },
+          {
+            path: "tv/episode_group/:tv_episode_group_id",
+            element: <TvEpisodeGroupPage />,
           },
 
           // TMDB details

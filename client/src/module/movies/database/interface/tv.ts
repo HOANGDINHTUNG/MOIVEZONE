@@ -331,6 +331,7 @@ export interface TMDBTvEpisodeGroupItem {
   name: string;
   network: TMDBTvEpisodeGroupNetwork;
   type: number;
+  order: number;
 }
 
 export interface TMDBTvEpisodeGroupsResponse {
