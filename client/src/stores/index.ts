@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import moviesReducer from "../module/movies/store/moviesSlice"
+import moviesReducer from "../module/movies/store/moviesSlice";
 import languageReducer from "../module/movies/store/languageSlice";
 import collectionReducer from "../module/collections/store/collectionSlice";
 import companyReducer from "../module/company/store/companySlice";
@@ -19,6 +19,7 @@ import tvCategoriesReducer from "../module/movies/store/tvCategorySlice";
 import personReducer from "../module/persons/store/personSlice";
 import reviewReducer from "../module/review/store/reviewSlice";
 import searchReducer from "../module/search/store/searchSlice";
+import tvSeasonReducer from "../module/tv/store/tvSeasonSlice";
 
 export const store = configureStore({
   reducer: {
@@ -42,6 +43,7 @@ export const store = configureStore({
     person: personReducer,
     review: reviewReducer,
     search: searchReducer,
+    tvSeason: tvSeasonReducer,
   },
 });
 

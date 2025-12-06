@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { TMDBGenre } from "../database/interface/genre";
 import { tmdbGenresApi } from "../../../api/movie/TMDBGenres.api";
 
-
 interface GenresState {
   movieGenres: TMDBGenre[];
   tvGenres: TMDBGenre[];

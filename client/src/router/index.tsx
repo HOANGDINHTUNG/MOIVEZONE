@@ -27,6 +27,7 @@ import PersonDetailsPage from "../module/persons/pages/PersonDetailsPage";
 import PersonListPage from "../module/persons/pages/PersonListPage";
 import ReviewDetailsPage from "../module/review/pages/ReviewDetailsPage";
 import SearchAdvancedPage from "../module/search/pages/SearchAdvancedPage";
+import TvSeasonPage from "../module/tv/pages/TvSeasonPage";
 
 const router = createBrowserRouter([
   // Layout chính của app
@@ -52,6 +53,8 @@ const router = createBrowserRouter([
           { path: "movie/:id", element: <DetailsPage mediaType="movie" /> },
           { path: "tv/:id", element: <DetailsPage mediaType="tv" /> },
 
+          { path: "tv/:seriesId/season/:seasonNumber", element: <TvSeasonPage /> },
+
           // TMDB details
           { path: "collection/:id", element: <CollectionPage /> },
           { path: "company/:id", element: <CompanyPage /> },
@@ -68,7 +71,7 @@ const router = createBrowserRouter([
           { path: "person", element: <PersonListPage /> },
           { path: "category_movie/:type", element: <MoviesCategoryPage /> },
           { path: "category_tv/:type", element: <TvCategoryPage /> },
-          { path: "search_advanced", element: <SearchAdvancedPage />}
+          { path: "search_advanced", element: <SearchAdvancedPage /> },
 
           // // Account / news / payment
           // { path: "account", element: <AccountPage /> },
