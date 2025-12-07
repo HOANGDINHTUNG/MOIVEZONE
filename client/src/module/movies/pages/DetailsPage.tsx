@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type FC } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 
@@ -15,10 +15,20 @@ import DetailsReviewsSection from "../components/DetailsReviewsSection";
 import DetailsRelatedSection from "../components/DetailsRelatedSection";
 import DetailsAlternativeTitlesSection from "../components/DetailsAlternativeTitlesSection";
 import DetailsNetworksSection from "../components/DetailsNetworksSection";
+import DetailsSeasonsSection from "../components/DetailsSeasonsSection";
+import DetailsEpisodeGroupsSection from "../components/DetailsEpisodeGroupsSection";
+
+// Các section mới
+import DetailsFactsSection from "../components/DetailsFactsSection";
+import DetailsImagesSection from "../components/DetailsImagesSection";
+import DetailsVideosSection from "../components/DetailsVideosSection";
+import DetailsListsSection from "../components/DetailsListsSection";
+import DetailsTranslationsSection from "../components/DetailsTranslationsSection";
+import DetailsChangeLogSection from "../components/DetailsChangeLogSection";
 
 import { fetchTMDBGenres } from "../store/genresSlice";
 
-// ===== MOVIE TYPES (chính thức) =====
+// ===== MOVIE TYPES =====
 import type {
   TMDBMovieDetailsResponse,
   TMDBMovieSummary,
@@ -44,9 +54,10 @@ import type {
   TMDBGenre,
   TMDBProductionCompany,
   TMDBMovieReleaseDatesByCountry,
+  TMDBListSummary,
 } from "../database/interface/movie";
 
-// ===== TV TYPES (chính thức) =====
+// ===== TV TYPES =====
 import type {
   TMDBTvDetailsResponse,
   TMDBTvAccountStatesResponse,
@@ -75,11 +86,15 @@ import type {
   TMDBTvNetwork,
   TMDBTvSimilarItem,
   TMDBTvRecommendationItem,
+  TMDBTvSeasonSummary as TMDBTvSeasonSummaryOfficial,
+  TMDBTvEpisodeGroupNetwork,
+  TMDBTvChangesItem,
+  TMDBTvChangesItemValue,
+  TMDBTvListSummary,
+  TMDBWatchProviderRegion,
 } from "../database/interface/tv";
 
-import type { TMDBWatchProviderRegion } from "../database/interface/tv"; // bạn đang dùng chung common ở file tv
-import DetailsSeasonsSection from "../components/DetailsSeasonsSection";
-import DetailsEpisodeGroupsSection from "../components/DetailsEpisodeGroupsSection";
+const TMDB_IMAGE = "https://image.tmdb.org/t/p";
 
 // =======================
 // Kiểu dùng trong trang
@@ -126,17 +141,15 @@ type TvDetailsWithAppend = TMDBTvDetailsResponse & {
 
 type MediaDetail = MovieDetailsWithAppend | TvDetailsWithAppend;
 
-// Card list (similar + recommendations)
 type MediaSummary =
   | TMDBMovieSummary
   | TMDBTvSimilarItem
   | TMDBTvRecommendationItem;
 
-// Keyword / Alt titles / Reviews dùng union từ 2 phía
 type KeywordItem = TMDBMovieKeyword | TMDBTvKeyword;
 type AltTitleItem = TMDBMovieAlternativeTitle | TMDBTvAlternativeTitleItem;
 type ReviewItem = TMDBMovieReview | TMDBTvReview;
-type DetailVideoItem = TMDBMovieVideo | TMDBTvVideoItem;
+export type DetailVideoItem = TMDBMovieVideo | TMDBTvVideoItem;
 
 type ExternalIds = TMDBMovieExternalIdsResponse | TMDBTvExternalIdsResponse;
 
@@ -144,8 +157,9 @@ type DetailsPageProps = {
   mediaType?: "movie" | "tv";
 };
 
-type TvSeasonSummary = NonNullable<TMDBTvDetailsResponse["seasons"]>[number];
+type TvSeasonSummary = TMDBTvSeasonSummaryOfficial;
 
+// dùng cho Episode Groups
 export type TvEpisodeGroupSummary = {
   id: string;
   name: string;
@@ -153,6 +167,7 @@ export type TvEpisodeGroupSummary = {
   episode_count: number;
   group_count: number;
   type: number;
+  network?: TMDBTvEpisodeGroupNetwork | null;
 };
 
 export type DetailGenre = TMDBGenre;
@@ -173,30 +188,78 @@ type UnifiedCastItem = {
   original_name: string;
   popularity: number;
   profile_path: string | null;
-  cast_id?: number; // 👈 thêm vào, optional
+  cast_id?: number;
   character: string;
   credit_id: string;
   order: number;
 };
 
-const TMDB_IMAGE = "https://image.tmdb.org/t/p";
+type MediaAccountStates =
+  | TMDBMovieAccountStatesResponse
+  | TMDBTvAccountStatesResponse;
 
-const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
+type MediaImages = TMDBMovieImagesResponse | TMDBTvImagesResponse;
+
+type UnifiedListItem = TMDBListSummary | TMDBTvListSummary;
+
+type MediaTranslationSummary = {
+  iso_3166_1: string;
+  iso_639_1: string;
+  name: string;
+  english_name: string;
+};
+
+type MediaChangeSummary = {
+  key: string;
+  action: string;
+  time: string;
+};
+
+type MediaFacts = {
+  status?: string;
+  originalLanguage?: string;
+  spokenLanguages?: string[];
+  productionCountries?: string[];
+  budget?: number | null;
+  revenue?: number | null;
+  inProduction?: boolean;
+  numberOfSeasons?: number | null;
+  numberOfEpisodes?: number | null;
+  lastAirDate?: string | null;
+  nextEpisodeName?: string | null;
+};
+
+type TMDBTvDetailsWithNextEpisode = TMDBTvDetailsResponse & {
+  next_episode_to_air?: {
+    id: number;
+    name: string;
+    overview: string;
+    air_date: string;
+    episode_number: number;
+    season_number: number;
+    still_path: string | null;
+    vote_average: number;
+    vote_count: number;
+  } | null;
+};
+
+const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
   const { explore, id } = useParams<{ explore?: string; id: string }>();
 
   const imageURL = useAppSelector((state) => state.moviesData.imageURL);
-  const dispatch = useAppDispatch();
+  const genresState = useAppSelector((state) => state.tmdbGenres);
 
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [liked, setLiked] = useState(false);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
+  const [activeVideoKey, setActiveVideoKey] = useState<string | null>(null);
 
-  const genresState = useAppSelector((state) => state.tmdbGenres);
   const activeGenreMap =
     (mediaType ?? explore) === "tv" ? genresState.tvMap : genresState.movieMap;
 
-  // nếu chưa load genres thì gọi 1 lần
+  // load genres nếu chưa có
   useEffect(() => {
     if (!genresState.loaded && !genresState.loading) {
       dispatch(fetchTMDBGenres());
@@ -208,7 +271,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
 
   const endpoint = id ? `/${resolvedMediaType}/${id}` : "";
 
-  // 👇 TẠO LIST append_to_response TUỲ THEO LOẠI
+  // append_to_response tùy loại
   const appendParts: string[] = [
     "account_states",
     "alternative_titles",
@@ -231,7 +294,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
   }
 
   if (resolvedMediaType === "tv") {
-    appendParts.push("episode_groups");
+    appendParts.push("episode_groups", "content_ratings");
   }
 
   const { data, loading } = useFetchDetails<MediaDetail>(endpoint, {
@@ -239,16 +302,18 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
   });
 
   const isMovie = useCallback(
-    (d: MediaDetail): d is TMDBMovieDetailsResponse =>
+    (d: MediaDetail): d is MovieDetailsWithAppend =>
       "title" in d && "release_date" in d,
     []
   );
 
   const isTv = useCallback(
-    (d: MediaDetail): d is TMDBTvDetailsResponse =>
+    (d: MediaDetail): d is TvDetailsWithAppend =>
       "name" in d && "first_air_date" in d,
     []
   );
+
+  // ========== Các field cơ bản ==========
   const title = useMemo(() => {
     if (!data) return "";
     if ("title" in data) return data.title;
@@ -264,7 +329,6 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
   }, [data]);
 
   const overview = data?.overview ?? "";
-
   const posterPath = data?.poster_path ?? null;
   const backdropPath = data?.backdrop_path ?? null;
 
@@ -309,10 +373,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
   const userScore = Math.round(rating * 10);
   const tagline = data?.tagline ?? "";
 
-  // ========================
-  // Credits, director/creator, writer
-  // ========================
-
+  // ========== Credits / Director / Writer ==========
   const credits = data && "credits" in data ? data.credits : undefined;
 
   const directorOrCreator = useMemo(() => {
@@ -393,10 +454,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return [];
   }, [data, isMovie, isTv]);
 
-  // ========================
-  // VIDEOS (Movie + TV)
-  // ========================
-
+  // ========== Videos ==========
   const videos = useMemo<DetailVideoItem[]>(() => {
     if (!data) return [];
 
@@ -435,10 +493,13 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return anyYoutube ?? null;
   }, [videos]);
 
-  // ========================
-  // Similar & Recommendations
-  // ========================
+  const extraVideos = useMemo<DetailVideoItem[]>(() => {
+    if (!videos.length) return [];
+    if (!trailer) return videos;
+    return videos.filter((v) => v.id !== trailer.id);
+  }, [videos, trailer]);
 
+  // ========== Similar & Recommendations ==========
   const similarList: MediaSummary[] = useMemo(() => {
     if (!data) return [];
 
@@ -475,33 +536,50 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return [];
   }, [data, isMovie, isTv]);
 
-  // ========================
-  // Certification (Movie)
-  // ========================
-
+  // ========== Certification / Content rating ==========
   const certification = useMemo(() => {
-    if (!data || !isMovie(data)) return "";
-    const movieData = data as MovieDetailsWithAppend;
-    const rd = movieData.release_dates as
-      | TMDBMovieReleaseDatesResponse
-      | undefined;
-    const results = rd?.results ?? [];
-    if (!results.length) return "";
+    if (!data) return "";
 
-    const preferred: TMDBMovieReleaseDatesByCountry | undefined =
-      results.find((r) => r.iso_3166_1 === "US") ||
-      results.find((r) => r.iso_3166_1 === "VN") ||
-      results[0];
+    // Movie: release_dates
+    if (isMovie(data)) {
+      const movieData = data as MovieDetailsWithAppend;
+      const rd = movieData.release_dates as
+        | TMDBMovieReleaseDatesResponse
+        | undefined;
+      const results = rd?.results ?? [];
+      if (!results.length) return "";
 
-    if (!preferred) return "";
-    const rel = preferred.release_dates.find((r) => r.certification);
-    return rel?.certification ?? "";
-  }, [data, isMovie]);
+      const preferred: TMDBMovieReleaseDatesByCountry | undefined =
+        results.find((r) => r.iso_3166_1 === "US") ||
+        results.find((r) => r.iso_3166_1 === "VN") ||
+        results[0];
 
-  // ========================
-  // Keywords
-  // ========================
+      if (!preferred) return "";
+      const rel = preferred.release_dates.find((r) => r.certification);
+      return rel?.certification ?? "";
+    }
 
+    // TV: content_ratings
+    if (isTv(data)) {
+      const tvData = data as TvDetailsWithAppend;
+      const cr = tvData.content_ratings as
+        | TMDBTvContentRatingsResponse
+        | undefined;
+      const results = cr?.results ?? [];
+      if (!results.length) return "";
+
+      const preferred =
+        results.find((r) => r.iso_3166_1 === "US") ||
+        results.find((r) => r.iso_3166_1 === "VN") ||
+        results[0];
+
+      return preferred?.rating ?? "";
+    }
+
+    return "";
+  }, [data, isMovie, isTv]);
+
+  // ========== Keywords ==========
   const keywords = useMemo<KeywordItem[]>(() => {
     if (!data) return [];
 
@@ -518,10 +596,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return [];
   }, [data, isMovie, isTv]);
 
-  // ========================
-  // Alternative titles
-  // ========================
-
+  // ========== Alternative titles ==========
   const alternativeTitles = useMemo<AltTitleItem[]>(() => {
     if (!data) return [];
 
@@ -542,10 +617,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return [];
   }, [data, isMovie, isTv]);
 
-  // ========================
-  // Watch providers (Movie + TV)
-  // ========================
-
+  // ========== Watch providers ==========
   const watchProviders = useMemo<
     Record<string, TMDBWatchProviderRegion> | undefined
   >(() => {
@@ -568,10 +640,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return undefined;
   }, [data, isMovie, isTv]);
 
-  // ========================
-  // Reviews
-  // ========================
-
+  // ========== Reviews ==========
   const reviews = useMemo<ReviewItem[]>(() => {
     if (!data) return [];
 
@@ -588,10 +657,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return [];
   }, [data, isMovie, isTv]);
 
-  // ========================
-  // External IDs
-  // ========================
-
+  // ========== External IDs ==========
   const externalIds = useMemo<ExternalIds | undefined>(() => {
     if (!data) return undefined;
 
@@ -606,17 +672,12 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return undefined;
   }, [data, isMovie, isTv]);
 
-  // ========================
-  // Collection (Movie)
-  // ========================
-
+  // ========== Collection (Movie) ==========
   const movieCollection = useMemo<MovieCollection>(() => {
     if (!data || resolvedMediaType !== "movie") return null;
 
-    // kiểu chi tiết của movie (có belongs_to_collection)
     const movieData = data as MovieDetailsWithAppend;
 
-    // TMDB thực tế trả object, nhưng type bạn đang để là string nên cần cast
     const raw = movieData.belongs_to_collection as unknown as {
       id: number;
       name: string;
@@ -627,10 +688,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return raw ?? null;
   }, [data, resolvedMediaType]);
 
-  // ========================
-  // Production companies & genres
-  // ========================
-
+  // ========== Production companies & genres ==========
   const productionCompanies = useMemo<TMDBProductionCompany[]>(() => {
     if (!data) return [];
     if (
@@ -648,10 +706,7 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return data.genres as DetailGenre[];
   }, [data]);
 
-  // ========================
-  // TV Networks (chỉ TV)
-  // ========================
-
+  // ========== TV Networks ==========
   const tvNetworks = useMemo<TvNetworkSummary[]>(() => {
     if (!data || !isTv(data)) return [];
 
@@ -666,16 +721,14 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     }));
   }, [data, isTv]);
 
-  // ========================
-  // TV Season (chỉ TV)
-  // ========================
-
+  // ========== TV Seasons ==========
   const tvSeasons = useMemo<TvSeasonSummary[]>(() => {
     if (!data || !isTv(data)) return [];
     const tvData = data as TvDetailsWithAppend;
     return tvData.seasons ?? [];
   }, [data, isTv]);
 
+  // ========== Episode Groups ==========
   const tvEpisodeGroups = useMemo<TvEpisodeGroupSummary[]>(() => {
     if (!data || !isTv(data)) return [];
 
@@ -687,20 +740,193 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
     return eg.results.map((g) => ({
       id: g.id,
       name: g.name,
-      order: g.order, 
+      order: g.order,
       episode_count: g.episode_count,
       group_count: g.group_count,
       type: g.type,
+      network: g.network ?? null,
     }));
   }, [data, isTv]);
 
-  // ========================
-  // Loading / Error
-  // ========================
+  // ========== Account states ==========
+  const accountStates = useMemo<MediaAccountStates | undefined>(() => {
+    if (!data) return undefined;
 
+    if (isMovie(data)) {
+      return data.account_states as TMDBMovieAccountStatesResponse | undefined;
+    }
+
+    if (isTv(data)) {
+      return data.account_states as TMDBTvAccountStatesResponse | undefined;
+    }
+
+    return undefined;
+  }, [data, isMovie, isTv]);
+
+  // ========== Images ==========
+  const mediaImages = useMemo<MediaImages | undefined>(() => {
+    if (!data) return undefined;
+
+    if (isMovie(data)) {
+      return data.images as TMDBMovieImagesResponse | undefined;
+    }
+
+    if (isTv(data)) {
+      return data.images as TMDBTvImagesResponse | undefined;
+    }
+
+    return undefined;
+  }, [data, isMovie, isTv]);
+
+  // ========== Lists ==========
+  const mediaLists = useMemo<
+    TMDBMovieListsResponse | TMDBTvListsResponse | undefined
+  >(() => {
+    if (!data) return undefined;
+
+    if (isMovie(data)) {
+      return data.lists as TMDBMovieListsResponse | undefined;
+    }
+
+    if (isTv(data)) {
+      return data.lists as TMDBTvListsResponse | undefined;
+    }
+
+    return undefined;
+  }, [data, isMovie, isTv]);
+
+  const mediaListItems = useMemo<UnifiedListItem[]>(() => {
+    return mediaLists?.results ?? [];
+  }, [mediaLists]);
+
+  // ========== Translations ==========
+  const translations = useMemo<MediaTranslationSummary[]>(() => {
+    if (!data) return [];
+
+    if (isMovie(data)) {
+      const t = data.translations as TMDBMovieTranslationsResponse | undefined;
+      return (
+        t?.translations.map((tr) => ({
+          iso_3166_1: tr.iso_3166_1,
+          iso_639_1: tr.iso_639_1,
+          name: tr.name,
+          english_name: tr.english_name,
+        })) ?? []
+      );
+    }
+
+    if (isTv(data)) {
+      const t = data.translations as TMDBTvTranslationsResponse | undefined;
+      return (
+        t?.translations.map((tr) => ({
+          iso_3166_1: tr.iso_3166_1,
+          iso_639_1: tr.iso_639_1,
+          name: tr.name,
+          english_name: tr.english_name,
+        })) ?? []
+      );
+    }
+
+    return [];
+  }, [data, isMovie, isTv]);
+
+  // ========== Change log ==========
+  const changeLog = useMemo<MediaChangeSummary[]>(() => {
+    if (!data) return [];
+
+    const maxItems = 10;
+
+    if (isMovie(data)) {
+      const ch = data.changes as TMDBMovieChangesResponse | undefined;
+      const raw = ch?.changes ?? [];
+      const flat: MediaChangeSummary[] = [];
+
+      raw.forEach((c) => {
+        c.items.forEach((item) => {
+          flat.push({
+            key: c.key,
+            action: item.action,
+            time: item.time,
+          });
+        });
+      });
+
+      return flat.sort((a, b) => (a.time < b.time ? 1 : -1)).slice(0, maxItems);
+    }
+
+    if (isTv(data)) {
+      const ch = data.changes as TMDBTvChangesResponse | undefined;
+      const raw = ch?.changes ?? [];
+      const flat: MediaChangeSummary[] = [];
+
+      raw.forEach((c: TMDBTvChangesItem) => {
+        c.items.forEach((item: TMDBTvChangesItemValue) => {
+          flat.push({
+            key: c.key,
+            action: item.action,
+            time: item.time,
+          });
+        });
+      });
+
+      return flat.sort((a, b) => (a.time < b.time ? 1 : -1)).slice(0, maxItems);
+    }
+
+    return [];
+  }, [data, isMovie, isTv]);
+
+  // ========== Facts ==========
+  const facts = useMemo<MediaFacts | null>(() => {
+    if (!data) return null;
+
+    if (isMovie(data)) {
+      const movie = data as TMDBMovieDetailsResponse;
+      return {
+        status: movie.status,
+        originalLanguage: movie.original_language,
+        spokenLanguages: movie.spoken_languages?.map((l) => l.english_name),
+        productionCountries: movie.production_countries?.map((c) => c.name),
+        budget: movie.budget,
+        revenue: movie.revenue,
+        inProduction: undefined,
+        numberOfSeasons: null,
+        numberOfEpisodes: null,
+        lastAirDate: null,
+        nextEpisodeName: null,
+      };
+    }
+
+    if (isTv(data)) {
+      const tv = data as TMDBTvDetailsWithNextEpisode;
+
+      return {
+        status: tv.status,
+        originalLanguage: tv.original_language,
+        spokenLanguages: tv.spoken_languages?.map((l) => l.english_name),
+        productionCountries: tv.production_countries?.map((c) => c.name),
+        budget: null,
+        revenue: null,
+        inProduction: tv.in_production,
+        numberOfSeasons: tv.number_of_seasons,
+        numberOfEpisodes: tv.number_of_episodes,
+        lastAirDate: tv.last_air_date,
+        // ⭐ chuẩn: chỉ lấy name (string), không truyền object
+        nextEpisodeName: tv.next_episode_to_air?.name ?? null,
+      };
+    }
+
+    return null;
+  }, [data, isMovie, isTv]);
+
+  const homepage = useMemo(() => {
+    if (!data) return "";
+    return data.homepage || "";
+  }, [data]);
+
+  // ========== Loading / Error ==========
   if (loading || !data) {
     return (
-      <section className="max-w-6xl mx-auto px-3 py-6">
+      <section className="mx-auto max-w-6xl px-3 py-6">
         <p>Đang tải chi tiết...</p>
       </section>
     );
@@ -708,19 +934,16 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
 
   if (!id) {
     return (
-      <section className="max-w-6xl mx-auto px-3 py-6">
+      <section className="mx-auto max-w-6xl px-3 py-6">
         <p>Không tìm thấy nội dung.</p>
       </section>
     );
   }
 
-  // ========================
-  // RENDER
-  // ========================
-
+  // ========== Render ==========
   return (
     <section className="w-full">
-      {/* Top hero */}
+      {/* HERO */}
       <DetailsHero
         imageURL={imageURL}
         posterPath={posterPath}
@@ -736,7 +959,11 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
         userScore={userScore}
         voteCount={voteCount}
         trailerExists={!!trailer}
-        onOpenTrailer={() => setIsTrailerOpen(true)}
+        onOpenTrailer={() => {
+          if (!trailer) return;
+          setActiveVideoKey(trailer.key);
+          setIsTrailerOpen(true);
+        }}
         liked={liked}
         onToggleLike={() => setLiked((prev) => !prev)}
         overview={overview}
@@ -749,10 +976,10 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
         activeGenreMap={activeGenreMap}
       />
 
-      {/* Trailer block + modal */}
-      {trailer && isTrailerOpen && (
+      {/* MODAL VIDEO */}
+      {isTrailerOpen && activeVideoKey && (
         <VideoPlay
-          videoId={trailer.key}
+          videoId={activeVideoKey}
           onClose={() => setIsTrailerOpen(false)}
         />
       )}
@@ -763,9 +990,15 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
           <DetailsTopCastSection starCast={starCast} imageURL={imageURL} />
         )}
 
-        {/* Networks (TV only) */}
-        {resolvedMediaType === "tv" && tvNetworks.length > 0 && (
-          <DetailsNetworksSection networks={tvNetworks} imageURL={TMDB_IMAGE} />
+        {/* Seasons (TV only) */}
+        {resolvedMediaType === "tv" && tvSeasons.length > 0 && (
+          <DetailsSeasonsSection
+            seasons={tvSeasons}
+            onSelectSeason={(seasonNumber) => {
+              if (!id) return;
+              navigate(`/tv/${id}/season/${seasonNumber}`);
+            }}
+          />
         )}
 
         {/* Episode Groups (TV only) */}
@@ -773,17 +1006,54 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
           <DetailsEpisodeGroupsSection episodeGroups={tvEpisodeGroups} />
         )}
 
-        {/* Seasons (TV only) */}
-        {resolvedMediaType === "tv" && tvSeasons.length > 0 && (
-          <DetailsSeasonsSection
-            seasons={tvSeasons}
-            onSelectSeason={(seasonNumber) => {
-              // id lấy từ useParams ở đầu file
-              if (!id) return;
-              navigate(`/tv/${id}/season/${seasonNumber}`);
+        {/* Videos */}
+        {(trailer || extraVideos.length > 0) && (
+          <DetailsVideosSection
+            mainTrailer={trailer}
+            extraVideos={extraVideos}
+            onPlay={(video) => {
+              setActiveVideoKey(video.key);
+              setIsTrailerOpen(true);
             }}
           />
         )}
+
+        {/* Images gallery */}
+        {mediaImages && (
+          <DetailsImagesSection
+            images={mediaImages}
+            imageBaseUrl={TMDB_IMAGE}
+          />
+        )}
+
+        {/* Similar & Recommendations */}
+        <DetailsRelatedSection
+          similarList={similarList}
+          recommendationList={recommendationList}
+          resolvedMediaType={resolvedMediaType}
+        />
+
+        {/* Reviews */}
+        <DetailsReviewsSection reviews={reviews} />
+
+        {/* Facts */}
+        {facts && (
+          <DetailsFactsSection
+            facts={facts}
+            ageRating={certification}
+            homepage={homepage}
+            resolvedMediaType={resolvedMediaType}
+            accountStates={accountStates}
+          />
+        )}
+
+        {/* Networks (TV only) */}
+        {resolvedMediaType === "tv" && tvNetworks.length > 0 && (
+          <DetailsNetworksSection networks={tvNetworks} imageURL={TMDB_IMAGE} />
+        )}
+
+        {/* Watch providers */}
+        <DetailsWatchProvidersSection watchProviders={watchProviders} />
 
         {/* Keywords */}
         <DetailsKeywordsSection keywords={keywords} />
@@ -793,21 +1063,23 @@ const MoiveDetailsPage: React.FC<DetailsPageProps> = ({ mediaType }) => {
           alternativeTitles={alternativeTitles}
         />
 
-        {/* Where to watch */}
-        <DetailsWatchProvidersSection watchProviders={watchProviders} />
+        {/* Lists */}
+        {mediaListItems.length > 0 && (
+          <DetailsListsSection lists={mediaListItems} />
+        )}
 
-        {/* Reviews */}
-        <DetailsReviewsSection reviews={reviews} />
+        {/* Translations */}
+        {translations.length > 0 && (
+          <DetailsTranslationsSection translations={translations} />
+        )}
 
-        {/* Similar & Recommendations */}
-        <DetailsRelatedSection
-          similarList={similarList}
-          recommendationList={recommendationList}
-          resolvedMediaType={resolvedMediaType}
-        />
+        {/* Change log */}
+        {changeLog.length > 0 && (
+          <DetailsChangeLogSection changeLog={changeLog} />
+        )}
       </div>
     </section>
   );
 };
 
-export default MoiveDetailsPage;
+export default DetailsPage;

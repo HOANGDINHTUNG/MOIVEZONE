@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Home from "../module/home/pages/HomePage";
 import ExplorePage from "../module/movies/pages/ExplorePage";
-import DetailsPage from "../module/movies/pages/MoiveDetailsPage";
+import DetailsPage from "../module/movies/pages/DetailsPage";
 import SearchPage from "../module/home/pages/SearchPage";
 import AllMoviesPage from "../module/movies/pages/AllMoviesPage";
 import AllTvShowsPage from "../module/movies/pages/AllTvShowsPage";

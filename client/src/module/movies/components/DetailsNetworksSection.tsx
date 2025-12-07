@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { TvNetworkSummary } from "../pages/MoiveDetailsPage";
+import type { TvNetworkSummary } from "../pages/DetailsPage";
 import Divider from "../../../components/common/ux/Divider";
 
 type DetailsNetworksSectionProps = {

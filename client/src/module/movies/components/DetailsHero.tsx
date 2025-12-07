@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Divider from "../../../components/common/ux/Divider";
-import type { DetailGenre } from "../pages/MoiveDetailsPage";
+import type { DetailGenre } from "../pages/DetailsPage";
 import { useMemo } from "react";
 
 type ExternalIds = {

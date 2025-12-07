@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import type { TvEpisodeGroupSummary } from "../pages/MoiveDetailsPage";
+import type { TvEpisodeGroupSummary } from "../pages/DetailsPage";
+
+const TMDB_IMAGE = "https://image.tmdb.org/t/p";
 
 const typeLabelMap: Record<number, string> = {
   1: "Original air date",
@@ -29,9 +31,12 @@ const DetailsEpisodeGroupsSection = ({
     [episodeGroups]
   );
 
-  if (!sortedGroups.length) {
-    return null;
-  }
+  const totalEpisodes = useMemo(
+    () => sortedGroups.reduce((sum, g) => sum + g.episode_count, 0),
+    [sortedGroups]
+  );
+
+  if (!sortedGroups.length) return null;
 
   const handleOpenGroup = (id: string) => {
     navigate(`/tv/episode_group/${id}`);
@@ -47,12 +52,11 @@ const DetailsEpisodeGroupsSection = ({
             Episode Groups
           </p>
           <p className="text-[11px] text-slate-500">
-            {sortedGroups.length} groups •{" "}
-            {sortedGroups.reduce((sum, g) => sum + g.episode_count, 0)} episodes
+            {sortedGroups.length} groups • {totalEpisodes} episodes
           </p>
         </div>
 
-        {/* Nút "View episode groups" – fulfil yêu cầu 1 */}
+        {/* Nút "View episode groups" – desktop */}
         <button
           type="button"
           onClick={() => handleOpenGroup(firstGroup.id)}
@@ -62,10 +66,11 @@ const DetailsEpisodeGroupsSection = ({
         </button>
       </div>
 
-      {/* List group đẹp, hiện đại */}
-      <div className="flex flex-col gap-2 max-h-72 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
+      {/* Danh sách group */}
+      <div className="flex max-h-72 flex-col gap-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
         {sortedGroups.map((g) => {
           const typeLabel = typeLabelMap[g.type] ?? `Type ${g.type}`;
+          const hasNetwork = !!g.network;
 
           return (
             <button
@@ -81,7 +86,24 @@ const DetailsEpisodeGroupsSection = ({
                 <p className="mt-0.5 text-[10px] text-slate-400">
                   {typeLabel} • {g.group_count} groups • {g.episode_count} eps
                 </p>
+
+                {hasNetwork && (
+                  <div className="mt-1 flex items-center gap-2">
+                    {g.network?.logo_path && (
+                      <img
+                        src={`${TMDB_IMAGE}/w92${g.network.logo_path}`}
+                        alt={g.network.name}
+                        className="h-4 w-auto rounded bg-slate-800 object-contain"
+                        loading="lazy"
+                      />
+                    )}
+                    <span className="text-[10px] text-slate-300">
+                      {g.network?.name}
+                    </span>
+                  </div>
+                )}
               </div>
+
               <span className="shrink-0 text-[10px] text-slate-500">
                 Order {g.order}
               </span>
@@ -90,7 +112,7 @@ const DetailsEpisodeGroupsSection = ({
         })}
       </div>
 
-      {/* Nút view ở mobile (hiện dưới) */}
+      {/* Nút view ở mobile */}
       <button
         type="button"
         onClick={() => handleOpenGroup(firstGroup.id)}
