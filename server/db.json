@@ -9,6 +9,16 @@
       "accountId": 1764585987282,
       "createdAt": "2025-12-01T10:46:27.282Z",
       "id": 1
+    },
+    {
+      "email": "azunn@gmail.com",
+      "username": "azunn@gmail.com",
+      "password": "12345678",
+      "apiKey": "mvk_ve6nhcdujyc821zrigi7cdqrh0kkw8cx",
+      "sessionId": "mvs_4v9tn4csucxq0ttk297a3h7696oe8liwtjzh0m8b",
+      "accountId": 1765204649191,
+      "createdAt": "2025-12-08T14:37:29.191Z",
+      "id": 2
     }
   ]
 }

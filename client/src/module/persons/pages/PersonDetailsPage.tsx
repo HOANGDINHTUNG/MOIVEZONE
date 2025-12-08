@@ -62,7 +62,8 @@ const PersonDetailsPage = () => {
     : null;
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-50">
+    // SỬA: Thêm background và text color cho Light/Dark mode
+    <div className="min-h-screen bg-gray-50 text-gray-900 transition-colors duration-300 dark:bg-neutral-950 dark:text-neutral-50">
       {/* HERO */}
       <PersonHero
         details={details}
@@ -73,14 +74,16 @@ const PersonDetailsPage = () => {
 
       {/* MAIN CONTENT */}
       <main className="mx-auto max-w-6xl space-y-10 px-4 pb-16 pt-6">
-        {/* Loading & error */}
+        {/* Loading state */}
         {status === "loading" && (
-          <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-4 text-sm text-neutral-300">
+          <div className="rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-600 dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-neutral-300">
             Đang tải thông tin người này...
           </div>
         )}
+        
+        {/* Error state */}
         {status === "failed" && (
-          <div className="rounded-xl border border-red-800 bg-red-950/80 p-4 text-sm text-red-200">
+          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-800 dark:bg-red-950/80 dark:text-red-200">
             Lỗi tải dữ liệu: {error}
           </div>
         )}
@@ -103,11 +106,11 @@ const PersonDetailsPage = () => {
         {/* Latest Person mini card */}
         <PersonLatestCard latest={latest} />
 
-        {/* Back to list */}
+        {/* Back to list link */}
         <div className="flex justify-end">
           <Link
-            to="/people" // chỉnh route theo app của bạn
-            className="text-xs text-neutral-400 underline-offset-2 hover:text-neutral-200 hover:underline"
+            to="/person" // Đã chỉnh lại route về trang danh sách person
+            className="text-xs text-gray-500 underline-offset-2 hover:text-gray-900 hover:underline dark:text-neutral-400 dark:hover:text-neutral-200"
           >
             ← Quay lại danh sách người
           </Link>

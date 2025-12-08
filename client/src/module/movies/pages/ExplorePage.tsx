@@ -216,11 +216,10 @@ const ExplorePage = () => {
           key={p}
           onClick={() => handlePageChange(p)}
           className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition 
-          ${
-            p === currentPage
+          ${p === currentPage
               ? "bg-red-600 text-white shadow-[0_0_15px_rgba(248,113,113,0.6)]"
-              : "bg-neutral-800/80 text-neutral-200 hover:bg-neutral-700"
-          }`}
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-neutral-800/80 dark:text-neutral-200 dark:hover:bg-neutral-700"
+            }`}
         >
           {p}
         </button>
@@ -243,7 +242,7 @@ const ExplorePage = () => {
   const headingLabel = mediaType === "movie" ? "Movies" : "TV Shows";
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-50">
+    <div className="min-h-screen bg-gray-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-50 transition-colors duration-300">
       {/* HEADER BACKDROP 3D */}
       <ExploreBackdropHeader />
 
@@ -252,7 +251,7 @@ const ExplorePage = () => {
         {/* TITLE + INFO */}
         <div className="mb-4 sm:mb-6 flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
           <div>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold capitalize text-neutral-100">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold capitalize text-neutral-900 dark:text-neutral-100">
               Explore {headingLabel}
             </h2>
             <p className="mt-1 text-xs sm:text-sm text-neutral-400">
@@ -275,9 +274,8 @@ const ExplorePage = () => {
         {/* GRID + FADE */}
         <div
           className={`grid grid-cols-3 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 
-          transition-opacity duration-300 ${
-            gridVisible ? "opacity-100" : "opacity-0"
-          }`}
+          transition-opacity duration-300 ${gridVisible ? "opacity-100" : "opacity-0"
+            }`}
         >
           {itemsForGrid.map((item) => (
             <Card
@@ -305,8 +303,9 @@ const ExplorePage = () => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={!canPrev || loading}
-                className="rounded-full border border-neutral-600 px-4 py-1.5 font-medium 
-                text-neutral-100 transition hover:bg-neutral-800 
+                className="rounded-full border border-gray-300 dark:border-neutral-600 px-4 py-1.5 font-medium 
+                text-neutral-700 dark:text-neutral-100 transition 
+                hover:bg-gray-200 dark:hover:bg-neutral-800 
                 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 ‹ Trước
@@ -321,8 +320,9 @@ const ExplorePage = () => {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={!canNext || loading}
-                className="rounded-full border border-neutral-600 px-4 py-1.5 font-medium 
-                text-neutral-100 transition hover:bg-neutral-800 
+                className="rounded-full border border-gray-300 dark:border-neutral-600 px-4 py-1.5 font-medium 
+                text-neutral-700 dark:text-neutral-100 transition 
+                hover:bg-gray-200 dark:hover:bg-neutral-800 
                 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Sau ›

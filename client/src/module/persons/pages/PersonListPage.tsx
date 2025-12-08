@@ -131,22 +131,22 @@ const PersonListPage = () => {
   }, [currentPage, totalPages]);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-50">
+    <div className="min-h-screen bg-gray-50 text-gray-900 transition-colors duration-300 dark:bg-neutral-950 dark:text-neutral-50">
       {/* HERO SECTION */}
-      <section className="border-b border-neutral-900 bg-linear-to-b from-neutral-900 via-neutral-950 to-neutral-950">
+      <section className="border-b border-gray-200 bg-white dark:border-neutral-900 dark:bg-linear-to-b dark:from-neutral-900 dark:via-neutral-950 dark:to-neutral-950">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 pb-10 pt-20 md:flex-row md:items-center md:pb-14 md:pt-24">
           <div className="md:w-3/5">
-            <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-amber-300">
-              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" />
+            <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-amber-600 dark:text-amber-300">
+              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500 dark:bg-amber-400" />
               Discover People
             </div>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl lg:text-5xl">
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-gray-900 dark:text-white md:text-4xl lg:text-5xl">
               Bảng xếp hạng{" "}
-              <span className="bg-linear-to-r from-amber-300 via-orange-400 to-yellow-300 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-amber-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent dark:from-amber-300 dark:via-orange-400 dark:to-yellow-300">
                 gương mặt điện ảnh
               </span>
             </h1>
-            <p className="mt-3 max-w-xl text-sm text-neutral-300 md:text-base">
+            <p className="mt-3 max-w-xl text-sm text-gray-600 dark:text-neutral-300 md:text-base">
               Khám phá những diễn viên, đạo diễn, biên kịch nổi bật trên TMDB.
               Lọc theo bộ phận, tìm tên yêu thích và xem chi tiết hành trình sự
               nghiệp của họ.
@@ -160,13 +160,13 @@ const PersonListPage = () => {
                   placeholder="Tìm theo tên person..."
                   value={search}
                   onChange={(e) => handleSearchInputChange(e.target.value)}
-                  className="w-full rounded-full border border-neutral-800 bg-neutral-900/80 px-4 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-500 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400/60"
+                  className="w-full rounded-full border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400/60 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/80 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:shadow-none"
                 />
                 {search && (
                   <button
                     type="button"
                     onClick={() => handleSearchInputChange("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-neutral-400 hover:text-neutral-200"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-gray-600 dark:text-neutral-400 dark:hover:text-neutral-200"
                   >
                     ✕
                   </button>
@@ -182,7 +182,7 @@ const PersonListPage = () => {
                     className={`rounded-full px-3 py-1 text-[11px] transition-colors ${
                       departmentFilter === opt.value
                         ? "bg-amber-400 text-amber-950"
-                        : "bg-neutral-900 text-neutral-300 hover:bg-neutral-800"
+                        : "bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
                     }`}
                   >
                     {opt.label}
@@ -192,21 +192,21 @@ const PersonListPage = () => {
             </div>
 
             {/* Info dòng dưới */}
-            <div className="mt-4 flex flex-wrap items-center gap-3 text-[11px] text-neutral-400">
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-[11px] text-gray-500 dark:text-neutral-400">
               <span>
                 Trang{" "}
-                <span className="text-neutral-100">
+                <span className="text-gray-900 dark:text-neutral-100">
                   {currentPage.toLocaleString()}
                 </span>{" "}
                 /{" "}
-                <span className="text-neutral-100">
+                <span className="text-gray-900 dark:text-neutral-100">
                   {totalPages.toLocaleString()}
                 </span>
               </span>
               {filteredPeople.length !== people.length && (
                 <span>
                   Đang lọc{" "}
-                  <span className="text-neutral-100">
+                  <span className="text-gray-900 dark:text-neutral-100">
                     {filteredPeople.length}
                   </span>{" "}
                   / {people.length} person trên trang này
@@ -217,15 +217,15 @@ const PersonListPage = () => {
 
           {/* Hero mini panel */}
           <div className="md:w-2/5">
-            <div className="rounded-2xl border border-neutral-800 bg-neutral-900/70 p-4 shadow-xl shadow-black/40">
-              <p className="text-xs uppercase tracking-wide text-neutral-400">
+            <div className="rounded-2xl border border-gray-200 bg-white/50 p-4 shadow-xl backdrop-blur-sm dark:border-neutral-800 dark:bg-neutral-900/70 dark:shadow-black/40">
+              <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-400">
                 Gợi ý
               </p>
-              <p className="mt-2 text-sm text-neutral-200">
+              <p className="mt-2 text-sm text-gray-700 dark:text-neutral-200">
                 Nhấn vào một person để xem chi tiết bio, danh sách phim đã tham
                 gia, hình ảnh và lịch sử cập nhật trên TMDB.
               </p>
-              <ul className="mt-3 space-y-1.5 text-xs text-neutral-300">
+              <ul className="mt-3 space-y-1.5 text-xs text-gray-500 dark:text-neutral-300">
                 <li>• Dùng ô tìm kiếm để lọc nhanh theo tên.</li>
                 <li>
                   • Dùng chip Acting / Directing / Writing để lọc theo bộ phận.
@@ -241,12 +241,12 @@ const PersonListPage = () => {
       <main className="mx-auto max-w-6xl px-4 pb-16 pt-6">
         {/* Loading / error */}
         {loading && (
-          <div className="mb-6 rounded-xl border border-neutral-800 bg-neutral-900/70 p-4 text-sm text-neutral-300">
+          <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-600 dark:border-neutral-800 dark:bg-neutral-900/70 dark:text-neutral-300">
             Đang tải danh sách person...
           </div>
         )}
         {error && (
-          <div className="mb-6 rounded-xl border border-red-800 bg-red-950/80 p-4 text-sm text-red-200">
+          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-800 dark:bg-red-950/80 dark:text-red-200">
             {error}
           </div>
         )}
@@ -257,7 +257,7 @@ const PersonListPage = () => {
             <h2 className="text-lg font-semibold tracking-tight md:text-2xl">
               Popular People
             </h2>
-            <span className="text-xs text-neutral-400">
+            <span className="text-xs text-gray-500 dark:text-neutral-400">
               Hiển thị {filteredPeople.length} / {people.length} trên trang này
             </span>
           </div>
@@ -269,21 +269,21 @@ const PersonListPage = () => {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm text-gray-500 dark:text-neutral-400">
               Không tìm thấy person nào phù hợp với bộ lọc hiện tại.
             </p>
           )}
         </section>
 
         {/* Pagination */}
-        <section className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-neutral-900 pt-4 text-xs text-neutral-300 md:flex-row">
+        <section className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-gray-200 pt-4 text-xs text-gray-500 dark:border-neutral-900 dark:text-neutral-300 md:flex-row">
           <div>
             Trang{" "}
-            <span className="text-neutral-50">
+            <span className="text-gray-900 dark:text-neutral-50">
               {currentPage.toLocaleString()}
             </span>{" "}
             /{" "}
-            <span className="text-neutral-50">
+            <span className="text-gray-900 dark:text-neutral-50">
               {totalPages.toLocaleString()}
             </span>
           </div>
@@ -295,8 +295,8 @@ const PersonListPage = () => {
               disabled={!canPrev}
               className={`rounded-full px-3 py-1 ${
                 canPrev
-                  ? "bg-neutral-900 text-neutral-100 hover:bg-neutral-800"
-                  : "cursor-not-allowed bg-neutral-900/50 text-neutral-600"
+                  ? "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800"
+                  : "cursor-not-allowed bg-gray-100 text-gray-400 dark:bg-neutral-900/50 dark:text-neutral-600"
               }`}
             >
               ← Prev
@@ -307,12 +307,14 @@ const PersonListPage = () => {
                 <button
                   type="button"
                   onClick={() => handlePageChange(1)}
-                  className="rounded-full bg-neutral-900 px-3 py-1 text-neutral-100 hover:bg-neutral-800"
+                  className="rounded-full bg-gray-200 px-3 py-1 text-gray-700 hover:bg-gray-300 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800"
                 >
                   1
                 </button>
                 {paginationNumbers[0] > 2 && (
-                  <span className="px-1 text-neutral-500">...</span>
+                  <span className="px-1 text-gray-400 dark:text-neutral-500">
+                    ...
+                  </span>
                 )}
               </>
             )}
@@ -325,7 +327,7 @@ const PersonListPage = () => {
                 className={`rounded-full px-3 py-1 ${
                   page === currentPage
                     ? "bg-amber-400 text-amber-950"
-                    : "bg-neutral-900 text-neutral-100 hover:bg-neutral-800"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800"
                 }`}
               >
                 {page}
@@ -336,12 +338,14 @@ const PersonListPage = () => {
               <>
                 {paginationNumbers[paginationNumbers.length - 1] <
                   totalPages - 1 && (
-                  <span className="px-1 text-neutral-500">...</span>
+                  <span className="px-1 text-gray-400 dark:text-neutral-500">
+                    ...
+                  </span>
                 )}
                 <button
                   type="button"
                   onClick={() => handlePageChange(totalPages)}
-                  className="rounded-full bg-neutral-900 px-3 py-1 text-neutral-100 hover:bg-neutral-800"
+                  className="rounded-full bg-gray-200 px-3 py-1 text-gray-700 hover:bg-gray-300 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800"
                 >
                   {totalPages}
                 </button>
@@ -354,8 +358,8 @@ const PersonListPage = () => {
               disabled={!canNext}
               className={`rounded-full px-3 py-1 ${
                 canNext
-                  ? "bg-neutral-900 text-neutral-100 hover:bg-neutral-800"
-                  : "cursor-not-allowed bg-neutral-900/50 text-neutral-600"
+                  ? "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800"
+                  : "cursor-not-allowed bg-gray-100 text-gray-400 dark:bg-neutral-900/50 dark:text-neutral-600"
               }`}
             >
               Next →
