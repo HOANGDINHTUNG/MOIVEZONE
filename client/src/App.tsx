@@ -95,6 +95,7 @@ function App() {
       </SmoothScrollLayout>
     </>
   );
+  //thanh
 }
 
 export default App;
