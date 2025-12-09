@@ -8,7 +8,85 @@
       "sessionId": "mvs_ew5mdidvsnstxkxq3o1ltztatjaoi61bawme1k60",
       "accountId": 1764585987282,
       "createdAt": "2025-12-01T10:46:27.282Z",
-      "id": "1"
+      "id": "1",
+      "favorites": [
+        {
+          "id": 1622,
+          "mediaType": "tv",
+          "title": "Supernatural",
+          "posterPath": "/u40gJarLPlIkwouKlzGdobQOV9k.jpg",
+          "backdropPath": "/ro0tlgnsco4SwbdAgmscLkSlMSL.jpg",
+          "overview": "When they were boys, Sam and Dean Winchester lost their mother to a mysterious and demonic supernatural force. Subsequently, their father raised them to be soldiers. He taught them about the paranormal evil that lives in the dark corners and on the back roads of America ... and he taught them how to kill it. Now, the Winchester brothers crisscross the country in their '67 Chevy Impala, battling every kind of supernatural threat they encounter along the way. ",
+          "voteAverage": 8.302,
+          "voteCount": 8099,
+          "releaseDate": "2005-09-13",
+          "addedAt": "2025-12-09T09:26:08.782Z"
+        }
+      ],
+      "history": [
+        {
+          "id": 1309012,
+          "mediaType": "movie",
+          "title": "Altered",
+          "posterPath": "/6QlAcGRaUrgHcZ4WTBh5lsPnzKx.jpg",
+          "backdropPath": "/q9bvjUkpKltPE0S9oxci2pmD1Zx.jpg",
+          "overview": "In an alternate present, genetically enhanced humans dominate society. Outcasts Leon and Chloe fight for justice against corrupt politicians exploiting genetic disparity, risking everything to challenge the oppressive system.",
+          "voteAverage": 6.351,
+          "voteCount": 57,
+          "releaseDate": "2025-09-18",
+          "addedAt": "2025-12-09T09:50:58.561Z"
+        },
+        {
+          "id": 1419406,
+          "mediaType": "movie",
+          "title": "The Shadow's Edge",
+          "posterPath": "/e0RU6KpdnrqFxDKlI3NOqN8nHL6.jpg",
+          "backdropPath": "/4BtL2vvEufDXDP4u6xQjjQ1Y2aT.jpg",
+          "overview": "Macau Police brings the tracking expert police officer out of retirement to help catch a dangerous group of professional thieves.",
+          "voteAverage": 6.503,
+          "voteCount": 148,
+          "releaseDate": "2025-08-16",
+          "addedAt": "2025-12-09T09:50:54.001Z"
+        },
+        {
+          "id": 1228246,
+          "mediaType": "movie",
+          "title": "Five Nights at Freddy's 2",
+          "posterPath": "/am6O7221qGtb5ba5uJKw7PfPZkJ.jpg",
+          "backdropPath": "/54BOXpX2ieTXMDzHymdDMnUIzYG.jpg",
+          "overview": "One year since the supernatural nightmare at Freddy Fazbear's Pizza, the stories about what transpired there have been twisted into a campy local legend, inspiring the town's first ever Fazfest. With the truth kept from her, Abby sneaks out to reconnect with Freddy, Bonnie, Chica, and Foxy, setting into motion a terrifying series of events that will reveal dark secrets about the real origin of Freddy's, and unleash a decades-hidden horror.",
+          "voteAverage": 6.4,
+          "voteCount": 101,
+          "releaseDate": "2025-12-03",
+          "addedAt": "2025-12-09T09:50:50.760Z"
+        },
+        {
+          "id": 1218925,
+          "mediaType": "movie",
+          "title": "Chainsaw Man - The Movie: Reze Arc",
+          "posterPath": "/xdzLBZjCVSEsic7m7nJc4jNJZVW.jpg",
+          "backdropPath": "/gqTz24ZRsCP6AKjARmEivY7m0cK.jpg",
+          "overview": "In a brutal war between devils, hunters, and secret enemies, a mysterious girl named Reze has stepped into Denji's world, and he faces his deadliest battle yet, fueled by love in a world where survival knows no rules.",
+          "voteAverage": 7.8,
+          "voteCount": 239,
+          "releaseDate": "2025-09-19",
+          "addedAt": "2025-12-09T09:34:18.666Z"
+        }
+      ],
+      "watchlist": [
+        {
+          "id": 1218925,
+          "mediaType": "movie",
+          "title": "Chainsaw Man - The Movie: Reze Arc",
+          "posterPath": "/xdzLBZjCVSEsic7m7nJc4jNJZVW.jpg",
+          "backdropPath": "/gqTz24ZRsCP6AKjARmEivY7m0cK.jpg",
+          "overview": "In a brutal war between devils, hunters, and secret enemies, a mysterious girl named Reze has stepped into Denji's world, and he faces his deadliest battle yet, fueled by love in a world where survival knows no rules.",
+          "voteAverage": 7.8,
+          "voteCount": 239,
+          "releaseDate": "2025-09-19",
+          "addedAt": "2025-12-09T09:49:52.485Z"
+        }
+      ]
     },
     {
       "id": "b567",
@@ -20,5 +98,6 @@
       "accountId": 1764638131305,
       "createdAt": "2025-12-02T01:15:31.305Z"
     }
-  ]
+  ],
+  "event": []
 }

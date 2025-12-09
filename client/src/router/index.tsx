@@ -14,8 +14,8 @@ import ConfigurationPage from "../module/configuration/pages/ConfigurationPage";
 import ChangesPage from "../module/changes/pages/ChangesPage";
 import CreditDetailsPage from "../module/credits/pages/CreditDetailsPage";
 import DiscoverPage from "../module/discovers/pages/DiscoverPage";
-import LoginPage from "../module/auth/feature/pages/LoginPage";
-import RegisterPage from "../module/auth/feature/pages/RegisterPage";
+import LoginPage from "../module/auth/pages/LoginPage";
+import RegisterPage from "../module/auth/pages/RegisterPage";
 import AuthLayout from "../module/auth/feature/layout/AuthLayout";
 import NotFoundPage from "../components/error/NotFoundPage";
 import ProtectedRoute from "./ProtectedRoute";
@@ -30,6 +30,7 @@ import SearchAdvancedPage from "../module/search/pages/SearchAdvancedPage";
 import TvSeasonPage from "../module/tv/pages/TvSeasonPage";
 import TvEpisodePage from "../module/tv/pages/TvEpisodePage";
 import TvEpisodeGroupPage from "../module/tv/pages/TvEpisodeGroupPage";
+import UserLibraryPage from "../module/auth/pages/UserLibraryPage";
 
 const router = createBrowserRouter([
   // Layout chính của app
@@ -87,7 +88,7 @@ const router = createBrowserRouter([
           { path: "search_advanced", element: <SearchAdvancedPage /> },
 
           // // Account / news / payment
-          // { path: "account", element: <AccountPage /> },
+          { path: "account", element: <UserLibraryPage /> },
           // { path: "news", element: <NewsListPage /> },
           // { path: "news/:id", element: <NewsDetailPage /> },
 

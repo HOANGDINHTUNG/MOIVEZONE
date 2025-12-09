@@ -4,8 +4,9 @@ import type {
   TMDBDiscoverTvResponse,
 } from "../../module/discovers/database/interface/discover";
 import type { AppLanguage } from "../../module/movies/store/languageSlice";
-import type { TMDBMovieListsResponse } from "../../module/movies/database/interface/movie";
-import type { TMDBTvListsResponse } from "../../module/movies/database/interface/tv";
+import type { TMDBMovieSummary } from "../../module/movies/database/interface/movie";
+import type { TMDBTvSimilarItem } from "../../module/movies/database/interface/tv";
+import type { TMDBPaginatedResponse } from "../../module/movies/database/interface/movieLists";
 
 export interface DiscoverMovieParams {
   page?: number;
@@ -44,31 +45,39 @@ export const tmdbDiscoverApi = {
   async discoverMovies(
     page = 1,
     language: AppLanguage = defaultLanguage
-  ): Promise<TMDBMovieListsResponse> {
-    const res = await axiosTMDB.get<TMDBMovieListsResponse>("/discover/movie", {
-      params: {
-        page,
-        language,
-        sort_by: "primary_release_date.desc",
-        include_adult: false,
-        include_video: false,
-      },
-    });
+  ): Promise<TMDBPaginatedResponse<TMDBMovieSummary>> {
+    const res = await axiosTMDB.get<TMDBPaginatedResponse<TMDBMovieSummary>>(
+      "/discover/movie",
+      {
+        params: {
+          page,
+          language,
+          sort_by: "primary_release_date.desc",
+          include_adult: false,
+          include_video: false,
+        },
+      }
+    );
+
     return res.data;
   },
 
   async discoverTvShows(
     page = 1,
     language: AppLanguage = defaultLanguage
-  ): Promise<TMDBTvListsResponse> {
-    const res = await axiosTMDB.get<TMDBTvListsResponse>("/discover/tv", {
-      params: {
-        page,
-        language,
-        sort_by: "first_air_date.desc",
-        include_null_first_air_dates: false,
-      },
-    });
+  ): Promise<TMDBPaginatedResponse<TMDBTvSimilarItem>> {
+    const res = await axiosTMDB.get<TMDBPaginatedResponse<TMDBTvSimilarItem>>(
+      "/discover/tv",
+      {
+        params: {
+          page,
+          language,
+          sort_by: "first_air_date.desc",
+          include_null_first_air_dates: false,
+        },
+      }
+    );
+
     return res.data;
   },
 };

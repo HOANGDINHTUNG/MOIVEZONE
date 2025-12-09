@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Divider from "../../../components/common/ux/Divider";
 import type { DetailGenre } from "../pages/DetailsPage";
 import { useMemo } from "react";
+import { BiBookmark, BiBookmarkAlt, BiHeart, BiHeartCircle } from "react-icons/bi";
 
 type ExternalIds = {
   imdb_id?: string | null;
@@ -47,11 +48,14 @@ export type DetailsHeroProps = {
   liked: boolean;
   onToggleLike: () => void;
 
+  inWatchlist: boolean;
+  onToggleWatchlist: () => void;
+
   overview: string;
   directorOrCreator: string;
   writer: string;
 
-  // 🟢 genres từ chi tiết + map từ store
+  // genres từ chi tiết + map từ store
   currentGenres: DetailGenre[];
   activeGenreMap: Record<number, DetailGenre | undefined>;
 
@@ -78,6 +82,8 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
   onOpenTrailer,
   liked,
   onToggleLike,
+  inWatchlist,
+  onToggleWatchlist,
   overview,
   directorOrCreator,
   writer,
@@ -274,27 +280,44 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
               <span>What's your vibe?</span>
             </button>
 
+            <button
+              type="button"
+              onClick={onToggleWatchlist}
+              className={`
+                flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full transition
+                border 
+                ${
+                  inWatchlist
+                    ? "bg-amber-400 text-black border-amber-600 shadow-lg shadow-amber-800/40 hover:bg-amber-300"
+                    : "bg-black/50 text-amber-200 border-amber-500/40 hover:bg-amber-700/40"
+                }
+              `}
+            >
+              {inWatchlist ? (
+                <BiBookmarkAlt size={20} /> // ICON ACTIVE
+              ) : (
+                <BiBookmark size={20} /> // ICON NORMAL
+              )}
+            </button>
             {/* Heart */}
             <button
               type="button"
               onClick={onToggleLike}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-black/60 hover:bg-black/80 border border-white/10 transition sm:h-10 sm:w-10"
-              aria-label="Add to favorites"
+              className={`
+                flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full transition
+                border 
+                ${
+                  liked
+                    ? "bg-red-500 text-white border-red-600 shadow-lg shadow-red-800/40 hover:bg-red-400"
+                    : "bg-black/60 text-red-300 border-white/10 hover:bg-black/80"
+                }
+              `}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                className="h-5 w-5 drop-shadow"
-                fill={liked ? "#f87171" : "none"}
-                stroke={liked ? "#f87171" : "currentColor"}
-                strokeWidth={1.8}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12.1 4.44 12 4.55l-.1-.11A5.25 5.25 0 0 0 3.75 9.3c0 1.38.56 2.63 1.46 3.54l5.96 6.02c.23.23.54.36.86.36s.63-.13.86-.36l5.96-6.02a5.01 5.01 0 0 0 1.46-3.54A5.25 5.25 0 0 0 12.1 4.44Z"
-                />
-              </svg>
+              {liked ? (
+                <BiHeartCircle size={20} /> // ICON ACTIVE
+              ) : (
+                <BiHeart size={20} /> // ICON NORMAL
+              )}
             </button>
           </div>
 

@@ -240,7 +240,7 @@ export default function Header({ admin }: HeaderProps) {
                     <p className="text-[11px] uppercase tracking-wide text-neutral-400">
                       PERSONAL
                     </p>
-                    <HoveredLink href="/movie?sort=popular">
+                    <HoveredLink href="/account">
                       List favorites
                     </HoveredLink>
                     <HoveredLink href="/movie?sort=popular">
