@@ -1,14 +1,16 @@
+// src/module/auth/store/authSlice.ts
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { IUser } from "../database/interface/users";
 import { updateUser } from "../../../api/server/User.api";
+// ⬇️ THÊM DÒNG NÀY
+import type { RootState } from "../../../stores";
 
-// Tên state nên viết PascalCase cho dễ đọc
 export interface AuthState {
   currentUser: IUser | null;
   isAuthenticated: boolean;
 }
 
-// Hàm đọc user từ sessionStorage một cách an toàn, có type
+// Đọc user từ sessionStorage
 const loadInitialUser = (): IUser | null => {
   if (typeof window === "undefined") return null;
 
@@ -17,7 +19,6 @@ const loadInitialUser = (): IUser | null => {
 
   try {
     const parsed = JSON.parse(raw) as unknown;
-    // ở đây có thể kiểm tra thêm structure, nhưng tạm tin là IUser
     return parsed as IUser;
   } catch {
     return null;
@@ -35,7 +36,7 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // Khi đăng nhập thành công (ở LoginPage đã tìm ra IUser)
+    // Khi đăng nhập thành công (ở LoginPage tìm được IUser)
     login: (state, action: PayloadAction<IUser>) => {
       state.currentUser = action.payload;
       state.isAuthenticated = true;
@@ -43,7 +44,32 @@ export const authSlice = createSlice({
       try {
         sessionStorage.setItem("currentUser", JSON.stringify(action.payload));
       } catch (error) {
-        console.error("Failed to persist currentUser to sessionStorage", error);
+        console.error(
+          "Failed to persist currentUser to sessionStorage",
+          error
+        );
+      }
+    },
+
+    // Cho phép set currentUser từ bất kỳ nơi nào khác (vd: sau updateUserDirect)
+    setCurrentUser: (state, action: PayloadAction<IUser | null>) => {
+      state.currentUser = action.payload;
+      state.isAuthenticated = !!action.payload;
+
+      try {
+        if (action.payload) {
+          sessionStorage.setItem(
+            "currentUser",
+            JSON.stringify(action.payload)
+          );
+        } else {
+          sessionStorage.removeItem("currentUser");
+        }
+      } catch (error) {
+        console.error(
+          "Failed to persist currentUser to sessionStorage",
+          error
+        );
       }
     },
 
@@ -54,11 +80,7 @@ export const authSlice = createSlice({
 
       try {
         sessionStorage.removeItem("currentUser");
-
-        // Khớp với LoginPage mới: key ghi nhớ email là moviezone_remember_email
         localStorage.removeItem("moviezone_remember_email");
-
-        // Nếu bạn dùng localStorage token (ở LoginPage), có thể xoá luôn:
         localStorage.removeItem("token");
       } catch (error) {
         console.error("Failed to clear auth storage", error);
@@ -67,10 +89,12 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(updateUser.fulfilled, (state, action) => {
+      // Nếu currentUser khác id thì bỏ qua (tránh ghi nhầm user khác)
       if (!state.currentUser || state.currentUser.id !== action.payload.id) {
         return;
       }
 
+      // Gộp dữ liệu mới từ server vào currentUser
       state.currentUser = {
         ...state.currentUser,
         ...action.payload,
@@ -88,5 +112,8 @@ export const authSlice = createSlice({
   },
 });
 
+// ⬇THÊM SELECTOR Ở ĐÂY
+export const selectAuth = (state: RootState) => state.auth;
+
 export default authSlice.reducer;
-export const { login, logout } = authSlice.actions;
+export const { login, logout, setCurrentUser } = authSlice.actions;

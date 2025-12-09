@@ -48,6 +48,13 @@ const DetailsVideosSection: React.FC<DetailsVideosSectionProps> = ({
               className="group flex w-60 shrink-0 flex-col overflow-hidden rounded-lg bg-neutral-800/80 text-left hover:bg-neutral-700/80"
             >
               <div className="relative aspect-video w-full overflow-hidden">
+                <img
+                  src={`https://img.youtube.com/vi/${video.key}/hqdefault.jpg`}
+                  alt={video.name}
+                  loading="lazy"
+                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+
                 <div className="absolute inset-0 flex items-center justify-center bg-neutral-900/70">
                   <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-red-500/90 text-white shadow-lg shadow-red-500/40">
                     ▶

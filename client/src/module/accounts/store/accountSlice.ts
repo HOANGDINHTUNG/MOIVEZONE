@@ -187,10 +187,6 @@ export const toggleWatchlist = createAsyncThunk<
 
   try {
     const res = await tmdbAccountApi.markToWatchlist(config, body);
-
-    // (Optional) như trên, nếu muốn refresh store thì dispatch thêm thunk khác
-    // await thunkApi.dispatch(fetchAccountData());
-
     return res;
   } catch (error: unknown) {
     const message =

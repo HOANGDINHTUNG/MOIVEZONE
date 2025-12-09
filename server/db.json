@@ -8,7 +8,52 @@
       "sessionId": "mvs_ew5mdidvsnstxkxq3o1ltztatjaoi61bawme1k60",
       "accountId": 1764585987282,
       "createdAt": "2025-12-01T10:46:27.282Z",
-      "id": 1
+      "id": 1,
+      "favoriteTv": [
+        66732
+      ],
+      "favoriteMovies": [
+        1084242,
+        1180831
+      ],
+      "favorites": [
+        {
+          "id": 533533,
+          "mediaType": "movie",
+          "title": "TRON: Ares",
+          "posterPath": "/chpWmskl3aKm1aTZqUHRCtviwPy.jpg",
+          "backdropPath": "/6bzabqH399ioM3nZScwZtzGaHIy.jpg",
+          "overview": "A highly sophisticated Program called Ares is sent from the digital world into the real world on a dangerous mission, marking humankind's first encounter with A.I. beings.",
+          "voteAverage": 6.527,
+          "voteCount": 621,
+          "releaseDate": "2025-10-08",
+          "addedAt": "2025-12-08T13:05:20.136Z"
+        },
+        {
+          "id": 238,
+          "mediaType": "movie",
+          "title": "The Godfather",
+          "posterPath": "/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
+          "backdropPath": "/39rtAdg3yx6IDxRg0ZLXefv0aPY.jpg",
+          "overview": "Spanning the years 1945 to 1955, a chronicle of the fictional Italian-American Corleone crime family. When organized crime family patriarch, Vito Corleone barely survives an attempt on his life, his youngest son, Michael steps in to take care of the would-be killers, launching a campaign of bloody revenge.",
+          "voteAverage": 8.685,
+          "voteCount": 22128,
+          "releaseDate": "1972-03-14",
+          "addedAt": "2025-12-08T13:23:52.793Z"
+        },
+        {
+          "id": 200875,
+          "mediaType": "tv",
+          "title": "IT: Welcome to Derry",
+          "posterPath": "/ycC53SEDcY7YDOSrFqPQigxaCyx.jpg",
+          "backdropPath": "/2fOKVDoc2O3eZmBZesWPuE5kgPN.jpg",
+          "overview": "In 1962, a couple with their son move to Derry, Maine just as a young boy disappears. With their arrival, very bad things begin to happen in the town.",
+          "voteAverage": 8.2,
+          "voteCount": 629,
+          "releaseDate": "2025-10-26",
+          "addedAt": "2025-12-08T13:24:07.282Z"
+        }
+      ]
     }
   ]
 }

@@ -4,14 +4,14 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 
-import Card from "./common/Card";
+import Card from "../common/Card";
 import type {
   MediaType,
   TMDBMediaBase,
-} from "../module/movies/database/interface/movieLists";
+} from "../../module/movies/database/interface/movieLists";
 
 // import TMDBTimeWindow để dùng kiểu "day" | "week"
-import type { TMDBTimeWindow } from "../module/trending/database/interface/trending";
+import type { TMDBTimeWindow } from "../../module/trending/database/interface/trending";
 
 type CardMovie = TMDBMediaBase;
 
@@ -91,9 +91,9 @@ const HorizontalScollCard = ({
   // giống dispatch(setTimeWindow(tw)) bên TrendingPage
   const handleTimeWindowClick = (tw: TMDBTimeWindow) => {
     if (onTimeWindowChange) {
-      onTimeWindowChange(tw); 
+      onTimeWindowChange(tw);
     } else {
-      setLocalTimeWindow(tw); 
+      setLocalTimeWindow(tw);
     }
   };
 

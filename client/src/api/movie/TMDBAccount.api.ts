@@ -16,7 +16,7 @@ const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
 type HttpMethod = "GET" | "POST";
 
-interface TMDBConfig {
+export interface TMDBConfig {
   apiKey: string;
   sessionId: string; // user session (NOT guest)
   accountId: number | string;
@@ -175,5 +175,3 @@ export const tmdbAccountApi = {
     );
   },
 };
-
-export type { TMDBConfig };

@@ -5,7 +5,7 @@ import moment from "moment";
 import { useFetchDetails } from "../../../hooks/useFetchDetails";
 import { useAppDispatch, useAppSelector } from "../../../hooks/UseCustomeRedux";
 
-import VideoPlay from "../../../components/VideoPlay";
+import VideoPlay from "../../../components/home/VideoPlay";
 
 import DetailsHero, { type MovieCollection } from "../components/DetailsHero";
 import DetailsTopCastSection from "../components/DetailsTopCastSection";
@@ -93,6 +93,9 @@ import type {
   TMDBTvListSummary,
   TMDBWatchProviderRegion,
 } from "../database/interface/tv";
+import { selectAuth, setCurrentUser } from "../../auth/store/authSlice";
+import { updateUserDirect } from "../../../api/server/User.api";
+import { buildUserMediaItem } from "../../auth/feature/utils/buildUserMediaItem";
 
 const TMDB_IMAGE = "https://image.tmdb.org/t/p";
 
@@ -248,11 +251,11 @@ const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
 
   const imageURL = useAppSelector((state) => state.moviesData.imageURL);
   const genresState = useAppSelector((state) => state.tmdbGenres);
+  const { currentUser } = useAppSelector(selectAuth);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [liked, setLiked] = useState(false);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
   const [activeVideoKey, setActiveVideoKey] = useState<string | null>(null);
 
@@ -923,6 +926,97 @@ const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
     return data.homepage || "";
   }, [data]);
 
+  const liked = useMemo(() => {
+    if (!currentUser || !data) return false;
+
+    return (currentUser.favorites || []).some(
+      (item) => item.id === data.id && item.mediaType === resolvedMediaType
+    );
+  }, [currentUser, data, resolvedMediaType]);
+
+  // const inWatchlist = useMemo(() => {
+  //   if (!currentUser || !data) return false;
+  //   const list = currentUser.watchlist || [];
+  //   return list.some(
+  //     (item) => item.id === data.id && item.mediaType === resolvedMediaType
+  //   );
+  // }, [currentUser, data, resolvedMediaType]);
+
+  // const handleToggleWatchlist = useCallback(async () => {
+  //   if (!currentUser || !data) {
+  //     console.log("Bạn cần đăng nhập trước để dùng Watchlist");
+  //     return;
+  //   }
+
+  //   const list = currentUser.watchlist || [];
+  //   const exists = list.some(
+  //     (item) => item.id === data.id && item.mediaType === resolvedMediaType
+  //   );
+
+  //   let nextWatchlist;
+  //   if (exists) {
+  //     // Đang nằm trong watchlist → bỏ ra
+  //     nextWatchlist = list.filter(
+  //       (item) => !(item.id === data.id && item.mediaType === resolvedMediaType)
+  //     );
+  //   } else {
+  //     // Chưa có → thêm
+  //     const newItem = buildUserMediaItem(resolvedMediaType, data);
+  //     nextWatchlist = [...list, newItem];
+  //   }
+
+  //   try {
+  //     const updatedUser = await updateUserDirect({
+  //       id: currentUser.id,
+  //       watchlist: nextWatchlist,
+  //     });
+
+  //     dispatch(setCurrentUser(updatedUser));
+  //   } catch (error) {
+  //     console.error("Failed to toggle watchlist", error);
+  //   }
+  // }, [currentUser, data, resolvedMediaType, dispatch]);
+
+  const handleToggleFavorite = useCallback(async () => {
+    if (!currentUser || !data) {
+      // TODO: bật toast "Bạn cần đăng nhập"
+      console.log("Bạn cần đăng nhập trước");
+      return;
+    }
+
+    const list = currentUser.favorites || [];
+
+    const exists = list.some(
+      (item) => item.id === data.id && item.mediaType === resolvedMediaType
+    );
+
+    let nextFavorites;
+
+    if (exists) {
+      // Đã có → xoá khỏi favorites
+      nextFavorites = list.filter(
+        (item) => !(item.id === data.id && item.mediaType === resolvedMediaType)
+      );
+    } else {
+      // Chưa có → thêm mới
+      const newItem = buildUserMediaItem(resolvedMediaType, data);
+      nextFavorites = [...list, newItem];
+    }
+
+    try {
+      // Cập nhật lên JSON server
+      const updatedUser = await updateUserDirect({
+        id: currentUser.id,
+        favorites: nextFavorites,
+      });
+
+      // Cập nhật lại Redux
+      dispatch(setCurrentUser(updatedUser));
+    } catch (err) {
+      console.error("Failed to toggle favorite", err);
+    }
+  }, [currentUser, data, resolvedMediaType, dispatch]);
+
   // ========== Loading / Error ==========
   if (loading || !data) {
     return (
@@ -965,7 +1059,7 @@ const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
           setIsTrailerOpen(true);
         }}
         liked={liked}
-        onToggleLike={() => setLiked((prev) => !prev)}
+        onToggleLike={handleToggleFavorite}
         overview={overview}
         directorOrCreator={directorOrCreator}
         writer={writer}
