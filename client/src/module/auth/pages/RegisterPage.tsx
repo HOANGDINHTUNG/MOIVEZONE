@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { createUser, getAllUsers } from "../../../api/server/User.api";
 import { generateMovieZoneCredentials } from "../feature/utils/generateMovieZoneCredentials";
+import type { CreateUserPayload, IUser } from "../database/interface/users";
+
 
 type AlertState =
   | { type: "success"; message: string }
@@ -19,11 +21,14 @@ const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState<AlertState>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setAlert(null);
 
-    if (!email.trim() || !username.trim() || !password.trim()) {
+    const trimmedEmail = email.trim();
+    const trimmedUsername = username.trim();
+
+    if (!trimmedEmail || !trimmedUsername || !password.trim()) {
       setAlert({
         type: "error",
         message: "Vui lòng nhập đầy đủ email, username và mật khẩu.",
@@ -42,10 +47,13 @@ const RegisterPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const users = await getAllUsers();
+      // getAllUsers nên có kiểu Promise<IUser[]>
+      const users: IUser[] = await getAllUsers();
+
       const existed = users.find(
-        (u) => u.email.toLowerCase() === email.trim().toLowerCase()
+        (u) => u.email.toLowerCase() === trimmedEmail.toLowerCase()
       );
+
       if (existed) {
         setAlert({
           type: "error",
@@ -57,14 +65,18 @@ const RegisterPage: React.FC = () => {
 
       const creds = generateMovieZoneCredentials();
 
-      await createUser({
-        email: email.trim(),
-        username: username.trim(),
-        password, // TODO: thực tế nên hash
+      // dùng đúng CreateUserPayload
+      const payload: CreateUserPayload = {
+        email: trimmedEmail,
+        username: trimmedUsername,
+        password, // thực tế nên hash
         apiKey: creds.apiKey,
         sessionId: creds.sessionId,
         accountId: creds.accountId,
-      });
+      };
+
+      // createUser nên kiểu Promise<IUser>
+      await createUser(payload);
 
       setAlert({
         type: "success",

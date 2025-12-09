@@ -25,6 +25,66 @@
       ],
       "history": [
         {
+          "id": 575265,
+          "mediaType": "movie",
+          "title": "Mission: Impossible - The Final Reckoning",
+          "posterPath": "/z53D72EAOxGRqdr7KXXWp9dJiDe.jpg",
+          "backdropPath": "/xPNDRM50a58uvv1il2GVZrtWjkZ.jpg",
+          "overview": "Ethan Hunt and team continue their search for the terrifying AI known as the Entity — which has infiltrated intelligence networks all over the globe — with the world's governments and a mysterious ghost from Hunt's past on their trail. Joined by new allies and armed with the means to shut the Entity down for good, Hunt is in a race against time to prevent the world as we know it from changing forever.",
+          "voteAverage": 7.26,
+          "voteCount": 2156,
+          "releaseDate": "2025-05-17",
+          "addedAt": "2025-12-09T15:36:07.522Z"
+        },
+        {
+          "id": 1441563,
+          "mediaType": "movie",
+          "title": "My Secret Santa",
+          "posterPath": "/tpOAzBasKPsKwsUtPZOx1Mzuqq3.jpg",
+          "backdropPath": "/bXZcSDQoyXlzzUw9qxjZjiUSYov.jpg",
+          "overview": "A single mom needs a job. A ski resort needs a Santa. Disguised as a St. Nick lookalike, can Taylor fool a charming hotel heir into ho-ho-hiring her?",
+          "voteAverage": 6.417,
+          "voteCount": 60,
+          "releaseDate": "2025-12-02",
+          "addedAt": "2025-12-09T15:27:59.258Z"
+        },
+        {
+          "id": 1218925,
+          "mediaType": "movie",
+          "title": "Chainsaw Man - The Movie: Reze Arc",
+          "posterPath": "/pHyxb2RV5wLlboAwm9ZJ9qTVEDw.jpg",
+          "backdropPath": "/mplZTqxwomZrEV5XRMUgAALwLzU.jpg",
+          "overview": "In a brutal war between devils, hunters, and secret enemies, a mysterious girl named Reze has stepped into Denji's world, and he faces his deadliest battle yet, fueled by love in a world where survival knows no rules.",
+          "voteAverage": 7.8,
+          "voteCount": 242,
+          "releaseDate": "2025-09-19",
+          "addedAt": "2025-12-09T14:41:58.694Z"
+        },
+        {
+          "id": 1084242,
+          "mediaType": "movie",
+          "title": "Zootopia 2",
+          "posterPath": "/bjUWGw0Ao0qVWxagN3VCwBJHVo6.jpg",
+          "backdropPath": "/5h2EsPKNDdB3MAtOk9MB9Ycg9Rz.jpg",
+          "overview": "After cracking the biggest case in Zootopia's history, rookie cops Judy Hopps and Nick Wilde find themselves on the twisting trail of a great mystery when Gary De’Snake arrives and turns the animal metropolis upside down. To crack the case, Judy and Nick must go undercover to unexpected new parts of town, where their growing partnership is tested like never before.",
+          "voteAverage": 7.698,
+          "voteCount": 473,
+          "releaseDate": "2025-11-26",
+          "addedAt": "2025-12-09T14:25:15.188Z"
+        },
+        {
+          "id": 83533,
+          "mediaType": "movie",
+          "title": "Avatar: Fire and Ash",
+          "posterPath": "/g96wHxU7EnoIFwemb2RgohIXrgW.jpg",
+          "backdropPath": "/iN41Ccw4DctL8npfmYg1j5Tr1eb.jpg",
+          "overview": "In the wake of the devastating war against the RDA and the loss of their eldest son, Jake Sully and Neytiri face a new threat on Pandora: the Ash People, a violent and power-hungry Na'vi tribe led by the ruthless Varang. Jake's family must fight for their survival and the future of Pandora in a conflict that pushes them to their emotional and physical limits.",
+          "voteAverage": 0,
+          "voteCount": 0,
+          "releaseDate": "2025-12-17",
+          "addedAt": "2025-12-09T14:23:44.445Z"
+        },
+        {
           "id": 1309012,
           "mediaType": "movie",
           "title": "Altered",
@@ -59,18 +119,6 @@
           "voteCount": 101,
           "releaseDate": "2025-12-03",
           "addedAt": "2025-12-09T09:50:50.760Z"
-        },
-        {
-          "id": 1218925,
-          "mediaType": "movie",
-          "title": "Chainsaw Man - The Movie: Reze Arc",
-          "posterPath": "/xdzLBZjCVSEsic7m7nJc4jNJZVW.jpg",
-          "backdropPath": "/gqTz24ZRsCP6AKjARmEivY7m0cK.jpg",
-          "overview": "In a brutal war between devils, hunters, and secret enemies, a mysterious girl named Reze has stepped into Denji's world, and he faces his deadliest battle yet, fueled by love in a world where survival knows no rules.",
-          "voteAverage": 7.8,
-          "voteCount": 239,
-          "releaseDate": "2025-09-19",
-          "addedAt": "2025-12-09T09:34:18.666Z"
         }
       ],
       "watchlist": [

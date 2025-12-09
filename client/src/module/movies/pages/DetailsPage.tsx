@@ -94,9 +94,9 @@ import type {
 import { selectAuth, setCurrentUser } from "../../auth/store/authSlice";
 import { updateUserDirect } from "../../../api/server/User.api";
 import { buildUserMediaItem } from "../../auth/feature/utils/buildUserMediaItem";
-import VideoPlay from "../../../components/VideoPlay";
+import VideoPlay from "../../../components/home/VideoPlay";
 
-const TMDB_IMAGE = "https://image.tmdb.org/t/p";
+export const TMDB_IMAGE = "https://image.tmdb.org/t/p";
 
 // =======================
 // Kiểu dùng trong trang
@@ -1055,6 +1055,28 @@ const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
     }
   }, [currentUser, data, resolvedMediaType, dispatch]);
 
+  // chọn 1 logo đẹp nhất cho Hero
+  const heroLogoPath = useMemo(() => {
+    if (!mediaImages) return null;
+
+    // giống cách bạn làm ở DetailsImagesSection
+    const logos = mediaImages.logos ?? [];
+    if (!logos.length) return null;
+
+    // ưu tiên ngôn ngữ gốc của phim, rồi "en", cuối cùng là bất kỳ logo nào
+    let preferredLang = "en";
+    if (data && "original_language" in data && data.original_language) {
+      preferredLang = data.original_language;
+    }
+
+    const byOriginalLang = logos.find((img) => img.iso_639_1 === preferredLang);
+    const byEnglish = logos.find((img) => img.iso_639_1 === "en");
+
+    const chosen = byOriginalLang || byEnglish || logos[0];
+
+    return chosen.file_path || null;
+  }, [mediaImages, data]);
+
   // ========== Loading / Error ==========
   if (loading || !data) {
     return (
@@ -1108,6 +1130,7 @@ const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
         resolvedMediaType={resolvedMediaType}
         currentGenres={currentGenres}
         activeGenreMap={activeGenreMap}
+        logoPath={heroLogoPath}
       />
 
       {/* MODAL VIDEO */}

@@ -1,8 +1,13 @@
 import { Link } from "react-router-dom";
 import Divider from "../../../components/common/ux/Divider";
-import type { DetailGenre } from "../pages/DetailsPage";
+import { TMDB_IMAGE, type DetailGenre } from "../pages/DetailsPage";
 import { useMemo } from "react";
-import { BiBookmark, BiBookmarkAlt, BiHeart, BiHeartCircle } from "react-icons/bi";
+import {
+  BiBookmark,
+  BiBookmarkAlt,
+  BiHeart,
+  BiHeartCircle,
+} from "react-icons/bi";
 
 type ExternalIds = {
   imdb_id?: string | null;
@@ -63,6 +68,7 @@ export type DetailsHeroProps = {
   productionCompanies: ProductionCompany[];
 
   resolvedMediaType: "movie" | "tv";
+  logoPath?: string | null;
 };
 
 const DetailsHero: React.FC<DetailsHeroProps> = ({
@@ -92,6 +98,7 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
   externalIds,
   productionCompanies,
   resolvedMediaType,
+  logoPath,
 }) => {
   const hiResBase = useMemo(() => {
     const fallback = "https://image.tmdb.org/t/p/original/";
@@ -133,7 +140,7 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
       {/* CONTENT */}
       <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-5 px-3 py-5 sm:px-4 sm:py-6 md:flex-row md:gap-6 md:px-6 md:py-8 lg:px-10 lg:py-10">
         {/* Poster */}
-        <div className="w-full max-w-[260px] self-center sm:self-auto sm:max-w-none md:w-1/3 lg:w-1/4">
+        <div className="w-full max-w-[260px] self-center sm:self-auto sm:max-w-none md:w-1/3 lg:w-1/4 flex flex-col">
           <div className="w-full rounded-xl bg-neutral-900/80 shadow-[0_20px_45px_rgba(0,0,0,0.75)] ring-1 ring-white/5 overflow-hidden aspect-2/3">
             {posterPath ? (
               <img
@@ -147,6 +154,16 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
               </div>
             )}
           </div>
+
+          {logoPath ? (
+            <div className="mt-4">
+              <img
+                src={`${TMDB_IMAGE}/w500${logoPath}`}
+                alt={title}
+                className="max-h-24 w-auto object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]"
+              />
+            </div>
+          ) : null}
         </div>
 
         {/* Main info */}

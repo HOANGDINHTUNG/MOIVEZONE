@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState, type JSX } from "react";
 import BannerHome from "../../../components/common/ui/BannerHome";
-import HorizontalScollCard from "../../../components/HorizontalScollCard";
 import { useAppSelector, useAppDispatch } from "../../../hooks/UseCustomeRedux";
 import { useFetch } from "../../../hooks/useFetch";
 import LatestTrailersSection, {
   type TrailerItem,
 } from "../components/LatestTrailersSection";
 
-import VideoPlay from "../../../components/VideoPlay";
+import VideoPlay from "../../../components/home/VideoPlay";
 import axiosTMDB from "../../../app/axiosTMDB";
 
 import type { TMDBMovieSummary } from "../../movies/database/interface/movie";
@@ -29,6 +28,7 @@ import type {
   TMDBTrendingAllItem,
   TMDBTrendingMovieItem,
 } from "../../trending/database/interface/trending";
+import HorizontalScollCard from "../../../components/home/HorizontalScollCard";
 
 // TMDB video type đơn giản cho /videos
 interface TMDBVideo {

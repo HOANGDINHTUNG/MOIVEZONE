@@ -1,5 +1,5 @@
 import Divider from "../../../components/common/ux/Divider";
-import HorizontalScollCard from "../../../components/HorizontalScollCard";
+import HorizontalScollCard from "../../../components/home/HorizontalScollCard";
 import type { TMDBMediaBase } from "../database/interface/movieLists";
 
 type MediaSummary = TMDBMediaBase;
