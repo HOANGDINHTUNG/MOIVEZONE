@@ -8,7 +8,17 @@
       "sessionId": "mvs_ew5mdidvsnstxkxq3o1ltztatjaoi61bawme1k60",
       "accountId": 1764585987282,
       "createdAt": "2025-12-01T10:46:27.282Z",
-      "id": 1
+      "id": "1"
+    },
+    {
+      "id": "b567",
+      "email": "thanh@gmail.com",
+      "username": "thanh-dep-trai",
+      "password": "12345678",
+      "apiKey": "mvk_guoqa7c8h11e7nlk9xwlvlibmbsxzt16",
+      "sessionId": "mvs_kp1pc1wp51me97qspu6o87hxei6en6fc10tb169m",
+      "accountId": 1764638131305,
+      "createdAt": "2025-12-02T01:15:31.305Z"
     }
   ]
 }
