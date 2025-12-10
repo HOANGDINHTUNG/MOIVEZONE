@@ -11,30 +11,61 @@ const EpisodeOverview = ({ detail }: EpisodeOverviewProps) => {
     detail.crew.find((c) => c.job === "Screenplay");
 
   return (
-    <div className="space-y-3 rounded-2xl border border-slate-800 bg-slate-950/80 p-4 md:p-5">
-      <p className="text-xs uppercase tracking-wide text-slate-400">Overview</p>
+    <div
+      className="
+        space-y-3 rounded-2xl border border-white/10 
+        bg-linear-to-br from-[#080a12]/90 via-[#0b0d15]/90 to-black/90
+        p-4 md:p-5 backdrop-blur-xl shadow-2xl
+      "
+    >
+      {/* OVERVIEW HEADER */}
+      <p className="text-xs uppercase tracking-[0.18em] text-fuchsia-300/80">
+        Overview
+      </p>
 
+      {/* OVERVIEW TEXT */}
       {detail.overview ? (
-        <p className="text-sm leading-relaxed text-slate-200">
+        <p className="text-sm leading-relaxed text-slate-200/90">
           {detail.overview}
         </p>
       ) : (
         <p className="text-sm text-slate-400">No overview available.</p>
       )}
 
-      <div className="flex flex-wrap gap-3 pt-1 text-[11px] text-slate-300">
+      {/* BADGES */}
+      <div className="flex flex-wrap gap-3 pt-1 text-[11px]">
         {director && (
-          <span className="rounded-full bg-slate-900/80 px-3 py-1">
-            Director: <span className="text-slate-50">{director.name}</span>
+          <span
+            className="
+              rounded-full px-3 py-1
+              border border-fuchsia-400/60 bg-fuchsia-500/10 text-fuchsia-100
+              shadow-[0_0_8px_#e879f955]
+            "
+          >
+            Director: <span className="font-semibold">{director.name}</span>
           </span>
         )}
+
         {writer && (
-          <span className="rounded-full bg-slate-900/80 px-3 py-1">
-            Writer: <span className="text-slate-50">{writer.name}</span>
+          <span
+            className="
+              rounded-full px-3 py-1
+              border border-cyan-400/60 bg-cyan-500/10 text-cyan-100
+              shadow-[0_0_8px_#22d3ee55]
+            "
+          >
+            Writer: <span className="font-semibold">{writer.name}</span>
           </span>
         )}
+
         {detail.production_code && (
-          <span className="rounded-full bg-slate-900/80 px-3 py-1">
+          <span
+            className="
+              rounded-full px-3 py-1
+              border border-violet-400/60 bg-violet-500/10 text-violet-100
+              shadow-[0_0_8px_#8b5cf655]
+            "
+          >
             Prod. code: {detail.production_code}
           </span>
         )}

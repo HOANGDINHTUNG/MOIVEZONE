@@ -108,7 +108,13 @@ const TvEpisodePage = () => {
 
   if (!seriesId || !seasonNumber || !episodeNumber) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-50">
+      <div
+        className="
+          flex min-h-screen items-center justify-center
+          bg-linear-to-b from-[#020617] via-black to-black
+          text-slate-50
+        "
+      >
         <p className="text-sm text-slate-300">
           Missing seriesId / seasonNumber / episodeNumber in route.
         </p>
@@ -118,7 +124,13 @@ const TvEpisodePage = () => {
 
   if (loading && !detail) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-50">
+      <div
+        className="
+          flex min-h-screen items-center justify-center
+          bg-linear-to-b from-[#020617] via-black to-black
+          text-slate-50
+        "
+      >
         <p className="text-sm text-slate-300">Loading episode details…</p>
       </div>
     );
@@ -126,11 +138,22 @@ const TvEpisodePage = () => {
 
   if (error && !detail) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-50">
+      <div
+        className="
+          flex min-h-screen items-center justify-center
+          bg-linear-to-b from-[#020617] via-black to-black
+          text-slate-50
+        "
+      >
         <div className="max-w-md space-y-3 px-4 text-center">
           <p className="text-sm text-red-300">Error: {error}</p>
           <button
-            className="mt-2 rounded-full border border-slate-600 px-4 py-1.5 text-xs text-slate-100 hover:bg-slate-800"
+            className="
+              mt-2 rounded-full border border-white/25
+              px-4 py-1.5 text-xs text-slate-100
+              bg-white/5 hover:bg-white/10
+              transition-colors
+            "
             onClick={() =>
               dispatch(
                 fetchTvEpisode({
@@ -152,7 +175,13 @@ const TvEpisodePage = () => {
   if (!detail) return null;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50">
+    <div
+      className="
+        min-h-screen
+        bg-linear-to-b from-[#020617] via-black to-black
+        text-slate-50
+      "
+    >
       <EpisodeHero
         detail={detail}
         heroStill={heroStill}
@@ -169,7 +198,13 @@ const TvEpisodePage = () => {
         )}
 
         {error && (
-          <div className="rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-[11px] text-red-200">
+          <div
+            className="
+              rounded-xl border border-red-500/50
+              bg-red-500/15 px-3 py-2 text-[11px] text-red-100
+              shadow-[0_0_14px_#ef444455]
+            "
+          >
             {error}
           </div>
         )}

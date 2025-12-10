@@ -182,6 +182,7 @@ export default function TmdbLogger() {
       const json = await res.json();
 
       console.log(`===== ${path} =====`);
+      console.log(res);
       console.log(json);
     } catch (err) {
       console.error(`❌ Error loading ${path}`, err);

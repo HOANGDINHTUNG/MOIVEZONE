@@ -254,8 +254,6 @@ const AllMoviesPage = (): JSX.Element => {
             <BigPosterCard
               key={movie.id}
               posterPath={movie.poster_path}
-              // discover trả TMDBMovieSummary nên chưa có logo/tagline/runtime/genres
-              // những prop này để undefined, BigPosterCard sẽ dùng fallback
               logoPath={undefined}
               title={movie.title}
               topText={undefined}

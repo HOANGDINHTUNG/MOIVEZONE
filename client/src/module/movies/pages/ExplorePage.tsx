@@ -1,5 +1,3 @@
-// src/module/discovers/pages/ExplorePage.tsx
-
 import { useEffect, useState, type JSX } from "react";
 import { useParams } from "react-router-dom";
 
@@ -236,9 +234,7 @@ const ExplorePage = () => {
   const currentItems = itemsByPage[currentPage] ?? [];
 
   // 🔥 mobile chỉ render 39 item để grid 3 cột đẹp, desktop/tablet render full
-  const itemsForGrid = isMobile
-    ? currentItems.slice(0, 39)
-    : currentItems;
+  const itemsForGrid = isMobile ? currentItems.slice(0, 39) : currentItems;
 
   const headingLabel = mediaType === "movie" ? "Movies" : "TV Shows";
 

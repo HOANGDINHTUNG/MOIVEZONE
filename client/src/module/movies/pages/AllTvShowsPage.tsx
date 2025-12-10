@@ -248,7 +248,6 @@ const AllTvShowsPage = (): JSX.Element => {
               <BigPosterCard
                 key={show.id}
                 posterPath={show.poster_path}
-                logoPath={undefined} // discover chưa có logo, để sau khi append images
                 title={show.name}
                 topText={undefined} // có thể set "TV SERIES" nếu thích
                 runtimeMinutes={undefined} // TV không có runtime tổng => bỏ trống
