@@ -25,6 +25,42 @@
       ],
       "history": [
         {
+          "id": 114868,
+          "mediaType": "tv",
+          "title": "Record of Ragnarok",
+          "posterPath": "/kTs2WNZOukpWdNhoRlH94pSJ3xf.jpg",
+          "backdropPath": "/6pSkqecoNsxSA467Z28uhVDrjXo.jpg",
+          "overview": "Before eradicating humankind from the world, the gods give them one last chance to prove themselves worthy of survival. Let the Ragnarok battles begin.",
+          "voteAverage": 8.4,
+          "voteCount": 1758,
+          "releaseDate": "2021-06-17",
+          "addedAt": "2025-12-11T05:34:52.539Z"
+        },
+        {
+          "id": 210318,
+          "mediaType": "tv",
+          "title": "The Boys from Brazil: Rise of the Bolsonaros",
+          "posterPath": "/sZXernSnVWGhlrAhDUDtdg3fuZn.jpg",
+          "backdropPath": "/kgXhHyQVPbWrmE2hvjrnLsGZBMs.jpg",
+          "overview": "The remarkable rise of one of the world’s most controversial leaders, Jair Bolsonaro, from obscurity to the presidency of Brazil.",
+          "voteAverage": 7,
+          "voteCount": 3,
+          "releaseDate": "2022-09-05",
+          "addedAt": "2025-12-11T05:33:25.884Z"
+        },
+        {
+          "id": 1255775,
+          "mediaType": "movie",
+          "title": "Merv",
+          "posterPath": "/nfGlYjINEcGtxV46viW4olwHHSz.jpg",
+          "backdropPath": "/9PDae05poYMltaEHWq4FVWMjpB4.jpg",
+          "overview": "When their beloved dog Merv loses his spark after their split, Anna and Russ are forced into the world's most awkward co-parenting arrangement. Hoping to shake Merv out of his funk, Russ takes him to Florida for a much-needed getaway-only for Anna to show up unexpectedly. As Merv slowly gets his groove back, turns out fixing their dog's broken heart may lead to a few sparks of their own.",
+          "voteAverage": 5.778,
+          "voteCount": 9,
+          "releaseDate": "2025-12-09",
+          "addedAt": "2025-12-11T05:20:05.686Z"
+        },
+        {
           "id": 66732,
           "mediaType": "tv",
           "title": "Stranger Things",
