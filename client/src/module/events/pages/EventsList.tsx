@@ -489,8 +489,8 @@ const EventCard: React.FC<EventCardProps> = ({ item }) => {
   const borderColor = "border-red-800/50";
   const shadowColor = "shadow-red-800/15";
   const buttonClass = isCinema
-    ? "bg-gradient-to-r from-red-800 to-rose-900 hover:from-red-700 hover:to-rose-800 shadow-red-800/30 font-bold"
-    : "bg-gradient-to-r from-rose-700 to-red-800 hover:from-rose-600 hover:to-red-700 shadow-rose-700/30 font-bold";
+    ? "bg-linear-to-r from-red-800 to-rose-900 hover:from-red-700 hover:to-rose-800 shadow-red-800/30 font-bold"
+    : "bg-linear-to-r from-rose-700 to-red-800 hover:from-rose-600 hover:to-red-700 shadow-rose-700/30 font-bold";
 
   const categoryBadge =
     "bg-red-900/80 border-red-800/50 text-red-300 font-medium";
@@ -509,8 +509,8 @@ const EventCard: React.FC<EventCardProps> = ({ item }) => {
         />
       </div>
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-900/80 to-transparent"></div>
+      {/* linear Overlay */}
+      <div className="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-900/80 to-transparent"></div>
 
       <div className="relative p-6 flex flex-col h-full">
         {/* Header */}
@@ -609,8 +609,8 @@ const EventsList: React.FC = () => {
             opacity:0.3
           }}
         ></div>
-        {/* Lớp phủ Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/80 to-neutral-950/50"></div>
+        {/* Lớp phủ linear */}
+        <div className="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/80 to-neutral-950/50"></div>
 
         {/* Hiệu ứng hạt sáng (Blur) */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-red-900/10 rounded-full blur-[120px] animate-pulse"></div>
@@ -622,7 +622,7 @@ const EventsList: React.FC = () => {
         <div className="container mx-auto max-w-7xl relative z-10">
           {/* Main Title */}
           <div className="text-center mb-16">
-            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-rose-300 drop-shadow-md">
+            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-red-400 to-rose-300 drop-shadow-md">
               PHIM ĐANG HOT & SỰ KIỆN NỔI BẬT
             </h1>
             <p className="text-lg text-gray-400 mt-3 font-medium">
@@ -689,9 +689,9 @@ const EventsList: React.FC = () => {
                           "cubic-bezier(0.4, 0, 0.2, 1)",
                       }}
                     >
-                      {/* Gradient Border (Viền Đỏ trung tâm) */}
+                      {/* linear Border (Viền Đỏ trung tâm) */}
                       {isCenter && (
-                        <div className="absolute inset-0 p-1 rounded-2xl z-0 bg-gradient-to-br from-red-700 to-rose-800">
+                        <div className="absolute inset-0 p-1 rounded-2xl z-0 bg-linear-to-br from-red-700 to-rose-800">
                           <div className="absolute inset-1 bg-neutral-950 rounded-2xl"></div>
                         </div>
                       )}
@@ -710,7 +710,7 @@ const EventsList: React.FC = () => {
 
                         {/* Overlay */}
                         <div
-                          className={`absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/50 to-transparent ${
+                          className={`absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/50 to-transparent ${
                             isCenter ? "opacity-95" : "opacity-85"
                           }`}
                         ></div>
@@ -778,7 +778,7 @@ const EventsList: React.FC = () => {
                   }}
                   className={`transition-all duration-300 rounded-full ${
                     index === safeCurrentSlide
-                      ? "w-8 h-2 bg-gradient-to-r from-red-600 to-rose-600 shadow-md shadow-red-600/30"
+                      ? "w-8 h-2 bg-linear-to-r from-red-600 to-rose-600 shadow-md shadow-red-600/30"
                       : "w-2 h-2 bg-neutral-700 hover:bg-neutral-600"
                   }`}
                 />
@@ -792,8 +792,8 @@ const EventsList: React.FC = () => {
       <section className="relative py-20 px-4 z-10">
         <div className="container mx-auto max-w-7xl relative z-10">
           <div className="flex items-center gap-4 mb-12">
-            <div className="w-1 h-12 bg-gradient-to-b from-red-600 to-rose-700 rounded-full"></div>
-            <h2 className="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-rose-400">
+            <div className="w-1 h-12 bg-linear-to-b from-red-600 to-rose-700 rounded-full"></div>
+            <h2 className="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-linear-to-r from-red-400 to-rose-400">
               CÔNG CHIẾU VÀ SỰ KIỆN NỔI BẬT (ONLINE)
             </h2>
           </div>
@@ -810,8 +810,8 @@ const EventsList: React.FC = () => {
       <section className="relative py-20 px-4 z-10">
         <div className="container mx-auto max-w-7xl relative z-10">
           <div className="flex items-center gap-4 mb-12">
-            <div className="w-1 h-12 bg-gradient-to-b from-rose-600 to-red-700 rounded-full"></div>
-            <h2 className="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-rose-400 to-red-400">
+            <div className="w-1 h-12 bg-linear-to-b from-rose-600 to-red-700 rounded-full"></div>
+            <h2 className="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-linear-to-r from-rose-400 to-red-400">
               SERIES & SHOW ĐỘC QUYỀN
             </h2>
           </div>
@@ -828,8 +828,8 @@ const EventsList: React.FC = () => {
       <section className="relative py-20 px-4 z-10">
         <div className="container mx-auto max-w-7xl relative z-10">
           <div className="flex items-center gap-4 mb-12">
-            <div className="w-1 h-12 bg-gradient-to-b from-red-700 to-rose-800 rounded-full"></div>
-            <h2 className="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-rose-500">
+            <div className="w-1 h-12 bg-linear-to-b from-red-700 to-rose-800 rounded-full"></div>
+            <h2 className="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-linear-to-r from-red-500 to-rose-500">
               SỰ KIỆN & KHUYẾN MÃI RẠP CHIẾU
             </h2>
           </div>

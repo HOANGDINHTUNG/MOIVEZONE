@@ -476,7 +476,7 @@ const EventDetailPage = () => {
             alt={event.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-transparent"></div>
 
           {event.badge && (
             <div className="absolute top-6 right-6 bg-red-600 text-white px-4 py-2 rounded-full font-bold text-sm animate-pulse">
@@ -487,7 +487,7 @@ const EventDetailPage = () => {
 
         {/* OVERLAY CARD */}
         <div className="max-w-7xl mx-auto px-4 -mt-32 relative z-10">
-          <div className="bg-gradient-to-br from-gray-900/95 to-black/95 rounded-2xl border border-red-900/30 p-8 shadow-2xl">
+          <div className="bg-linear-to-br from-gray-900/95 to-black/95 rounded-2xl border border-red-900/30 p-8 shadow-2xl">
             <div className="flex flex-col lg:flex-row gap-8">
               <img
                 src={event.posterUrl}
@@ -547,7 +547,7 @@ const EventDetailPage = () => {
                   </div>
                 </div>
 
-                <button className="w-full bg-gradient-to-r from-red-600 to-red-700 py-4 rounded-lg font-bold hover:scale-[1.02] transition">
+                <button className="w-full bg-linear-to-r from-red-600 to-red-700 py-4 rounded-lg font-bold hover:scale-[1.02] transition">
                   ĐĂNG KÝ NGAY
                 </button>
               </div>
@@ -560,7 +560,7 @@ const EventDetailPage = () => {
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <section className="bg-gradient-to-br from-gray-900/50 to-black/50 p-8 rounded-xl border border-red-900/20">
+            <section className="bg-linear-to-br from-gray-900/50 to-black/50 p-8 rounded-xl border border-red-900/20">
               <h2 className="text-2xl font-bold mb-4 flex items-center gap-2 text-red-500">
                 <Film size={24} /> Về sự kiện
               </h2>
@@ -578,7 +578,7 @@ const EventDetailPage = () => {
               </ul>
             </section>
 
-            <section className="bg-gradient-to-br from-gray-900/50 to-black/50 p-8 rounded-xl border border-red-900/20">
+            <section className="bg-linear-to-br from-gray-900/50 to-black/50 p-8 rounded-xl border border-red-900/20">
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-red-500">
                 <Clock size={24} /> Lịch trình
               </h2>
@@ -601,7 +601,7 @@ const EventDetailPage = () => {
 
           {/* RIGHT */}
           <div className="space-y-6">
-            <aside className="bg-gradient-to-br from-gray-900/50 to-black/50 p-6 rounded-xl border border-red-900/20">
+            <aside className="bg-linear-to-br from-gray-900/50 to-black/50 p-6 rounded-xl border border-red-900/20">
               <h3 className="text-lg font-bold mb-4">Đơn vị tổ chức</h3>
 
               <div className="flex items-center gap-3 mb-4">
@@ -619,7 +619,7 @@ const EventDetailPage = () => {
               </button>
             </aside>
 
-            <aside className="bg-gradient-to-br from-gray-900/50 to-black/50 p-6 rounded-xl border border-red-900/20">
+            <aside className="bg-linear-to-br from-gray-900/50 to-black/50 p-6 rounded-xl border border-red-900/20">
               <h3 className="text-lg font-bold mb-4">Chia sẻ sự kiện</h3>
 
               <div className="flex gap-3">

@@ -49,11 +49,6 @@ const router = createBrowserRouter([
       { path: "search", element: <SearchPage /> },
       { path: "movie", element: <AllMoviesPage /> },
       { path: "tv", element: <AllTvShowsPage /> },
-      {
-        path: "event",
-        element: <EventsList />,
-      },
-      { path: "event/:id", element: <EventDetailPage /> },
 
       // ================== NHÓM CẦN ĐĂNG NHẬP ==================
       {
@@ -96,6 +91,8 @@ const router = createBrowserRouter([
 
           // // Account / news / payment
           { path: "account", element: <UserLibraryPage /> },
+          { path: "event", element: <EventsList /> },
+          { path: "event/:id", element: <EventDetailPage /> },
           // { path: "news", element: <NewsListPage /> },
           // { path: "news/:id", element: <NewsDetailPage /> },
 

@@ -246,6 +246,9 @@ export default function Header({ admin }: HeaderProps) {
                     <HoveredLink href="/movie?sort=popular">
                       History
                     </HoveredLink>
+                    <HoveredLink href="/event">
+                      Event
+                    </HoveredLink>
                   </div>
                 </div>
               </MenuItem>
