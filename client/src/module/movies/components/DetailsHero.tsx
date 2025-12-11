@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
 import Divider from "../../../components/common/ux/Divider";
 import { TMDB_IMAGE, type DetailGenre } from "../pages/DetailsPage";
-import { useMemo } from "react";
+// import { useMemo } from "react";
 import {
   BiBookmark,
   BiBookmarkAlt,
   BiHeart,
   BiHeartCircle,
 } from "react-icons/bi";
+import { TMDB_BACKDROP_LARGE, TMDB_POSTER_MEDIUM } from "../../../constants/tmdbImage";
 
 type ExternalIds = {
   imdb_id?: string | null;
@@ -100,27 +101,30 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
   resolvedMediaType,
   logoPath,
 }) => {
-  const hiResBase = useMemo(() => {
-    const fallback = "https://image.tmdb.org/t/p/original/";
+  // const hiResBase = useMemo(() => {
+  //   const fallback = "https://image.tmdb.org/t/p/original/";
 
-    if (!imageURL) return fallback;
+  //   if (!imageURL) return fallback;
 
-    if (imageURL.includes("image.tmdb.org")) {
-      let base = imageURL.trim();
+  //   if (imageURL.includes("image.tmdb.org")) {
+  //     let base = imageURL.trim();
 
-      if (base.includes("/original")) {
-        return base.endsWith("/") ? base : base + "/";
-      }
+  //     if (base.includes("/original")) {
+  //       return base.endsWith("/") ? base : base + "/";
+  //     }
 
-      base = base.replace(/\/w\d+\/?/, "/original/");
+  //     base = base.replace(/\/w\d+\/?/, "/original/");
 
-      if (!base.endsWith("/")) base += "/";
+  //     if (!base.endsWith("/")) base += "/";
 
-      return base;
-    }
+  //     return base;
+  //   }
 
-    return imageURL.endsWith("/") ? imageURL : imageURL + "/";
-  }, [imageURL]);
+  //   return imageURL.endsWith("/") ? imageURL : imageURL + "/";
+  // }, [imageURL]);
+
+  const hiResBaseBackdrop = TMDB_BACKDROP_LARGE + "/";
+  const hiResBasePoster = TMDB_POSTER_MEDIUM + "/";
 
   return (
     <div className="relative w-full min-h-[60vh] md:min-h-[70vh] overflow-hidden bg-neutral-900">
@@ -128,7 +132,7 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
       {backdropPath && (
         <div className="absolute inset-0">
           <img
-            src={hiResBase + backdropPath}
+            src={hiResBaseBackdrop + backdropPath}
             alt={title}
             className="h-full w-full object-cover object-center md:object-top"
           />
@@ -144,7 +148,7 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
           <div className="w-full rounded-xl bg-neutral-900/80 shadow-[0_20px_45px_rgba(0,0,0,0.75)] ring-1 ring-white/5 overflow-hidden aspect-2/3">
             {posterPath ? (
               <img
-                src={hiResBase + posterPath}
+                src={hiResBasePoster + posterPath}
                 alt={title}
                 className="h-full w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
               />

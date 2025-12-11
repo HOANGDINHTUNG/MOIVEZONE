@@ -132,17 +132,38 @@ const SearchAdvancedPage = (): JSX.Element => {
     });
   };
 
-  // ====== LẤY query TỪ URL (?q=) ======
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const q = params.get("q") || "";
-    if (q && q !== query) {
-      dispatch(setQuery(q));
+
+    // Sync URL -> localInput + redux query
+    if (q !== query) {
       setLocalInput(q);
-      dispatch(fetchSearch({ query: q, category: activeCategory, page: 1 }));
+      dispatch(setQuery(q));
+
+      if (!q) {
+        // nếu xóa query trên URL thì clear luôn kết quả
+        dispatch(resetResults());
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search]);
+  }, [location.search, query, dispatch]);
+
+  useEffect(() => {
+    const trimmed = localInput.trim();
+    const t = setTimeout(() => {
+      if (trimmed) {
+        dispatch(setQuery(trimmed));
+        dispatch(
+          fetchSearch({ query: trimmed, category: activeCategory, page: 1 })
+        );
+      } else {
+        dispatch(setQuery(""));
+        dispatch(resetResults());
+      }
+    }, 400); // debounce 400ms
+
+    return () => clearTimeout(t);
+  }, [localInput, activeCategory, dispatch]);
 
   // animation cho grid search
   useEffect(() => {
@@ -186,8 +207,6 @@ const SearchAdvancedPage = (): JSX.Element => {
 
   const handleTabChange = (cat: SearchCategory) => {
     dispatch(setActiveCategory(cat));
-    if (!query) return;
-    dispatch(fetchSearch({ category: cat, page: 1 }));
     scrollToTopSmooth();
   };
 

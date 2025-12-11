@@ -121,7 +121,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ videoSrc }) => {
                   {mode === "login" ? "ĐĂNG NHẬP" : "ĐĂNG KÝ"}
                 </p>
                 <h2 className="relative h-[150px] w-full overflow-hidden">
-                  <VideoText src={effectiveVideo} className="block">
+                  <VideoText src={fallbackVideo} className="block">
                     {displayTitle}
                   </VideoText>
                 </h2>

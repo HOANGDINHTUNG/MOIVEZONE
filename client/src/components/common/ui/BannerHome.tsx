@@ -1,4 +1,3 @@
-// src/components/common/ui/BannerHome.tsx
 import { useMemo, useRef, useLayoutEffect, type FC } from "react";
 import gsap from "gsap";
 import { useNavigate } from "react-router-dom";

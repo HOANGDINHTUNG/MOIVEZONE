@@ -233,7 +233,7 @@ const AllTvShowsPage = (): JSX.Element => {
         {/* GRID + FADE (responsive 3–3–4–5 cột) */}
         <div
           className={`
-            grid grid-cols-2 xs:grid-cols-3 md:grid-cols-4 lg:grid-cols-5
+            grid grid-cols-3 xs:grid-cols-3 md:grid-cols-4 lg:grid-cols-5
             gap-3 sm:gap-4
             transition-opacity duration-300
             ${gridVisible ? "opacity-100" : "opacity-0"}

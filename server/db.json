@@ -25,6 +25,42 @@
       ],
       "history": [
         {
+          "id": 1138526,
+          "mediaType": "movie",
+          "title": "The Lunar Chronicles",
+          "posterPath": "/uHetNUxDujMrd9C4OYkmN2WidNM.jpg",
+          "backdropPath": "/aAU7G5R7gLiWb1oTvLNLkSP9pkR.jpg",
+          "overview": "Once upon a time, in the future, Grimm’s heroines and heroes join forces in an epic sci-fi fairy tale that challenges everything we think we know about their stories to reframe how we face an uncertain future with hope.",
+          "voteAverage": 0,
+          "voteCount": 0,
+          "releaseDate": "2028-11-02",
+          "addedAt": "2025-12-11T09:15:14.795Z"
+        },
+        {
+          "id": 1084242,
+          "mediaType": "movie",
+          "title": "Zootopia 2",
+          "posterPath": "/bjUWGw0Ao0qVWxagN3VCwBJHVo6.jpg",
+          "backdropPath": "/5h2EsPKNDdB3MAtOk9MB9Ycg9Rz.jpg",
+          "overview": "After cracking the biggest case in Zootopia's history, rookie cops Judy Hopps and Nick Wilde find themselves on the twisting trail of a great mystery when Gary De’Snake arrives and turns the animal metropolis upside down. To crack the case, Judy and Nick must go undercover to unexpected new parts of town, where their growing partnership is tested like never before.",
+          "voteAverage": 7.7,
+          "voteCount": 510,
+          "releaseDate": "2025-11-26",
+          "addedAt": "2025-12-11T09:13:00.447Z"
+        },
+        {
+          "id": 1255775,
+          "mediaType": "movie",
+          "title": "Merv",
+          "posterPath": "/nfGlYjINEcGtxV46viW4olwHHSz.jpg",
+          "backdropPath": "/9PDae05poYMltaEHWq4FVWMjpB4.jpg",
+          "overview": "When their beloved dog Merv loses his spark after their split, Anna and Russ are forced into the world's most awkward co-parenting arrangement. Hoping to shake Merv out of his funk, Russ takes him to Florida for a much-needed getaway-only for Anna to show up unexpectedly. As Merv slowly gets his groove back, turns out fixing their dog's broken heart may lead to a few sparks of their own.",
+          "voteAverage": 5.9,
+          "voteCount": 10,
+          "releaseDate": "2025-12-09",
+          "addedAt": "2025-12-11T09:06:41.642Z"
+        },
+        {
           "id": 114868,
           "mediaType": "tv",
           "title": "Record of Ragnarok",
@@ -47,18 +83,6 @@
           "voteCount": 3,
           "releaseDate": "2022-09-05",
           "addedAt": "2025-12-11T05:33:25.884Z"
-        },
-        {
-          "id": 1255775,
-          "mediaType": "movie",
-          "title": "Merv",
-          "posterPath": "/nfGlYjINEcGtxV46viW4olwHHSz.jpg",
-          "backdropPath": "/9PDae05poYMltaEHWq4FVWMjpB4.jpg",
-          "overview": "When their beloved dog Merv loses his spark after their split, Anna and Russ are forced into the world's most awkward co-parenting arrangement. Hoping to shake Merv out of his funk, Russ takes him to Florida for a much-needed getaway-only for Anna to show up unexpectedly. As Merv slowly gets his groove back, turns out fixing their dog's broken heart may lead to a few sparks of their own.",
-          "voteAverage": 5.778,
-          "voteCount": 9,
-          "releaseDate": "2025-12-09",
-          "addedAt": "2025-12-11T05:20:05.686Z"
         },
         {
           "id": 66732,
@@ -109,18 +133,6 @@
           "addedAt": "2025-12-10T09:19:00.121Z"
         },
         {
-          "id": 1084242,
-          "mediaType": "movie",
-          "title": "Zootopia 2",
-          "posterPath": "/bjUWGw0Ao0qVWxagN3VCwBJHVo6.jpg",
-          "backdropPath": "/5h2EsPKNDdB3MAtOk9MB9Ycg9Rz.jpg",
-          "overview": "After cracking the biggest case in Zootopia's history, rookie cops Judy Hopps and Nick Wilde find themselves on the twisting trail of a great mystery when Gary De’Snake arrives and turns the animal metropolis upside down. To crack the case, Judy and Nick must go undercover to unexpected new parts of town, where their growing partnership is tested like never before.",
-          "voteAverage": 7.672,
-          "voteCount": 490,
-          "releaseDate": "2025-11-26",
-          "addedAt": "2025-12-10T09:16:21.203Z"
-        },
-        {
           "id": 219246,
           "mediaType": "tv",
           "title": "When Life Gives You Tangerines",
@@ -131,18 +143,6 @@
           "voteCount": 427,
           "releaseDate": "2025-03-07",
           "addedAt": "2025-12-10T08:13:02.197Z"
-        },
-        {
-          "id": 1138526,
-          "mediaType": "movie",
-          "title": "The Lunar Chronicles",
-          "posterPath": "/uHetNUxDujMrd9C4OYkmN2WidNM.jpg",
-          "backdropPath": "/aAU7G5R7gLiWb1oTvLNLkSP9pkR.jpg",
-          "overview": "Once upon a time, in the future, Grimm’s heroines and heroes join forces in an epic sci-fi fairy tale that challenges everything we think we know about their stories to reframe how we face an uncertain future with hope.",
-          "voteAverage": 0,
-          "voteCount": 0,
-          "releaseDate": "2028-11-02",
-          "addedAt": "2025-12-10T08:10:59.014Z"
         },
         {
           "id": 200875,
