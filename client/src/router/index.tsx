@@ -31,6 +31,8 @@ import TvSeasonPage from "../module/tv/pages/TvSeasonPage";
 import TvEpisodePage from "../module/tv/pages/TvEpisodePage";
 import TvEpisodeGroupPage from "../module/tv/pages/TvEpisodeGroupPage";
 import UserLibraryPage from "../module/auth/pages/UserLibraryPage";
+import EventsList from "../module/events/pages/EventsList";
+import EventDetailPage from "../module/events/pages/DetailEvent";
 
 const router = createBrowserRouter([
   // Layout chính của app
@@ -47,6 +49,11 @@ const router = createBrowserRouter([
       { path: "search", element: <SearchPage /> },
       { path: "movie", element: <AllMoviesPage /> },
       { path: "tv", element: <AllTvShowsPage /> },
+      {
+        path: "event",
+        element: <EventsList />,
+      },
+      { path: "event/:id", element: <EventDetailPage /> },
 
       // ================== NHÓM CẦN ĐĂNG NHẬP ==================
       {
