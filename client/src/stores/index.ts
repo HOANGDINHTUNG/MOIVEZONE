@@ -22,7 +22,7 @@ import searchReducer from "../module/search/store/searchSlice";
 import tvSeasonReducer from "../module/tv/store/tvSeasonSlice";
 import tvEpisodeReducer from "../module/tv/store/tvEpisodeSlice";
 import tvEpisodeGroupReducer from "../module/tv/store/tvEpisodeGroupSlice";
-
+import adminReducer from "../module/admin/store/adminSlice";
 export const store = configureStore({
   reducer: {
     moviesData: moviesReducer,
@@ -48,6 +48,7 @@ export const store = configureStore({
     tvSeason: tvSeasonReducer,
     tvEpisode: tvEpisodeReducer,
     tvEpisodeGroup: tvEpisodeGroupReducer,
+    admin: adminReducer,
   },
 });
 

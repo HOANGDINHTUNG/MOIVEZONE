@@ -67,6 +67,8 @@ export default function Header({ admin }: HeaderProps) {
     currentUser?.username ||
     (currentUser?.email ? currentUser.email.split("@")[0] : "User");
 
+  const isAdmin = currentUser?.role === "admin";
+
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
@@ -276,6 +278,7 @@ export default function Header({ admin }: HeaderProps) {
               <UserMenu
                 displayName={displayName}
                 email={currentUser?.email}
+                isAdmin={isAdmin}
                 onLogout={handleLogout}
               />
             )}

@@ -4,6 +4,8 @@ import { Suspense, lazy, type JSX } from "react";
 
 import App from "../App";
 import ProtectedRoute from "./ProtectedRoute";
+import AdminRoute from "./AdminRoute";
+import AdminDashboardPage from "../module/admin/pages/AdminDashboardPage";
 
 // ===== Lazy pages =====
 const Home = lazy(() => import("../module/home/pages/HomePage"));
@@ -196,7 +198,12 @@ const router = createBrowserRouter([
           // { path: "ticket-price", element: <TicketPricePage /> },
 
           // // Admin (cũng nên bảo vệ)
-          // { path: "admin/movies", element: <AdminMoviesPage /> },
+          {
+            element: <AdminRoute />,
+            children: [
+              { path: "admin", element: withSuspense(<AdminDashboardPage />) },
+            ],
+          },
           // { path: "admin/schedule", element: <AdminSchedulePage /> },
           // { path: "admin/users", element: <AdminUsersPage /> },
         ],

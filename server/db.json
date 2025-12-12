@@ -1,101 +1,16 @@
 {
   "users": [
     {
-      "email": "mtung3365@gmail.com",
-      "username": "tunghoang",
-      "password": "09042006ha$$Tung",
-      "apiKey": "mvk_uvjwmkfqd9eler37ll9vtp15uilvumd2",
-      "sessionId": "mvs_ew5mdidvsnstxkxq3o1ltztatjaoi61bawme1k60",
-      "accountId": 1764585987282,
-      "createdAt": "2025-12-01T10:46:27.282Z",
       "id": "1",
-      "favorites": [
-        {
-          "id": 1622,
-          "mediaType": "tv",
-          "title": "Supernatural",
-          "posterPath": "/u40gJarLPlIkwouKlzGdobQOV9k.jpg",
-          "backdropPath": "/ro0tlgnsco4SwbdAgmscLkSlMSL.jpg",
-          "overview": "When they were boys, Sam and Dean Winchester lost their mother to a mysterious and demonic supernatural force. Subsequently, their father raised them to be soldiers. He taught them about the paranormal evil that lives in the dark corners and on the back roads of America ... and he taught them how to kill it. Now, the Winchester brothers crisscross the country in their '67 Chevy Impala, battling every kind of supernatural threat they encounter along the way. ",
-          "voteAverage": 8.302,
-          "voteCount": 8099,
-          "releaseDate": "2005-09-13",
-          "addedAt": "2025-12-09T09:26:08.782Z"
-        }
-      ],
+      "username": "admin",
+      "email": "admin@moviezone.com",
+      "password": "admin123",
+      "displayName": "Super Admin",
+      "avatar": "https://i.pravatar.cc/300?img=12",
+      "role": "admin",
+      "status": "active",
+      "createdAt": "2025-01-01T00:00:00.000Z",
       "history": [
-        {
-          "id": 1138526,
-          "mediaType": "movie",
-          "title": "The Lunar Chronicles",
-          "posterPath": "/uHetNUxDujMrd9C4OYkmN2WidNM.jpg",
-          "backdropPath": "/aAU7G5R7gLiWb1oTvLNLkSP9pkR.jpg",
-          "overview": "Once upon a time, in the future, Grimm’s heroines and heroes join forces in an epic sci-fi fairy tale that challenges everything we think we know about their stories to reframe how we face an uncertain future with hope.",
-          "voteAverage": 0,
-          "voteCount": 0,
-          "releaseDate": "2028-11-02",
-          "addedAt": "2025-12-11T09:15:14.795Z"
-        },
-        {
-          "id": 1084242,
-          "mediaType": "movie",
-          "title": "Zootopia 2",
-          "posterPath": "/bjUWGw0Ao0qVWxagN3VCwBJHVo6.jpg",
-          "backdropPath": "/5h2EsPKNDdB3MAtOk9MB9Ycg9Rz.jpg",
-          "overview": "After cracking the biggest case in Zootopia's history, rookie cops Judy Hopps and Nick Wilde find themselves on the twisting trail of a great mystery when Gary De’Snake arrives and turns the animal metropolis upside down. To crack the case, Judy and Nick must go undercover to unexpected new parts of town, where their growing partnership is tested like never before.",
-          "voteAverage": 7.7,
-          "voteCount": 510,
-          "releaseDate": "2025-11-26",
-          "addedAt": "2025-12-11T09:13:00.447Z"
-        },
-        {
-          "id": 1255775,
-          "mediaType": "movie",
-          "title": "Merv",
-          "posterPath": "/nfGlYjINEcGtxV46viW4olwHHSz.jpg",
-          "backdropPath": "/9PDae05poYMltaEHWq4FVWMjpB4.jpg",
-          "overview": "When their beloved dog Merv loses his spark after their split, Anna and Russ are forced into the world's most awkward co-parenting arrangement. Hoping to shake Merv out of his funk, Russ takes him to Florida for a much-needed getaway-only for Anna to show up unexpectedly. As Merv slowly gets his groove back, turns out fixing their dog's broken heart may lead to a few sparks of their own.",
-          "voteAverage": 5.9,
-          "voteCount": 10,
-          "releaseDate": "2025-12-09",
-          "addedAt": "2025-12-11T09:06:41.642Z"
-        },
-        {
-          "id": 114868,
-          "mediaType": "tv",
-          "title": "Record of Ragnarok",
-          "posterPath": "/kTs2WNZOukpWdNhoRlH94pSJ3xf.jpg",
-          "backdropPath": "/6pSkqecoNsxSA467Z28uhVDrjXo.jpg",
-          "overview": "Before eradicating humankind from the world, the gods give them one last chance to prove themselves worthy of survival. Let the Ragnarok battles begin.",
-          "voteAverage": 8.4,
-          "voteCount": 1758,
-          "releaseDate": "2021-06-17",
-          "addedAt": "2025-12-11T05:34:52.539Z"
-        },
-        {
-          "id": 210318,
-          "mediaType": "tv",
-          "title": "The Boys from Brazil: Rise of the Bolsonaros",
-          "posterPath": "/sZXernSnVWGhlrAhDUDtdg3fuZn.jpg",
-          "backdropPath": "/kgXhHyQVPbWrmE2hvjrnLsGZBMs.jpg",
-          "overview": "The remarkable rise of one of the world’s most controversial leaders, Jair Bolsonaro, from obscurity to the presidency of Brazil.",
-          "voteAverage": 7,
-          "voteCount": 3,
-          "releaseDate": "2022-09-05",
-          "addedAt": "2025-12-11T05:33:25.884Z"
-        },
-        {
-          "id": 66732,
-          "mediaType": "tv",
-          "title": "Stranger Things",
-          "posterPath": "/cVxVGwHce6xnW8UaVUggaPXbmoE.jpg",
-          "backdropPath": "/56v2KjBlU4XaOv9rVYEQypROD7P.jpg",
-          "overview": "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces, and one strange little girl.",
-          "voteAverage": 8.601,
-          "voteCount": 19455,
-          "releaseDate": "2016-07-15",
-          "addedAt": "2025-12-10T10:30:29.156Z"
-        },
         {
           "id": 1218925,
           "mediaType": "movie",
@@ -103,180 +18,24 @@
           "posterPath": "/pHyxb2RV5wLlboAwm9ZJ9qTVEDw.jpg",
           "backdropPath": "/kfXgo2rMF1A19celCwLyQ4Xwpf8.jpg",
           "overview": "In a brutal war between devils, hunters, and secret enemies, a mysterious girl named Reze has stepped into Denji's world, and he faces his deadliest battle yet, fueled by love in a world where survival knows no rules.",
-          "voteAverage": 7.89,
-          "voteCount": 259,
+          "voteAverage": 8.151,
+          "voteCount": 324,
           "releaseDate": "2025-09-19",
-          "addedAt": "2025-12-10T10:30:24.745Z"
+          "addedAt": "2025-12-12T07:11:23.054Z"
         },
         {
-          "id": 1396,
-          "mediaType": "tv",
-          "title": "Breaking Bad",
-          "posterPath": "/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg",
-          "backdropPath": "/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
-          "overview": "Walter White, a New Mexico chemistry teacher, is diagnosed with Stage III cancer and given a prognosis of only two years left to live. He becomes filled with a sense of fearlessness and an unrelenting desire to secure his family's financial future at any cost as he enters the dangerous world of drugs and crime.",
-          "voteAverage": 8.936,
-          "voteCount": 16649,
-          "releaseDate": "2008-01-20",
-          "addedAt": "2025-12-10T09:31:06.959Z"
-        },
-        {
-          "id": 246,
-          "mediaType": "tv",
-          "title": "Avatar: The Last Airbender",
-          "posterPath": "/yaGt4GIutpbXHsv48tWceWg6s56.jpg",
-          "backdropPath": "/7oBGhqJIghRBvOwo5Qe0yM0cnMc.jpg",
-          "overview": "In a war-torn world of elemental magic, a young boy reawakens to undertake a dangerous mystic quest to fulfill his destiny as the Avatar, and bring peace to the world.",
-          "voteAverage": 8.752,
-          "voteCount": 4572,
-          "releaseDate": "2005-02-21",
-          "addedAt": "2025-12-10T09:19:00.121Z"
-        },
-        {
-          "id": 219246,
-          "mediaType": "tv",
-          "title": "When Life Gives You Tangerines",
-          "posterPath": "/1VC3sEFxYXYDqQUCAnvWfUsYg1s.jpg",
-          "backdropPath": "/mwczMJeoQrsPERcyP1e900jo3Jv.jpg",
-          "overview": "In Jeju, a spirited girl and a steadfast boy's island story blossoms into a lifelong tale of setbacks and triumphs — proving love endures across time.",
-          "voteAverage": 8.722,
-          "voteCount": 427,
-          "releaseDate": "2025-03-07",
-          "addedAt": "2025-12-10T08:13:02.197Z"
-        },
-        {
-          "id": 200875,
-          "mediaType": "tv",
-          "title": "IT: Welcome to Derry",
-          "posterPath": "/nyy3BITeIjviv6PFIXtqvc8i6xi.jpg",
-          "backdropPath": "/2fOKVDoc2O3eZmBZesWPuE5kgPN.jpg",
-          "overview": "In 1962, a couple with their son move to Derry, Maine just as a young boy disappears. With their arrival, terrible things begin to happen in the town.",
-          "voteAverage": 8.165,
-          "voteCount": 662,
-          "releaseDate": "2025-10-26",
-          "addedAt": "2025-12-10T08:03:47.327Z"
-        },
-        {
-          "id": 83533,
+          "id": 798645,
           "mediaType": "movie",
-          "title": "Avatar: Fire and Ash",
-          "posterPath": "/g96wHxU7EnoIFwemb2RgohIXrgW.jpg",
-          "backdropPath": "/iN41Ccw4DctL8npfmYg1j5Tr1eb.jpg",
-          "overview": "In the wake of the devastating war against the RDA and the loss of their eldest son, Jake Sully and Neytiri face a new threat on Pandora: the Ash People, a violent and power-hungry Na'vi tribe led by the ruthless Varang. Jake's family must fight for their survival and the future of Pandora in a conflict that pushes them to their emotional and physical limits.",
-          "voteAverage": 0,
-          "voteCount": 1,
-          "releaseDate": "2025-12-17",
-          "addedAt": "2025-12-10T08:03:26.886Z"
-        },
-        {
-          "id": 306114,
-          "mediaType": "tv",
-          "title": "Rififi",
-          "posterPath": "/ngCwoSAGQBB1qKnPinRInmvfMDj.jpg",
-          "backdropPath": "/qMOYjQ0xPjFL7E8QyQJw5I7xpnw.jpg",
-          "overview": "\"RIFIFI\" is inspired by the notorious bank robbery that took place in Athens in 1992. Who carried it out and why? The authorities spoke of organized crime, terrorist groups, and highly educated, ruthless perpetrators. But was it really like that? Through the power of fiction, the new production by COSMOTE TV combines the biggest heist ever committed in Greece with a true story of human tragedy, creating a character-driven series full of emotion and strong elements of humor.",
-          "voteAverage": 0,
-          "voteCount": 0,
-          "releaseDate": "2025-12-15",
-          "addedAt": "2025-12-10T07:51:09.330Z"
-        },
-        {
-          "id": 1287322,
-          "mediaType": "movie",
-          "title": "Christy",
-          "posterPath": "/dYQ63YbeHgaukE7I2d3cC9Lnoor.jpg",
-          "backdropPath": "/d95WgAQXqDVlqbEHdLWfyvRG2ms.jpg",
-          "overview": "Christy Martin never imagined life beyond her small-town roots in West Virginia—until she discovered a knack for punching people. Fueled by grit, raw determination, and an unshakable desire to win, she charges into the world of boxing under the guidance of her trainer and manager-turned-husband, Jim. But while Christy flaunts a fiery persona in the ring, her toughest battles unfold outside it—confronting family, identity, and a relationship that just might become life-or-death.",
-          "voteAverage": 7.4,
-          "voteCount": 9,
-          "releaseDate": "2025-11-06",
-          "addedAt": "2025-12-10T07:48:13.995Z"
-        },
-        {
-          "id": 575265,
-          "mediaType": "movie",
-          "title": "Mission: Impossible - The Final Reckoning",
-          "posterPath": "/z53D72EAOxGRqdr7KXXWp9dJiDe.jpg",
-          "backdropPath": "/xPNDRM50a58uvv1il2GVZrtWjkZ.jpg",
-          "overview": "Ethan Hunt and team continue their search for the terrifying AI known as the Entity — which has infiltrated intelligence networks all over the globe — with the world's governments and a mysterious ghost from Hunt's past on their trail. Joined by new allies and armed with the means to shut the Entity down for good, Hunt is in a race against time to prevent the world as we know it from changing forever.",
-          "voteAverage": 7.26,
-          "voteCount": 2156,
-          "releaseDate": "2025-05-17",
-          "addedAt": "2025-12-09T15:36:07.522Z"
-        },
-        {
-          "id": 1441563,
-          "mediaType": "movie",
-          "title": "My Secret Santa",
-          "posterPath": "/tpOAzBasKPsKwsUtPZOx1Mzuqq3.jpg",
-          "backdropPath": "/bXZcSDQoyXlzzUw9qxjZjiUSYov.jpg",
-          "overview": "A single mom needs a job. A ski resort needs a Santa. Disguised as a St. Nick lookalike, can Taylor fool a charming hotel heir into ho-ho-hiring her?",
-          "voteAverage": 6.417,
-          "voteCount": 60,
-          "releaseDate": "2025-12-02",
-          "addedAt": "2025-12-09T15:27:59.258Z"
-        },
-        {
-          "id": 1309012,
-          "mediaType": "movie",
-          "title": "Altered",
-          "posterPath": "/6QlAcGRaUrgHcZ4WTBh5lsPnzKx.jpg",
-          "backdropPath": "/q9bvjUkpKltPE0S9oxci2pmD1Zx.jpg",
-          "overview": "In an alternate present, genetically enhanced humans dominate society. Outcasts Leon and Chloe fight for justice against corrupt politicians exploiting genetic disparity, risking everything to challenge the oppressive system.",
-          "voteAverage": 6.351,
-          "voteCount": 57,
-          "releaseDate": "2025-09-18",
-          "addedAt": "2025-12-09T09:50:58.561Z"
-        },
-        {
-          "id": 1419406,
-          "mediaType": "movie",
-          "title": "The Shadow's Edge",
-          "posterPath": "/e0RU6KpdnrqFxDKlI3NOqN8nHL6.jpg",
-          "backdropPath": "/4BtL2vvEufDXDP4u6xQjjQ1Y2aT.jpg",
-          "overview": "Macau Police brings the tracking expert police officer out of retirement to help catch a dangerous group of professional thieves.",
-          "voteAverage": 6.503,
-          "voteCount": 148,
-          "releaseDate": "2025-08-16",
-          "addedAt": "2025-12-09T09:50:54.001Z"
-        },
-        {
-          "id": 1228246,
-          "mediaType": "movie",
-          "title": "Five Nights at Freddy's 2",
-          "posterPath": "/am6O7221qGtb5ba5uJKw7PfPZkJ.jpg",
-          "backdropPath": "/54BOXpX2ieTXMDzHymdDMnUIzYG.jpg",
-          "overview": "One year since the supernatural nightmare at Freddy Fazbear's Pizza, the stories about what transpired there have been twisted into a campy local legend, inspiring the town's first ever Fazfest. With the truth kept from her, Abby sneaks out to reconnect with Freddy, Bonnie, Chica, and Foxy, setting into motion a terrifying series of events that will reveal dark secrets about the real origin of Freddy's, and unleash a decades-hidden horror.",
-          "voteAverage": 6.4,
-          "voteCount": 101,
-          "releaseDate": "2025-12-03",
-          "addedAt": "2025-12-09T09:50:50.760Z"
-        }
-      ],
-      "watchlist": [
-        {
-          "id": 1218925,
-          "mediaType": "movie",
-          "title": "Chainsaw Man - The Movie: Reze Arc",
-          "posterPath": "/xdzLBZjCVSEsic7m7nJc4jNJZVW.jpg",
-          "backdropPath": "/gqTz24ZRsCP6AKjARmEivY7m0cK.jpg",
-          "overview": "In a brutal war between devils, hunters, and secret enemies, a mysterious girl named Reze has stepped into Denji's world, and he faces his deadliest battle yet, fueled by love in a world where survival knows no rules.",
-          "voteAverage": 7.8,
-          "voteCount": 239,
-          "releaseDate": "2025-09-19",
-          "addedAt": "2025-12-09T09:49:52.485Z"
+          "title": "The Running Man",
+          "posterPath": "/dKL78O9zxczVgjtNcQ9UkbYLzqX.jpg",
+          "backdropPath": "/aHj7d7wSLqrg5cjAcgHhiGr97Ih.jpg",
+          "overview": "Desperate to save his sick daughter, working-class Ben Richards is convinced by The Running Man's charming but ruthless producer to enter the deadly competition game as a last resort. But Ben's defiance, instincts, and grit turn him into an unexpected fan favorite - and a threat to the entire system. As ratings skyrocket, so does the danger, and Ben must outwit not just the Hunters, but a nation addicted to watching him fall.",
+          "voteAverage": 6.7,
+          "voteCount": 296,
+          "releaseDate": "2025-11-11",
+          "addedAt": "2025-12-12T07:10:10.477Z"
         }
       ]
-    },
-    {
-      "id": "b567",
-      "email": "thanh@gmail.com",
-      "username": "thanh-dep-trai",
-      "password": "12345678",
-      "apiKey": "mvk_guoqa7c8h11e7nlk9xwlvlibmbsxzt16",
-      "sessionId": "mvs_kp1pc1wp51me97qspu6o87hxei6en6fc10tb169m",
-      "accountId": 1764638131305,
-      "createdAt": "2025-12-02T01:15:31.305Z"
     }
   ],
   "event": []

@@ -1,4 +1,3 @@
-// src/components/header/UserMenu.tsx
 import React from "react";
 import { Link } from "react-router-dom";
 import DarkModeToggle from "../../common/ui/DarkModeToggle";
@@ -8,12 +7,14 @@ import { StyledWrapper } from "../ui/Btn";
 type UserMenuProps = {
   displayName: string;
   email?: string | null;
+  isAdmin?: boolean;
   onLogout: () => void;
 };
 
 const UserMenu: React.FC<UserMenuProps> = ({
   displayName,
   email,
+  isAdmin,
   onLogout,
 }) => {
   return (
@@ -65,12 +66,22 @@ const UserMenu: React.FC<UserMenuProps> = ({
             {email && (
               <p className="text-[11px] text-neutral-500 truncate">{email}</p>
             )}
-            <Link
-              to="/profile"
-              className="mt-2 inline-block text-[11px] text-[#ecad29] hover:text-yellow-400"
-            >
-              View profile
-            </Link>
+            <div className="mt-2 flex items-center gap-2">
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="inline-flex items-center gap-1 rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[11px] font-medium text-red-200 hover:bg-red-500/15"
+                >
+                  Admin Dashboard
+                </Link>
+              )}
+              <Link
+                to="/account"
+                className="inline-block text-[11px] text-[#ecad29] hover:text-yellow-400"
+              >
+                Tài khoản
+              </Link>
+            </div>
           </div>
 
           {/* Tùy chỉnh theme + ngôn ngữ */}

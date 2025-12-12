@@ -95,6 +95,8 @@ import { selectAuth, setCurrentUser } from "../../auth/store/authSlice";
 import { updateUserDirect } from "../../../api/server/User.api";
 import { buildUserMediaItem } from "../../auth/feature/utils/buildUserMediaItem";
 import VideoPlay from "../../../components/home/VideoPlay";
+import { selectAdminState } from "../../admin/store/adminSlice";
+import RestrictedContentBlock from "../../../components/error/RestrictedContentBlock";
 
 export const TMDB_IMAGE = "https://image.tmdb.org/t/p";
 
@@ -257,6 +259,13 @@ const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
 
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
   const [activeVideoKey, setActiveVideoKey] = useState<string | null>(null);
+
+  const numericId = Number(id);
+  const { restrictedTitles } = useAppSelector(selectAdminState);
+
+  const restriction = restrictedTitles.find(
+    (r) => r.mediaType === mediaType && r.id === numericId
+  );
 
   const activeGenreMap =
     (mediaType ?? explore) === "tv" ? genresState.tvMap : genresState.movieMap;
@@ -1076,6 +1085,10 @@ const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
 
     return chosen.file_path || null;
   }, [mediaImages, data]);
+
+  if (restriction) {
+    return <RestrictedContentBlock reason={restriction.reason} />;
+  }
 
   // ========== Loading / Error ==========
   if (loading || !data) {

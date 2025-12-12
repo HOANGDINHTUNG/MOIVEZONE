@@ -19,6 +19,26 @@ export interface IUser {
   username: string;
   password: string;
 
+  /**
+   * Role để phân quyền UI/route.
+   * - user: người dùng bình thường
+   * - admin: quản trị
+   *
+   * NOTE: để tương thích dữ liệu cũ (db.json chưa có role),
+   * app sẽ tự fallback về "user" khi thiếu.
+   */
+  role?: "user" | "admin";
+
+  /**
+   * Trạng thái tài khoản.
+   * - active: hoạt động
+   * - blocked: bị chặn
+   *
+   * NOTE: để tương thích dữ liệu cũ (db.json chưa có status),
+   * app sẽ tự fallback về "active" khi thiếu.
+   */
+  status?: "active" | "blocked";
+
   // TMDB info nếu sau này bạn vẫn muốn dùng
   apiKey: string;
   sessionId: string;
@@ -36,6 +56,9 @@ export interface CreateUserPayload {
   email: string;
   username: string;
   password: string;
+
+  role?: "user" | "admin";
+  status?: "active" | "blocked";
 
   apiKey?: string;
   sessionId?: string;

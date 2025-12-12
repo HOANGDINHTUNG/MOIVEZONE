@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAppDispatch } from "../../../hooks/UseCustomeRedux";
-import { getAllUsers } from "../../../api/server/User.api";
+import { getAllUsers, updateUserDirect } from "../../../api/server/User.api";
 import type { IUser } from "../database/interface/users";
 import { login } from "../store/authSlice";
 import { initAccountConfig } from "../../accounts/store/accountSlice";
@@ -66,9 +66,49 @@ const LoginPage: React.FC = () => {
         return;
       }
 
+      // normalize role/status (tương thích dữ liệu cũ)
+      const normalizedRole: IUser["role"] =
+        matched.role ??
+        (matched.email.trim().toLowerCase() === "admin@moviezone.com" ||
+        matched.username.trim().toLowerCase() === "admin"
+          ? "admin"
+          : "user");
+
+      const normalizedStatus: IUser["status"] = matched.status ?? "active";
+
+      // Nếu bị block thì không cho đăng nhập
+      if (normalizedStatus === "blocked") {
+        setAlert({
+          type: "error",
+          message:
+            "Tài khoản của bạn đã bị chặn. Vui lòng liên hệ quản trị viên.",
+        });
+        setLoading(false);
+        return;
+      }
+
+      const normalizedUser: IUser = {
+        ...matched,
+        role: normalizedRole,
+        status: normalizedStatus,
+      };
+
+      // Nếu db cũ chưa có role/status thì patch nhẹ để lần sau khỏi phải suy luận
+      if (!matched.role || !matched.status) {
+        try {
+          await updateUserDirect({
+            id: matched.id,
+            role: normalizedRole,
+            status: normalizedStatus,
+          });
+        } catch {
+          // ignore
+        }
+      }
+
       // lưu token (id user)
       try {
-        localStorage.setItem("token", JSON.stringify(matched.id));
+        localStorage.setItem("token", JSON.stringify(normalizedUser.id));
       } catch {
         // ignore
       }
@@ -88,15 +128,19 @@ const LoginPage: React.FC = () => {
       }
 
       // login vào Redux auth
-      dispatch(login(matched));
+      dispatch(login(normalizedUser));
 
       // init account config cho accountSlice
-      if (matched.apiKey && matched.sessionId && matched.accountId) {
+      if (
+        normalizedUser.apiKey &&
+        normalizedUser.sessionId &&
+        normalizedUser.accountId
+      ) {
         dispatch(
           initAccountConfig({
-            apiKey: matched.apiKey,
-            sessionId: matched.sessionId,
-            accountId: matched.accountId,
+            apiKey: normalizedUser.apiKey,
+            sessionId: normalizedUser.sessionId,
+            accountId: normalizedUser.accountId,
           })
         );
       }
@@ -106,7 +150,13 @@ const LoginPage: React.FC = () => {
         message: "Đăng nhập thành công! Đang chuyển hướng...",
       });
 
-      setTimeout(() => navigate("/"), 800);
+      setTimeout(() => {
+        if (normalizedRole === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+      }, 800);
     } catch (err) {
       console.error(err);
       setAlert({
