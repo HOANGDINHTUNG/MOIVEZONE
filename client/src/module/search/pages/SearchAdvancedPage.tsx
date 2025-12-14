@@ -267,40 +267,6 @@ const SearchAdvancedPage = (): JSX.Element => {
     scrollToTopSmooth();
   };
 
-<<<<<<< HEAD
-  return (
-    <div className="relative min-h-screen bg-gray-50 text-gray-900 transition-colors duration-300 dark:bg-neutral-950 dark:text-white">
-      {/* background blur đẹp mắt */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 opacity-10 blur-sm dark:opacity-25"
-        style={{
-          backgroundImage: `url(${bgImg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-      {/* Overlay: Light mode phủ trắng, Dark mode phủ đen */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-linear-to-b from-white/90 via-gray-50/90 to-gray-100 dark:from-black dark:via-neutral-950/90 dark:to-black" />
-
-      <main className="mx-auto flex max-w-6xl flex-col px-4 pb-16 pt-24 md:px-6 lg:px-8">
-        {/* Hero search */}
-        <section className="rounded-3xl border border-gray-200 bg-white/80 p-4 shadow-xl backdrop-blur-sm dark:border-neutral-800/80 dark:bg-neutral-900/60 dark:shadow-[0_0_90px_-40px_rgba(16,185,129,0.9)] md:p-8">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-50 px-3 py-1 text-[11px] uppercase tracking-[0.15em] text-emerald-600 dark:bg-black/70 dark:text-emerald-300">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-                smart search powered by TMDB
-              </div>
-              <h1 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl">
-                Tìm kiếm mọi thứ về{" "}
-                <span className="bg-linear-to-r from-emerald-500 via-teal-400 to-sky-500 bg-clip-text text-transparent dark:from-emerald-400 dark:via-teal-300 dark:to-sky-400">
-                  Movies, TV, People & more.
-                </span>
-              </h1>
-              <p className="mt-2 max-w-xl text-sm text-gray-600 dark:text-neutral-300 md:text-base">
-                Gõ tên movie, TV show, diễn viên, hãng sản xuất, bộ sưu tập hoặc
-                từ khóa. Hệ thống sẽ tự động phân loại kết quả cho bạn.
-=======
   // ================== DISCOVER: LẤY GENRES & COUNTRIES ==================
   useEffect(() => {
     const fetchMeta = async () => {
@@ -432,7 +398,6 @@ const SearchAdvancedPage = (): JSX.Element => {
               <p className="text-sm text-neutral-300 md:text-base">
                 Gõ tên phim, TV show, diễn viên, hãng sản xuất, bộ sưu tập hoặc
                 từ khóa. Hệ thống TMDB sẽ trả về kết quả theo từng tab riêng.
->>>>>>> 2bc7b45e88bbd8300613aa451dc8adc41a5e7f22
               </p>
             </div>
           </div>
@@ -440,24 +405,16 @@ const SearchAdvancedPage = (): JSX.Element => {
           {/* ô search */}
           <form
             onSubmit={handleSubmit}
-<<<<<<< HEAD
-            className="mt-6 flex flex-col gap-2 rounded-2xl border border-gray-200 bg-white p-2 shadow-sm ring-1 ring-gray-200 backdrop-blur dark:border-transparent dark:bg-black/60 dark:ring-neutral-800/80 dark:shadow-none md:flex-row md:items-center"
-=======
             className="mt-6 flex flex-col gap-2 rounded-2xl bg-black/70 p-2 ring-1 ring-neutral-800/90 backdrop-blur md:flex-row md:items-center"
->>>>>>> 2bc7b45e88bbd8300613aa451dc8adc41a5e7f22
           >
             <div className="relative flex-1">
               <input
                 value={localInput}
                 onChange={(e) => setLocalInput(e.target.value)}
-                className="h-11 w-full rounded-xl border-none bg-transparent px-3 pr-10 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-0 dark:text-white dark:placeholder:text-neutral-500 md:h-12 md:text-base"
+                className="h-11 w-full rounded-xl border-none bg-transparent px-3 pr-10 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-0 md:h-12 md:text-base"
                 placeholder="Search for a movie, TV show, person, company, collection or keyword..."
               />
-<<<<<<< HEAD
-              <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400 dark:text-neutral-500">
-=======
               <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-neutral-500 text-[11px]">
->>>>>>> 2bc7b45e88bbd8300613aa451dc8adc41a5e7f22
                 ⌘K
               </span>
             </div>
@@ -472,13 +429,8 @@ const SearchAdvancedPage = (): JSX.Element => {
           {/* Tabs cũ nhưng re-style màu đỏ vàng */}
           <SearchTabs active={activeCategory} onChange={handleTabChange} />
 
-<<<<<<< HEAD
-          {/* info dòng nhỏ */}
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-gray-500 dark:text-neutral-400">
-=======
           {/* info nhỏ */}
           <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-neutral-400">
->>>>>>> 2bc7b45e88bbd8300613aa451dc8adc41a5e7f22
             <span>
               {query
                 ? `Showing results for “${query}”`
@@ -496,50 +448,29 @@ const SearchAdvancedPage = (): JSX.Element => {
         {/* ========== SEARCH RESULT CŨ (THEO TAB) ========== */}
         <section className="mt-8">
           {loading && (
-<<<<<<< HEAD
-            <div className="flex items-center justify-center py-12">
-              <div className="flex items-center gap-3 rounded-full bg-white px-4 py-2 text-sm text-gray-600 shadow-sm ring-1 ring-gray-200 dark:bg-black/60 dark:text-neutral-300 dark:ring-neutral-800/80">
-                <span className="h-2.5 w-2.5 animate-spin rounded-full border-2 border-emerald-400 border-t-transparent" />
-=======
             <div className="flex items-center justify-center py-8">
               <div className="flex items-center gap-3 rounded-full border border-red-700/70 bg-black/85 px-4 py-2 text-sm text-amber-100 shadow shadow-red-900/80">
                 <span className="h-3 w-3 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
->>>>>>> 2bc7b45e88bbd8300613aa451dc8adc41a5e7f22
                 <span>Đang tìm kiếm, chờ xíu...</span>
               </div>
             </div>
           )}
 
           {error && !loading && (
-<<<<<<< HEAD
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-200">
-=======
             <div className="rounded-2xl border border-red-500/60 bg-red-900/40 p-4 text-sm text-red-50">
->>>>>>> 2bc7b45e88bbd8300613aa451dc8adc41a5e7f22
               {error}
             </div>
           )}
 
           {!loading && !error && query && !hasResults && (
-<<<<<<< HEAD
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-gray-300 bg-gray-50/50 px-6 py-12 text-center dark:border-neutral-800 dark:bg-black/50">
-=======
             <div className="mt-8 flex flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-neutral-700 bg-black/70 px-6 py-12 text-center">
->>>>>>> 2bc7b45e88bbd8300613aa451dc8adc41a5e7f22
               <span className="text-3xl">🔍</span>
-              <p className="text-sm text-gray-600 dark:text-neutral-300">
+              <p className="text-sm text-neutral-300">
                 Không tìm thấy kết quả cho “{query}”.
               </p>
-              <p className="text-xs text-gray-500 dark:text-neutral-500">
+              <p className="text-xs text-neutral-500">
                 Thử tên khác ngắn hơn, hoặc chuyển sang tab{" "}
-<<<<<<< HEAD
-                <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                  All
-                </span>
-                .
-=======
                 <span className="font-semibold text-amber-300">All</span>.
->>>>>>> 2bc7b45e88bbd8300613aa451dc8adc41a5e7f22
               </p>
             </div>
           )}
@@ -635,21 +566,13 @@ const SearchAdvancedPage = (): JSX.Element => {
                         );
                         scrollToTopSmooth();
                       }}
-<<<<<<< HEAD
-                      className="rounded-full border border-gray-300 bg-white px-4 py-2 text-xs font-medium text-gray-700 transition hover:border-emerald-500 hover:text-emerald-600 disabled:cursor-not-allowed disabled:opacity-40 dark:border-neutral-700 dark:bg-neutral-900/80 dark:text-neutral-200 dark:hover:text-emerald-300"
-=======
                       className="rounded-full border border-neutral-700 bg-neutral-950/85 px-4 py-2 font-medium text-neutral-200 transition hover:border-amber-400 hover:text-amber-300 disabled:cursor-not-allowed disabled:opacity-40"
->>>>>>> 2bc7b45e88bbd8300613aa451dc8adc41a5e7f22
                     >
                       Previous
                     </button>
-                    <span className="text-xs text-gray-500 dark:text-neutral-400">
+                    <span className="text-xs text-neutral-400">
                       Page{" "}
-<<<<<<< HEAD
-                      <span className="font-semibold text-emerald-600 dark:text-emerald-300">
-=======
                       <span className="font-semibold text-amber-300">
->>>>>>> 2bc7b45e88bbd8300613aa451dc8adc41a5e7f22
                         {page}
                       </span>{" "}
                       / {currentTotalPages}
