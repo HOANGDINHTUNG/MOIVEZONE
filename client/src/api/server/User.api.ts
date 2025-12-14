@@ -1,6 +1,6 @@
 // src/api/server/User.api.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { IUser } from "../../module/auth/database/interface/users";
+import type { CreateUserPayload, IUser } from "../../module/auth/database/interface/users";
 import { axiosInstance } from "../../utils/axiosIntance";
 
 /**
@@ -17,20 +17,26 @@ export const getAllUsers = async (): Promise<IUser[]> => {
  * POST /users
  * - Backend sẽ lưu vào db.json (nếu là JSON Server) hoặc DB của bạn
  */
-export const createUser = async (
-  payload: Omit<IUser, "id" | "createdAt">
-): Promise<IUser> => {
+export async function createUser(payload: CreateUserPayload): Promise<IUser> {
   const now = new Date().toISOString();
 
-  const body = {
-    ...payload,
+  // JSON server thường tự tăng id, nhưng nếu bạn tự kiểm soát id thì có thể chỉnh thêm
+  const userToCreate: Omit<IUser, "id"> = {
+    email: payload.email,
+    username: payload.username,
+    password: payload.password,
+    apiKey: payload.apiKey ?? "",
+    sessionId: payload.sessionId ?? "",
+    accountId: payload.accountId ?? 0,
+    favorites: [],
+    watchlist: [],
+    history: [],
     createdAt: now,
   };
 
-  const response = await axiosInstance.post<IUser>("users", body);
-  return response.data;
-};
-
+  const res = await axiosInstance.post<IUser>("/users", userToCreate);
+  return res.data;
+}
 /**
  * Tìm user theo email (dùng cho các logic như check trùng email, login,…)
  * -> gọi getAllUsers rồi filter phía client

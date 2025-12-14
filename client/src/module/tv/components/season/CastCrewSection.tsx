@@ -15,116 +15,143 @@ const CastCrewSection = ({ cast, crew }: CastCrewProps) => {
   const topCrew = crew.slice(0, 8);
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4 md:p-5">
-      <div className="flex items-center justify-between mb-3">
-        <p className="text-xs uppercase tracking-wide text-slate-400">
-          Cast & Crew
+    <div
+      className="
+        rounded-2xl border border-white/10 
+        bg-linear-to-br from-[#050816]/90 via-[#020617]/90 to-black/90
+        p-4 md:p-5 backdrop-blur-xl shadow-2xl
+      "
+    >
+      {/* Header */}
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-xs uppercase tracking-[0.18em] text-fuchsia-300/80">
+          Cast &amp; Crew
         </p>
-        <p className="text-[11px] text-slate-500">
+        <p className="text-[11px] text-slate-300">
           Cast {cast.length} · Crew {crew.length}
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         {/* Cast */}
         <div>
-          <p className="text-xs font-semibold text-slate-300 mb-2">Main Cast</p>
-          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-            {topCast.map((person) => {
-              const profile = person.profile_path
-                ? `${IMAGE_BASE}/w185${person.profile_path}`
-                : null;
+          <p className="mb-2 text-xs font-semibold text-violet-200">
+            Main Cast
+          </p>
 
-              const roles = person.roles.slice(0, 2);
-              const mainRole = person.roles[0];
+          {topCast.length ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {topCast.map((person) => {
+                const profile = person.profile_path
+                  ? `${IMAGE_BASE}/w185${person.profile_path}`
+                  : null;
 
-              return (
-                <div
-                  key={`${person.id}-${mainRole?.credit_id ?? "no-role"}`}
-                  className="rounded-xl border border-slate-800 bg-slate-900/80 p-2 flex gap-2"
-                >
-                  <div className="w-12 h-12 shrink-0 rounded-lg overflow-hidden bg-slate-800">
-                    {profile ? (
-                      <img
-                        src={profile}
-                        alt={person.name}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[9px] text-slate-500">
-                        No image
-                      </div>
-                    )}
+                const roles = person.roles.slice(0, 2);
+                const mainRole = person.roles[0];
+
+                return (
+                  <div
+                    key={`${person.id}-${mainRole?.credit_id ?? "no-role"}`}
+                    className="
+                      flex gap-2 rounded-xl border border-white/10 
+                      bg-white/5 p-2
+                      transition-transform duration-200
+                      hover:-translate-y-0.5 hover:border-fuchsia-500/70 hover:bg-fuchsia-500/10
+                    "
+                  >
+                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-slate-900/80">
+                      {profile ? (
+                        <img
+                          src={profile}
+                          alt={person.name}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-[9px] text-slate-400">
+                          No image
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-xs font-semibold text-slate-50">
+                        {person.name}
+                      </p>
+                      <p className="line-clamp-2 text-[10px] text-slate-200/90">
+                        {roles.map((r) => r.character).join(", ")}
+                        {person.total_episode_count
+                          ? ` · ${person.total_episode_count} eps`
+                          : ""}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-slate-50 truncate">
-                      {person.name}
-                    </p>
-                    <p className="text-[10px] text-slate-300 line-clamp-2">
-                      {roles.map((r) => r.character).join(", ")}
-                      {person.total_episode_count
-                        ? ` · ${person.total_episode_count} eps`
-                        : ""}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-            {!topCast.length && (
-              <p className="text-[11px] text-slate-400">No cast data.</p>
-            )}
-          </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-[11px] text-slate-400">No cast data.</p>
+          )}
         </div>
 
         {/* Crew */}
         <div>
-          <p className="text-xs font-semibold text-slate-300 mb-2">Key Crew</p>
-          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-            {topCrew.map((person) => {
-              const profile = person.profile_path
-                ? `${IMAGE_BASE}/w185${person.profile_path}`
-                : null;
+          <p className="mb-2 text-xs font-semibold text-cyan-200">
+            Key Crew
+          </p>
 
-              const jobs = person.jobs.slice(0, 2);
+          {topCrew.length ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {topCrew.map((person) => {
+                const profile = person.profile_path
+                  ? `${IMAGE_BASE}/w185${person.profile_path}`
+                  : null;
 
-              return (
-                <div
-                  key={`${person.id}-${person.department}`}
-                  className="rounded-xl border border-slate-800 bg-slate-900/80 p-2 flex gap-2"
-                >
-                  <div className="w-12 h-12 shrink-0 rounded-lg overflow-hidden bg-slate-800">
-                    {profile ? (
-                      <img
-                        src={profile}
-                        alt={person.name}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[9px] text-slate-500">
-                        No image
-                      </div>
-                    )}
+                const jobs = person.jobs.slice(0, 2);
+
+                return (
+                  <div
+                    key={`${person.id}-${person.department}`}
+                    className="
+                      flex gap-2 rounded-xl border border-white/10 
+                      bg-white/5 p-2
+                      transition-transform duration-200
+                      hover:-translate-y-0.5 hover:border-cyan-400/70 hover:bg-cyan-500/10
+                    "
+                  >
+                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-slate-900/80">
+                      {profile ? (
+                        <img
+                          src={profile}
+                          alt={person.name}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-[9px] text-slate-400">
+                          No image
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-xs font-semibold text-slate-50">
+                        {person.name}
+                      </p>
+                      <p className="line-clamp-2 text-[10px] text-slate-200/90">
+                        {jobs.map((j) => j.job).join(", ")}
+                        {person.total_episode_count
+                          ? ` · ${person.total_episode_count} eps`
+                          : ""}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-slate-50 truncate">
-                      {person.name}
-                    </p>
-                    <p className="text-[10px] text-slate-300 line-clamp-2">
-                      {jobs.map((j) => j.job).join(", ")}
-                      {person.total_episode_count
-                        ? ` · ${person.total_episode_count} eps`
-                        : ""}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-            {!topCrew.length && (
-              <p className="text-[11px] text-slate-400">No crew data.</p>
-            )}
-          </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-[11px] text-slate-400">No crew data.</p>
+          )}
         </div>
       </div>
     </div>

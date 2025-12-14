@@ -38,36 +38,54 @@ const DetailsEpisodeGroupsSection = ({
 
   if (!sortedGroups.length) return null;
 
-  const handleOpenGroup = (id: string) => {
-    navigate(`/tv/episode_group/${id}`);
-  };
+  const handleOpenGroup = (id: string) => navigate(`/tv/episode_group/${id}`);
 
   const firstGroup = sortedGroups[0];
 
   return (
-    <section className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/80 p-4 md:p-5">
-      <div className="mb-3 flex items-center justify-between gap-3">
+    <section
+      className="
+        mt-6 rounded-2xl border 
+        border-amber-500/40 bg-black/60 text-amber-100
+        p-4 backdrop-blur md:p-5
+
+        dark:border-amber-600/60 dark:bg-black/80
+      "
+    >
+      {/* Header */}
+      <div className="mb-3 flex items-center justify-between">
         <div>
-          <p className="text-xs uppercase tracking-wide text-slate-400">
+          <p className="text-xs uppercase tracking-wide text-amber-400/80">
             Episode Groups
           </p>
-          <p className="text-[11px] text-slate-500">
+          <p className="text-[11px] text-amber-300/60">
             {sortedGroups.length} groups • {totalEpisodes} episodes
           </p>
         </div>
 
-        {/* Nút "View episode groups" – desktop */}
+        {/* Desktop button */}
         <button
           type="button"
           onClick={() => handleOpenGroup(firstGroup.id)}
-          className="hidden rounded-full border border-sky-500/60 bg-sky-500/10 px-3 py-1 text-[11px] font-medium text-sky-100 hover:bg-sky-500/20 md:inline-flex"
+          className="
+            hidden rounded-full border border-amber-500/60 
+            bg-black/40 px-3 py-1 text-[11px] font-medium text-amber-300 
+            hover:bg-amber-600/20 md:inline-flex
+
+            dark:border-amber-600 dark:hover:bg-amber-500/30
+          "
         >
           View episode groups
         </button>
       </div>
 
-      {/* Danh sách group */}
-      <div className="flex max-h-72 flex-col gap-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
+      {/* List */}
+      <div
+        className="
+          flex max-h-72 flex-col gap-2 overflow-y-auto 
+          scrollbar-thin scrollbar-thumb-red-700 scrollbar-track-black
+        "
+      >
         {sortedGroups.map((g) => {
           const typeLabel = typeLabelMap[g.type] ?? `Type ${g.type}`;
           const hasNetwork = !!g.network;
@@ -77,13 +95,20 @@ const DetailsEpisodeGroupsSection = ({
               key={g.id}
               type="button"
               onClick={() => handleOpenGroup(g.id)}
-              className="flex w-full items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/80 px-3 py-2 text-left text-[11px] transition-colors hover:border-sky-500/60 hover:bg-slate-900"
+              className="
+                flex w-full items-center justify-between gap-3 rounded-xl 
+                border border-red-700/40 bg-black/50 px-3 py-2 
+                text-left text-[11px] transition-colors
+
+                hover:border-amber-500 hover:bg-black/70
+              "
             >
               <div className="min-w-0">
-                <p className="truncate text-xs font-semibold text-slate-50">
+                <p className="truncate text-xs font-semibold text-amber-200">
                   {g.name}
                 </p>
-                <p className="mt-0.5 text-[10px] text-slate-400">
+
+                <p className="mt-0.5 text-[10px] text-amber-300/70">
                   {typeLabel} • {g.group_count} groups • {g.episode_count} eps
                 </p>
 
@@ -93,18 +118,18 @@ const DetailsEpisodeGroupsSection = ({
                       <img
                         src={`${TMDB_IMAGE}/w92${g.network.logo_path}`}
                         alt={g.network.name}
-                        className="h-4 w-auto rounded bg-slate-800 object-contain"
+                        className="h-4 w-auto rounded bg-black/40 object-contain"
                         loading="lazy"
                       />
                     )}
-                    <span className="text-[10px] text-slate-300">
+                    <span className="text-[10px] text-amber-200/80">
                       {g.network?.name}
                     </span>
                   </div>
                 )}
               </div>
 
-              <span className="shrink-0 text-[10px] text-slate-500">
+              <span className="shrink-0 text-[10px] text-red-500">
                 Order {g.order}
               </span>
             </button>
@@ -112,11 +137,18 @@ const DetailsEpisodeGroupsSection = ({
         })}
       </div>
 
-      {/* Nút view ở mobile */}
+      {/* Mobile button */}
       <button
         type="button"
         onClick={() => handleOpenGroup(firstGroup.id)}
-        className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-sky-500/60 bg-sky-500/10 px-3 py-1.5 text-[11px] font-medium text-sky-100 hover:bg-sky-500/20 md:hidden"
+        className="
+          mt-3 inline-flex w-full items-center justify-center rounded-full 
+          border border-amber-500/70 bg-amber-600/20 
+          px-3 py-1.5 text-[11px] font-medium text-amber-200 
+          hover:bg-amber-500/30 md:hidden
+
+          dark:border-amber-600
+        "
       >
         View episode groups
       </button>

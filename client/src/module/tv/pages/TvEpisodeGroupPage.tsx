@@ -71,7 +71,13 @@ const TvEpisodeGroupPage = () => {
 
   if (!tv_episode_group_id) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-50">
+      <div
+        className="
+          flex min-h-screen items-center justify-center
+          bg-linear-to-b from-[#020617] via-black to-black
+          text-slate-50
+        "
+      >
         <p className="text-sm text-slate-300">
           Missing tv_episode_group_id in route.
         </p>
@@ -81,7 +87,13 @@ const TvEpisodeGroupPage = () => {
 
   if (loading && !detail) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-50">
+      <div
+        className="
+          flex min-h-screen items-center justify-center
+          bg-linear-to-b from-[#020617] via-black to-black
+          text-slate-50
+        "
+      >
         <p className="text-sm text-slate-300">Loading episode group…</p>
       </div>
     );
@@ -89,11 +101,22 @@ const TvEpisodeGroupPage = () => {
 
   if (error && !detail) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-50">
+      <div
+        className="
+          flex min-h-screen items-center justify-center
+          bg-linear-to-b from-[#020617] via-black to-black
+          text-slate-50
+        "
+      >
         <div className="max-w-md space-y-3 px-4 text-center">
           <p className="text-sm text-red-300">Error: {error}</p>
           <button
-            className="mt-2 rounded-full border border-slate-600 px-4 py-1.5 text-xs text-slate-100 hover:bg-slate-800"
+            className="
+              mt-2 rounded-full border border-white/25
+              px-4 py-1.5 text-xs text-slate-100
+              bg-white/5 hover:bg-white/10
+              transition-colors
+            "
             onClick={() =>
               dispatch(
                 fetchTvEpisodeGroup({
@@ -115,7 +138,13 @@ const TvEpisodeGroupPage = () => {
   const typeLabel = typeLabelMap[detail.type] ?? `Type ${detail.type}`;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50">
+    <div
+      className="
+        min-h-screen
+        bg-linear-to-b from-[#020617] via-black to-black
+        text-slate-50
+      "
+    >
       <EpisodeGroupHero
         detail={detail}
         heroStill={heroStill}
@@ -131,7 +160,13 @@ const TvEpisodeGroupPage = () => {
         )}
 
         {error && detail && (
-          <div className="rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-[11px] text-red-200">
+          <div
+            className="
+              rounded-xl border border-red-500/50
+              bg-red-500/15 px-3 py-2 text-[11px] text-red-100
+              shadow-[0_0_14px_#ef444455]
+            "
+          >
             {error}
           </div>
         )}
@@ -172,51 +207,96 @@ const EpisodeGroupHero = ({
     <div className="relative w-full">
       {heroStill && (
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-30"
+          className="absolute inset-0 bg-cover bg-center opacity-35"
           style={{ backgroundImage: `url(${heroStill})` }}
         />
       )}
-      <div className="absolute inset-0 bg-linear-to-b from-slate-950/85 via-slate-950/90 to-slate-950" />
+      <div
+        className="
+          absolute inset-0
+          bg-linear-to-b from-[#020617]/95 via-black/92 to-black
+        "
+      />
 
       <div className="relative z-10 mx-auto max-w-6xl px-4 pt-20 pb-10 md:pb-16">
         <button
           onClick={onBack}
-          className="mb-6 flex items-center gap-2 text-xs uppercase tracking-wide text-slate-300 hover:text-white"
+          className="
+            mb-6 inline-flex items-center gap-2
+            text-xs uppercase tracking-[0.18em]
+            text-slate-300 hover:text-fuchsia-300
+            transition-colors
+          "
         >
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-600 text-[10px]">
+          <span
+            className="
+              inline-flex h-7 w-7 items-center justify-center
+              rounded-full border border-white/25 bg-white/5 text-[10px]
+              hover:border-fuchsia-400 hover:bg-fuchsia-500/15
+              transition-colors
+            "
+          >
             ←
           </span>
           Back
         </button>
 
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-3 max-w-3xl">
-            <p className="text-[11px] uppercase tracking-[0.2em] text-slate-300">
+          <div className="max-w-3xl space-y-3">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-fuchsia-300/80">
               TV Episode Group
             </p>
 
-            <h1 className="text-2xl font-semibold leading-tight md:text-3xl">
+            <h1
+              className="
+                text-2xl font-semibold leading-tight md:text-3xl
+                bg-linear-to-r from-fuchsia-300 via-sky-200 to-emerald-300
+                bg-clip-text text-transparent
+              "
+            >
               {detail.name}
             </h1>
 
             {detail.description && (
-              <p className="max-w-2xl text-sm text-slate-200/90 leading-relaxed">
+              <p className="max-w-2xl text-sm leading-relaxed text-slate-200/90">
                 {detail.description}
               </p>
             )}
 
-            <div className="flex flex-wrap gap-2 text-[11px] text-slate-200">
-              <span className="rounded-full border border-slate-700 bg-slate-900/80 px-3 py-1">
+            <div className="flex flex-wrap gap-2 text-[11px]">
+              <span
+                className="
+                  rounded-full border border-violet-500/70
+                  bg-violet-600/20 px-3 py-1 text-violet-100
+                "
+              >
                 {typeLabel}
               </span>
-              <span className="rounded-full border border-slate-700 bg-slate-900/80 px-3 py-1">
+              <span
+                className="
+                  rounded-full border border-cyan-400/70
+                  bg-cyan-500/15 px-3 py-1 text-cyan-100
+                "
+              >
                 {detail.group_count} groups
               </span>
-              <span className="rounded-full border border-slate-700 bg-slate-900/80 px-3 py-1">
+              <span
+                className="
+                  rounded-full border border-emerald-400/70
+                  bg-emerald-500/15 px-3 py-1 text-emerald-100
+                "
+              >
                 {detail.episode_count} episodes
               </span>
+
               {network && (
-                <span className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/80 px-3 py-1">
+                <span
+                  className="
+                    inline-flex items-center gap-2 rounded-full
+                    border border-white/20 bg-white/5
+                    px-3 py-1 text-slate-100
+                  "
+                >
                   {network.logo_path ? (
                     <img
                       src={`${IMAGE_BASE}w92${network.logo_path}`}
@@ -251,21 +331,38 @@ const EpisodeGroupTabs = ({
 }: EpisodeGroupTabsProps) => {
   if (!detail.groups.length) {
     return (
-      <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-        <p className="mb-2 text-xs uppercase tracking-wide text-slate-400">
+      <div
+        className="
+          rounded-2xl border border-white/10
+          bg-linear-to-br from-[#050816]/90 via-[#020617]/90 to-black/90
+          p-4 backdrop-blur-md shadow-xl
+        "
+      >
+        <p className="mb-2 text-xs uppercase tracking-[0.18em] text-fuchsia-300/80">
           Groups
         </p>
-        <p className="text-[11px] text-slate-400">No groups.</p>
+        <p className="text-[11px] text-slate-300">No groups.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-      <p className="mb-3 text-xs uppercase tracking-wide text-slate-400">
+    <div
+      className="
+        rounded-2xl border border-white/10
+        bg-linear-to-br from-[#050816]/90 via-[#020617]/90 to-black/90
+        p-4 backdrop-blur-md shadow-2xl
+      "
+    >
+      <p className="mb-3 text-xs uppercase tracking-[0.18em] text-fuchsia-300/80">
         Groups ({detail.groups.length})
       </p>
-      <div className="flex max-h-[360px] flex-col gap-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
+      <div
+        className="
+          flex max-h-[360px] flex-col gap-2 overflow-y-auto
+          scrollbar-thin scrollbar-thumb-violet-600 scrollbar-track-slate-900
+        "
+      >
         {detail.groups
           .slice()
           .sort((a, b) => a.order - b.order)
@@ -277,15 +374,19 @@ const EpisodeGroupTabs = ({
                 key={group.id}
                 type="button"
                 onClick={() => onChangeGroup(group.id)}
-                className={`flex w-full items-center justify-between rounded-xl border px-3 py-2 text-left text-[11px] transition-colors ${
-                  isActive
-                    ? "border-sky-500/60 bg-sky-500/10 text-sky-100"
-                    : "border-slate-800 bg-slate-900/80 text-slate-200 hover:border-slate-600 hover:bg-slate-900"
-                }`}
+                className={`
+                  flex w-full items-center justify-between rounded-xl border px-3 py-2
+                  text-left text-[11px] transition-transform duration-200
+                  ${
+                    isActive
+                      ? "border-fuchsia-500/70 bg-fuchsia-500/15 text-fuchsia-100 shadow-[0_0_14px_#e879f955]"
+                      : "border-white/10 bg-white/5 text-slate-200 hover:border-cyan-400/70 hover:bg-cyan-500/10 hover:-translate-y-0.5"
+                  }
+                `}
               >
                 <div className="min-w-0">
                   <p className="truncate text-xs font-semibold">{group.name}</p>
-                  <p className="mt-0.5 text-[10px] text-slate-400">
+                  <p className="mt-0.5 text-[10px] text-slate-300">
                     {group.episodes.length} episodes · Order {group.order}
                   </p>
                 </div>
@@ -308,11 +409,17 @@ const EpisodeGroupEpisodesList = ({ group }: EpisodeGroupEpisodesListProps) => {
 
   if (!group) {
     return (
-      <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-        <p className="mb-2 text-xs uppercase tracking-wide text-slate-400">
+      <div
+        className="
+          rounded-2xl border border-white/10
+          bg-linear-to-br from-[#050816]/90 via-[#020617]/90 to-black/90
+          p-4 backdrop-blur-md shadow-xl
+        "
+      >
+        <p className="mb-2 text-xs uppercase tracking-[0.18em] text-fuchsia-300/80">
           Episodes
         </p>
-        <p className="text-[11px] text-slate-400">
+        <p className="text-[11px] text-slate-300">
           Select a group to view episodes.
         </p>
       </div>
@@ -331,19 +438,30 @@ const EpisodeGroupEpisodesList = ({ group }: EpisodeGroupEpisodesListProps) => {
   };
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
+    <div
+      className="
+        rounded-2xl border border-white/10
+        bg-linear-to-br from-[#050816]/90 via-[#020617]/90 to-black/90
+        p-4 backdrop-blur-md shadow-2xl
+      "
+    >
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <p className="text-xs uppercase tracking-wide text-slate-400">
+          <p className="text-xs uppercase tracking-[0.18em] text-fuchsia-300/80">
             {group.name}
           </p>
-          <p className="text-[11px] text-slate-500">
+          <p className="text-[11px] text-slate-300">
             {episodes.length} episodes · Order {group.order}
           </p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 max-h-[420px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
+      <div
+        className="
+          flex max-h-[420px] flex-col gap-3 overflow-y-auto
+          scrollbar-thin scrollbar-thumb-violet-600 scrollbar-track-slate-900
+        "
+      >
         {episodes.map((ep) => {
           const still = ep.still_path
             ? `${IMAGE_BASE}w300${ep.still_path}`
@@ -359,9 +477,14 @@ const EpisodeGroupEpisodesList = ({ group }: EpisodeGroupEpisodesListProps) => {
               key={ep.id}
               type="button"
               onClick={() => handleEpisodeClick(ep)}
-              className="flex w-full gap-3 rounded-xl border border-slate-800 bg-slate-900/80 px-2 py-2 text-left text-[11px] transition-colors hover:border-sky-500/60 hover:bg-slate-900"
+              className="
+                flex w-full gap-3 rounded-xl border border-white/10
+                bg-white/5 px-2 py-2 text-left text-[11px]
+                transition-transform duration-200
+                hover:border-cyan-400/70 hover:bg-cyan-500/10 hover:-translate-y-0.5
+              "
             >
-              <div className="h-20 w-32 shrink-0 overflow-hidden rounded-lg bg-slate-800">
+              <div className="h-20 w-32 shrink-0 overflow-hidden rounded-lg bg-slate-900/80">
                 {still ? (
                   <img
                     src={still}
@@ -370,7 +493,7 @@ const EpisodeGroupEpisodesList = ({ group }: EpisodeGroupEpisodesListProps) => {
                     loading="lazy"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-[10px] text-slate-500">
+                  <div className="flex h-full w-full items-center justify-center text-[10px] text-slate-400">
                     No image
                   </div>
                 )}
@@ -378,8 +501,8 @@ const EpisodeGroupEpisodesList = ({ group }: EpisodeGroupEpisodesListProps) => {
 
               <div className="flex-1 space-y-1">
                 <div className="flex items-baseline justify-between gap-2">
-                  <p className="text-xs font-semibold text-slate-100">{code}</p>
-                  <p className="text-[10px] text-slate-400">
+                  <p className="text-xs font-semibold text-cyan-200">{code}</p>
+                  <p className="text-[10px] text-slate-300">
                     {ep.runtime ? `${ep.runtime} min` : "—"}
                   </p>
                 </div>
@@ -389,24 +512,41 @@ const EpisodeGroupEpisodesList = ({ group }: EpisodeGroupEpisodesListProps) => {
                 </p>
 
                 {ep.overview && (
-                  <p className="line-clamp-2 text-[11px] text-slate-300">
+                  <p className="line-clamp-2 text-[11px] text-slate-200/90">
                     {ep.overview}
                   </p>
                 )}
 
-                <div className="flex flex-wrap gap-1 pt-1 text-[10px] text-slate-300">
+                <div className="flex flex-wrap gap-1 pt-1 text-[10px]">
                   {ep.air_date && (
-                    <span className="rounded-full bg-slate-950/80 px-2 py-0.5">
+                    <span
+                      className="
+                        rounded-full bg-slate-900/80 px-2 py-0.5
+                        text-slate-200
+                      "
+                    >
                       {ep.air_date}
                     </span>
                   )}
                   {ep.vote_average ? (
-                    <span className="rounded-full bg-emerald-500/80 px-2 py-0.5 font-semibold text-slate-950">
+                    <span
+                      className="
+                        rounded-full px-2 py-0.5 font-semibold
+                        border border-amber-400/80
+                        bg-linear-to-r from-amber-500/25 via-orange-500/25 to-rose-500/25
+                        text-amber-100 shadow-[0_0_10px_#fbbf2488]
+                      "
+                    >
                       ★ {ep.vote_average.toFixed(1)} ({ep.vote_count})
                     </span>
                   ) : null}
                   {ep.locked && (
-                    <span className="rounded-full bg-slate-950/80 px-2 py-0.5 text-[10px] text-slate-300">
+                    <span
+                      className="
+                        rounded-full bg-rose-500/20 px-2 py-0.5
+                        text-[10px] text-rose-200 border border-rose-400/70
+                      "
+                    >
                       Locked
                     </span>
                   )}

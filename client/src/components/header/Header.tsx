@@ -67,6 +67,8 @@ export default function Header({ admin }: HeaderProps) {
     currentUser?.username ||
     (currentUser?.email ? currentUser.email.split("@")[0] : "User");
 
+  const isAdmin = currentUser?.role === "admin";
+
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
@@ -240,11 +242,14 @@ export default function Header({ admin }: HeaderProps) {
                     <p className="text-[11px] uppercase tracking-wide text-neutral-400">
                       PERSONAL
                     </p>
-                    <HoveredLink href="/movie?sort=popular">
+                    <HoveredLink href="/account">
                       List favorites
                     </HoveredLink>
                     <HoveredLink href="/movie?sort=popular">
                       History
+                    </HoveredLink>
+                    <HoveredLink href="/event">
+                      Event
                     </HoveredLink>
                   </div>
                 </div>
@@ -273,6 +278,7 @@ export default function Header({ admin }: HeaderProps) {
               <UserMenu
                 displayName={displayName}
                 email={currentUser?.email}
+                isAdmin={isAdmin}
                 onLogout={handleLogout}
               />
             )}

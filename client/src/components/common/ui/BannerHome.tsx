@@ -1,38 +1,32 @@
-// src/components/common/ui/BannerHome.tsx
 import { useMemo, useRef, useLayoutEffect, type FC } from "react";
 import gsap from "gsap";
 import { useNavigate } from "react-router-dom";
 
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
-import type { TMDBMovieSummary } from "../../../module/movies/database/interface/movie";
+import type {
+  TMDBMovieImagesResponse,
+  TMDBMovieSummary,
+} from "../../../module/movies/database/interface/movie";
+import { TMDB_IMAGE } from "../../../module/movies/pages/DetailsPage";
 
 interface BannerHomeProps {
   data?: TMDBMovieSummary[];
 }
 
+// Movie dùng cho Banner: summary + images (optional)
+interface BannerMovieWithImages extends TMDBMovieSummary {
+  images?: TMDBMovieImagesResponse;
+}
+
 interface Slide {
   place: string;
+  placeHtml: string;
   title: string;
   title2: string;
   description: string;
   image: string;
   detailPath: string;
-}
-
-// Gom hết field có thể có của movie/tv để khỏi dùng any
-interface MovieWithOptionalFields extends Partial<TMDBMovieSummary> {
-  id?: number;
-  backdrop_path?: string;
-  poster_path?: string;
-  title?: string;
-  name?: string;
-  original_title?: string;
-  original_name?: string;
-  overview?: string;
-  release_date?: string;
-  first_air_date?: string;
-  original_language?: string;
-  media_type?: "movie" | "tv" | string;
+  logoPath?: string | null;
 }
 
 const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
@@ -73,17 +67,35 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
     return imageURL.endsWith("/") ? imageURL : imageURL + "/";
   }, [imageURL]);
 
+  const logoBase = useMemo(() => {
+    const fallback = "https://image.tmdb.org/t/p/w185/";
+
+    if (!imageURL || !imageURL.includes("image.tmdb.org")) {
+      return fallback;
+    }
+
+    let base = imageURL.trim();
+
+    // ép về size w185
+    base = base.replace(/\/original\/?/, "/w185/");
+    base = base.replace(/\/w\d+\/?/, "/w185/");
+
+    if (!base.endsWith("/")) base += "/";
+
+    return base; // vd: https://image.tmdb.org/t/p/w185/
+  }, [imageURL]);
+
   // convert movie data -> slide cho GSAP
   const slides: Slide[] = useMemo(() => {
-    return data
+    return (data ?? [])
       .slice(0, 6)
       .map((m) => {
-        const movie = m as MovieWithOptionalFields;
+        const movie = m as BannerMovieWithImages;
 
         const backdrop = movie.backdrop_path;
         const poster = movie.poster_path;
-        const title = movie.title || movie.name || "Untitled";
-        const originalTitle = movie.original_title || movie.original_name || "";
+        const title = movie.title || "Untitled";
+        const originalTitle = movie.original_title || "";
         const overviewRaw = movie.overview?.trim() ?? "";
 
         const overview =
@@ -91,12 +103,30 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
             ? overviewRaw
             : "Hiện chưa có mô tả cho phim này.";
 
-        const releaseDate = movie.release_date || movie.first_air_date || "";
+        const releaseDate = movie.release_date || "";
         const year = releaseDate ? releaseDate.slice(0, 4) : "";
-
         const lang = movie.original_language
           ? movie.original_language.toUpperCase()
           : "MOVIE";
+
+        // ====== LOGO: chọn logo đẹp nhất từ images.logos ======
+        let logoPath: string | null = null;
+        const logos = movie.images?.logos ?? [];
+
+        if (logos.length > 0) {
+          const preferredLang = movie.original_language || "en";
+
+          const heroLogo =
+            logos.find((img) => img.iso_639_1 === preferredLang) ||
+            logos.find((img) => img.iso_639_1 === "en") ||
+            logos[0];
+
+          logoPath = heroLogo.file_path;
+        }
+
+        // ====== META row (nếu bạn đang dùng) ======
+        const place = year ? `${lang} • ${year}` : lang;
+        const placeHtml = place; // hoặc meta đẹp như trước
 
         const imagePath = backdrop || poster || "";
         const fullImageUrl = imagePath
@@ -104,20 +134,11 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
           : "";
 
         const id = movie.id;
-        const mediaTypeRaw = movie.media_type;
-        const isMovieGuess =
-          !!movie.title || !!movie.original_title || mediaTypeRaw === "movie";
-        let mediaType: "movie" | "tv" = isMovieGuess ? "movie" : "tv";
-
-        if (mediaTypeRaw === "tv" || mediaTypeRaw === "movie") {
-          mediaType = mediaTypeRaw;
-        }
-
-        const detailPath =
-          id !== undefined ? `/${mediaType}/${id.toString()}` : "";
+        const detailPath = id ? `/movie/${id.toString()}` : "";
 
         return {
-          place: year ? `${lang} • ${year}` : lang,
+          place,
+          placeHtml,
           title,
           title2:
             originalTitle && originalTitle !== title
@@ -126,6 +147,7 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
           description: overview,
           image: fullImageUrl,
           detailPath,
+          logoPath,
         };
       })
       .filter((s) => !!s.image && !!s.detailPath);
@@ -160,10 +182,8 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
     const isMobile = window.innerWidth < 768;
     const ease = "sine.inOut";
 
-    // để dừng loop khi unmount
     let isCancelled = false;
 
-    // dùng context để cleanup tween/timeline
     const ctx = gsap.context(() => {
       // ====== Tạo HTML card + nội dung từ slides ======
       const cardsHtml = slides
@@ -182,8 +202,8 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
         >
           <div class="flex h-full w-full items-end">
             <div class="w-full bg-linear-to-t from-black/85 via-black/50 to-transparent p-3 md:p-4">
-              <div class="text-[11px] md:text-[13px] font-medium text-white/70">
-                ${i.place}
+              <div class="text-[11px] md:text-[13px] font-medium text-white/70 flex flex-wrap items-center gap-2">
+                ${i.placeHtml}
               </div>
               <div class="mt-1 font-['Oswald',sans-serif] font-semibold text-[15px] md:text-[18px] leading-tight line-clamp-2">
                 ${i.title}
@@ -298,9 +318,29 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
 
         if (!slide || !place || !t1 || !t2 || !desc) return;
 
-        place.textContent = slide.place;
-        t1.textContent = slide.title;
+        // meta (năm, age rating, runtime, genre...) nếu có
+        place.innerHTML = slide.placeHtml || slide.place;
+
+        // ====== QUAN TRỌNG: dùng logo nếu có, nếu không dùng title ======
+        if (slide.logoPath) {
+          const safeTitle = slide.title.replace(/"/g, "&quot;");
+          const safePath = slide.logoPath.replace(/^\//, "");
+
+          t1.innerHTML = `
+      <img
+        src="${TMDB_IMAGE}${safePath}"
+        alt="${safeTitle}"
+        class="max-h-[60px] md:max-h-20 w-auto object-contain
+               drop-shadow-[0_10px_30px_rgba(0,0,0,0.9)]"
+      />
+    `;
+        } else {
+          t1.textContent = slide.title;
+        }
+
+        // subtitle vẫn là chữ
         t2.textContent = slide.title2;
+
         desc.textContent = slide.description;
       }
 
@@ -310,11 +350,9 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
         const detailsInactive = detailsEven ? detailsOddEl : detailsEvenEl;
         const { innerHeight: height, innerWidth: width } = window;
 
-        // hero full màn hình
         offsetTop = height - cardHeight - 32;
         offsetLeft = width - (cardWidth + gap) * rest.length - 32;
 
-        // card active full screen
         set(getCard(active), {
           x: 0,
           y: 0,
@@ -334,7 +372,6 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
           set(detailsInactive.querySelectorAll(".cta"), { y: 60 });
         }
 
-        // progress
         set(progressBarEl, {
           width: 260 * (1 / order.length) * (active + 1),
         });
@@ -343,7 +380,6 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
         set(indicatorEl, { x: -w });
 
         if (!isMobile) {
-          // DESKTOP: giữ thumbnail như cũ
           rest.forEach((i, index) => {
             const x = offsetLeft + index * (cardWidth + gap);
             set(getCard(i), {
@@ -366,7 +402,6 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
             gsap.to(detailsActive, { opacity: 1, x: 0, ease, delay: 0.2 });
           }
         } else {
-          // MOBILE: ẩn card nhỏ + số
           rest.forEach((i) => {
             set(getCard(i), {
               opacity: 0,
@@ -473,7 +508,6 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
             borderRadius: 0,
             onComplete: () => {
               if (!isMobile) {
-                // DESKTOP: đặt lại prev thành thumbnail
                 const xNew =
                   offsetLeftLocal + (rest.length - 1) * (cardWidth + gap);
                 set(getCard(prv), {
@@ -496,7 +530,6 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
                   x: rest.length * numberSize,
                 });
               } else {
-                // MOBILE: prev vẫn ẩn
                 set(getCard(prv), { opacity: 0, pointerEvents: "none" });
                 set(getCardContent(prv), {
                   opacity: 0,
@@ -519,7 +552,6 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
           });
 
           if (!isMobile) {
-            // reposition lại thumbnail chỉ trên desktop
             rest.forEach((i, index) => {
               if (i !== prv) {
                 const xNew = offsetLeftLocal + index * (cardWidth + gap);
@@ -617,20 +649,19 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
 
       void start();
 
-      // cleanup trong context
       return () => {
         arrowRight?.removeEventListener("click", handleNext);
         arrowLeft?.removeEventListener("click", handlePrev);
         demoCardsEl.innerHTML = "";
         slideNumbersEl.innerHTML = "";
       };
-    }, demoRef); // end gsap.context
+    }, demoRef);
 
     return () => {
       isCancelled = true;
-      ctx.revert(); // kill tween/timeline + reset inline style
+      ctx.revert();
     };
-  }, [slides, navigate]);
+  }, [slides, navigate, logoBase]);
 
   // layout hero: mobile ~70% màn hình, desktop full
   return (
@@ -643,14 +674,14 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
 
       {/* HERO CONTAINER */}
       <div id="demo" ref={demoRef} className="relative w-full h-full">
-        {/* overlay làm tối bên trái (NẰM DƯỚI CHỮ) */}
+        {/* overlay làm tối bên trái */}
         <div
           className="absolute inset-0 bg-linear-to-r 
                     from-black/50 via-black/30 to-transparent 
                     pointer-events-none z-10"
         />
 
-        {/* nơi inject card bằng innerHTML (backdrop) */}
+        {/* nơi inject card bằng innerHTML */}
         <div
           id="demo-cards"
           ref={demoCardsRef}
@@ -665,7 +696,7 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
                  z-30 max-w-[540px]"
         >
           <div className="place-box h-10 overflow-hidden relative">
-            <div className="text pt-3 text-[14px] md:text-[18px] tracking-wide">
+            <div className="text pt-3 text-[14px] md:text-[18px] tracking-wide flex flex-wrap items-center gap-2">
               <span
                 className="absolute w-[26px] h-0.5 md:w-[30px] md:h-[3px] 
                            rounded-full bg-[#ecad29] left-0 top-0"
@@ -676,8 +707,8 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
           <div className="title-box-1 mt-1 h-[72px] md:h-30 overflow-hidden">
             <div
               className="title-1 font-['Oswald',sans-serif] font-semibold 
-                        text-[32px] md:text-[60px] leading-none uppercase 
-                        drop-shadow-[0_8px_20px_rgba(0,0,0,0.7)]"
+                          text-[32px] md:text-[60px] leading-none
+                          drop-shadow-[0_8px_20px_rgba(0,0,0,0.7)]"
             />
           </div>
 
@@ -723,7 +754,7 @@ const BannerHome: FC<BannerHomeProps> = ({ data = [] }) => {
                  z-20 max-w-[540px]"
         >
           <div className="place-box h-10 overflow-hidden relative">
-            <div className="text pt-3 text-[14px] md:text-[18px] tracking-wide">
+            <div className="text pt-3 text-[14px] md:text-[18px] tracking-wide flex flex-wrap items-center gap-2">
               <span
                 className="absolute w-[26px] h-0.5 md:w-[30px] md:h-[3px] 
                            rounded-full bg-[#ecad29] left-0 top-0"

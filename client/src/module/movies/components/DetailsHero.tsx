@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
 import Divider from "../../../components/common/ux/Divider";
-import type { DetailGenre } from "../pages/DetailsPage";
-import { useMemo } from "react";
+import { TMDB_IMAGE, type DetailGenre } from "../pages/DetailsPage";
+// import { useMemo } from "react";
+import {
+  BiBookmark,
+  BiBookmarkAlt,
+  BiHeart,
+  BiHeartCircle,
+} from "react-icons/bi";
+import { TMDB_BACKDROP_LARGE, TMDB_POSTER_MEDIUM } from "../../../constants/tmdbImage";
 
 type ExternalIds = {
   imdb_id?: string | null;
@@ -47,11 +54,14 @@ export type DetailsHeroProps = {
   liked: boolean;
   onToggleLike: () => void;
 
+  inWatchlist: boolean;
+  onToggleWatchlist: () => void;
+
   overview: string;
   directorOrCreator: string;
   writer: string;
 
-  // 🟢 genres từ chi tiết + map từ store
+  // genres từ chi tiết + map từ store
   currentGenres: DetailGenre[];
   activeGenreMap: Record<number, DetailGenre | undefined>;
 
@@ -59,6 +69,7 @@ export type DetailsHeroProps = {
   productionCompanies: ProductionCompany[];
 
   resolvedMediaType: "movie" | "tv";
+  logoPath?: string | null;
 };
 
 const DetailsHero: React.FC<DetailsHeroProps> = ({
@@ -78,6 +89,8 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
   onOpenTrailer,
   liked,
   onToggleLike,
+  inWatchlist,
+  onToggleWatchlist,
   overview,
   directorOrCreator,
   writer,
@@ -86,28 +99,32 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
   externalIds,
   productionCompanies,
   resolvedMediaType,
+  logoPath,
 }) => {
-  const hiResBase = useMemo(() => {
-    const fallback = "https://image.tmdb.org/t/p/original/";
+  // const hiResBase = useMemo(() => {
+  //   const fallback = "https://image.tmdb.org/t/p/original/";
 
-    if (!imageURL) return fallback;
+  //   if (!imageURL) return fallback;
 
-    if (imageURL.includes("image.tmdb.org")) {
-      let base = imageURL.trim();
+  //   if (imageURL.includes("image.tmdb.org")) {
+  //     let base = imageURL.trim();
 
-      if (base.includes("/original")) {
-        return base.endsWith("/") ? base : base + "/";
-      }
+  //     if (base.includes("/original")) {
+  //       return base.endsWith("/") ? base : base + "/";
+  //     }
 
-      base = base.replace(/\/w\d+\/?/, "/original/");
+  //     base = base.replace(/\/w\d+\/?/, "/original/");
 
-      if (!base.endsWith("/")) base += "/";
+  //     if (!base.endsWith("/")) base += "/";
 
-      return base;
-    }
+  //     return base;
+  //   }
 
-    return imageURL.endsWith("/") ? imageURL : imageURL + "/";
-  }, [imageURL]);
+  //   return imageURL.endsWith("/") ? imageURL : imageURL + "/";
+  // }, [imageURL]);
+
+  const hiResBaseBackdrop = TMDB_BACKDROP_LARGE + "/";
+  const hiResBasePoster = TMDB_POSTER_MEDIUM + "/";
 
   return (
     <div className="relative w-full min-h-[60vh] md:min-h-[70vh] overflow-hidden bg-neutral-900">
@@ -115,7 +132,7 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
       {backdropPath && (
         <div className="absolute inset-0">
           <img
-            src={hiResBase + backdropPath}
+            src={hiResBaseBackdrop + backdropPath}
             alt={title}
             className="h-full w-full object-cover object-center md:object-top"
           />
@@ -127,11 +144,11 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
       {/* CONTENT */}
       <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-5 px-3 py-5 sm:px-4 sm:py-6 md:flex-row md:gap-6 md:px-6 md:py-8 lg:px-10 lg:py-10">
         {/* Poster */}
-        <div className="w-full max-w-[260px] self-center sm:self-auto sm:max-w-none md:w-1/3 lg:w-1/4">
+        <div className="w-full max-w-[260px] self-center sm:self-auto sm:max-w-none md:w-1/3 lg:w-1/4 flex flex-col">
           <div className="w-full rounded-xl bg-neutral-900/80 shadow-[0_20px_45px_rgba(0,0,0,0.75)] ring-1 ring-white/5 overflow-hidden aspect-2/3">
             {posterPath ? (
               <img
-                src={hiResBase + posterPath}
+                src={hiResBasePoster + posterPath}
                 alt={title}
                 className="h-full w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
               />
@@ -141,6 +158,16 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
               </div>
             )}
           </div>
+
+          {logoPath ? (
+            <div className="mt-4">
+              <img
+                src={`${TMDB_IMAGE}/w500${logoPath}`}
+                alt={title}
+                className="max-h-24 w-auto object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]"
+              />
+            </div>
+          ) : null}
         </div>
 
         {/* Main info */}
@@ -274,27 +301,44 @@ const DetailsHero: React.FC<DetailsHeroProps> = ({
               <span>What's your vibe?</span>
             </button>
 
+            <button
+              type="button"
+              onClick={onToggleWatchlist}
+              className={`
+                flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full transition
+                border 
+                ${
+                  inWatchlist
+                    ? "bg-amber-400 text-black border-amber-600 shadow-lg shadow-amber-800/40 hover:bg-amber-300"
+                    : "bg-black/50 text-amber-200 border-amber-500/40 hover:bg-amber-700/40"
+                }
+              `}
+            >
+              {inWatchlist ? (
+                <BiBookmarkAlt size={20} /> // ICON ACTIVE
+              ) : (
+                <BiBookmark size={20} /> // ICON NORMAL
+              )}
+            </button>
             {/* Heart */}
             <button
               type="button"
               onClick={onToggleLike}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-black/60 hover:bg-black/80 border border-white/10 transition sm:h-10 sm:w-10"
-              aria-label="Add to favorites"
+              className={`
+                flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full transition
+                border 
+                ${
+                  liked
+                    ? "bg-red-500 text-white border-red-600 shadow-lg shadow-red-800/40 hover:bg-red-400"
+                    : "bg-black/60 text-red-300 border-white/10 hover:bg-black/80"
+                }
+              `}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                className="h-5 w-5 drop-shadow"
-                fill={liked ? "#f87171" : "none"}
-                stroke={liked ? "#f87171" : "currentColor"}
-                strokeWidth={1.8}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12.1 4.44 12 4.55l-.1-.11A5.25 5.25 0 0 0 3.75 9.3c0 1.38.56 2.63 1.46 3.54l5.96 6.02c.23.23.54.36.86.36s.63-.13.86-.36l5.96-6.02a5.01 5.01 0 0 0 1.46-3.54A5.25 5.25 0 0 0 12.1 4.44Z"
-                />
-              </svg>
+              {liked ? (
+                <BiHeartCircle size={20} /> // ICON ACTIVE
+              ) : (
+                <BiHeart size={20} /> // ICON NORMAL
+              )}
             </button>
           </div>
 

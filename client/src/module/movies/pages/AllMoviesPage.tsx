@@ -1,23 +1,16 @@
+// src/module/movies/pages/AllMoviesPage.tsx
 import { useEffect, useState, type JSX } from "react";
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
-import Card from "../../../components/common/Card";
 
 import TrendingTrailerHeader from "../components/TrendingTrailerHeader";
+import BigPosterCard from "../components/BigPosterCard";
 import { tmdbDiscoverApi } from "../../../api/movie/TMDBDiscover.api";
 
-// Kiểu movie dùng cho UI (đủ cho Card + sort)
-type UIMovie = {
-  id: number;
-  title?: string;
-  original_title?: string;
-  overview?: string;
-  poster_path: string | null;
-  backdrop_path: string | null;
-  release_date?: string;
-  vote_average?: number;
-  popularity?: number;
-};
+// ===== KIỂU MOVIE CHUẨN TỪ TMDB =====
+import type { TMDBMovieSummary } from "../database/interface/movie";
 
+// Dùng luôn TMDBMovieSummary cho UI
+type UIMovie = TMDBMovieSummary;
 type MoviesByPage = Record<number, UIMovie[]>;
 
 const AllMoviesPage = (): JSX.Element => {
@@ -70,7 +63,7 @@ const AllMoviesPage = (): JSX.Element => {
   };
 
   // ---------------------------
-  // LOAD 40 PHIM MỖI TRANG UI
+  // LOAD ~60 PHIM MỖI TRANG UI
   // ---------------------------
   const loadPage = async (uiPage: number) => {
     if (loading) return;
@@ -80,7 +73,6 @@ const AllMoviesPage = (): JSX.Element => {
       setGridVisible(false);
       setLoading(true);
 
-      // Mỗi trang UI = 2 trang TMDB (20 * 2 = 40)
       const tmdbPage1 = uiPage * 2 - 1;
       const tmdbPage2 = uiPage * 2;
 
@@ -97,16 +89,17 @@ const AllMoviesPage = (): JSX.Element => {
         if (totalFromApi === null) {
           totalFromApi = res1.total_pages;
           setTmdbTotalPages(totalFromApi);
-          setTotalPages(Math.ceil(totalFromApi / 2)); // 2 page TMDB = 1 page UI
+          // 3 page TMDB = 1 page UI
+          setTotalPages(Math.ceil(totalFromApi / 3));
         }
 
-        page1Results = (res1.results ?? []) as unknown as UIMovie[];
+        page1Results = res1.results ?? [];
       }
 
       // --- Trang TMDB 2 ---
       if (totalFromApi !== null && tmdbPage2 <= totalFromApi) {
         const res2 = await tmdbDiscoverApi.discoverMovies(tmdbPage2, language);
-        page2Results = (res2.results ?? []) as unknown as UIMovie[];
+        page2Results = res2.results ?? [];
       }
 
       // Gộp lại
@@ -212,7 +205,7 @@ const AllMoviesPage = (): JSX.Element => {
 
   const currentMovies = moviesByPage[currentPage] ?? [];
 
-  // 🔥 Mobile: chỉ render 39 item cho grid 3 cột đẹp; desktop/tablet: full
+  // Mobile: chỉ render 39 item cho grid 3 cột đẹp; desktop/tablet: full (tối đa ~60)
   const moviesForGrid = isMobile ? currentMovies.slice(0, 39) : currentMovies;
 
   return (
@@ -229,7 +222,7 @@ const AllMoviesPage = (): JSX.Element => {
               Phim mới nhất
             </h1>
             <p className="text-xs text-neutral-500 sm:text-sm">
-              Mỗi trang hiển thị khoảng 40 bộ phim. Phim mới và hot hơn sẽ ở
+              Mỗi trang hiển thị khoảng 60 bộ phim. Phim mới và hot hơn sẽ ở
               phía trên.
             </p>
           </div>
@@ -245,10 +238,10 @@ const AllMoviesPage = (): JSX.Element => {
           )}
         </div>
 
-        {/* GRID MOVIES + FADE (responsive 3–3–4–5 cột) */}
+        {/* GRID MOVIES */}
         <div
           className={`
-            grid gap-3 sm:gap-4
+            grid gap-3 sm:gap-5
             grid-cols-3
             sm:grid-cols-3
             md:grid-cols-4
@@ -258,7 +251,16 @@ const AllMoviesPage = (): JSX.Element => {
           `}
         >
           {moviesForGrid.map((movie) => (
-            <Card key={movie.id} data={movie} media_type="movie" />
+            <BigPosterCard
+              key={movie.id}
+              posterPath={movie.poster_path}
+              logoPath={undefined}
+              title={movie.title}
+              topText={undefined}
+              runtimeMinutes={undefined}
+              genreLabel={undefined}
+              detailPath={`/movie/${movie.id}`}
+            />
           ))}
         </div>
 

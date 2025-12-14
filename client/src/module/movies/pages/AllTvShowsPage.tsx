@@ -1,23 +1,16 @@
+// src/module/movies/pages/AllTvShowsPage.tsx
 import { useEffect, useState, type JSX } from "react";
 import { useAppSelector } from "../../../hooks/UseCustomeRedux";
 
-import Card from "../../../components/common/Card";
 import TrendingTrailerHeader from "../components/TrendingTrailerHeader";
 import { tmdbDiscoverApi } from "../../../api/movie/TMDBDiscover.api";
+import BigPosterCard from "../components/BigPosterCard";
 
-// Kiểu TV show dùng cho UI (đủ cho Card + sort)
-type UITvShow = {
-  id: number;
-  name?: string;
-  original_name?: string;
-  overview?: string;
-  poster_path: string | null;
-  backdrop_path: string | null;
-  first_air_date?: string;
-  vote_average?: number;
-  popularity?: number;
-};
+// ===== KIỂU TV CHUẨN TỪ TMDB =====
+import type { TMDBTvSimilarItem } from "../database/interface/tv";
 
+// Dùng luôn TMDBTvSimilarItem cho UI
+type UITvShow = TMDBTvSimilarItem;
 type ShowsByPage = Record<number, UITvShow[]>;
 
 const AllTvShowsPage = (): JSX.Element => {
@@ -37,8 +30,8 @@ const AllTvShowsPage = (): JSX.Element => {
 
   useEffect(() => {
     const handleResize = () => {
-      // < 640px (theo tailwind sm) coi là mobile
       if (typeof window === "undefined") return;
+      // < 640px (theo tailwind sm) coi là mobile
       setIsMobile(window.innerWidth < 640);
     };
 
@@ -69,7 +62,8 @@ const AllTvShowsPage = (): JSX.Element => {
   };
 
   // ===============================
-  // Mỗi trang UI = 2 trang TMDB
+  // Mỗi trang UI ~ 40 TV show
+  // 2 page TMDB (20 * 2)
   // ===============================
   const loadPage = async (uiPage: number) => {
     if (loading) return;
@@ -94,16 +88,17 @@ const AllTvShowsPage = (): JSX.Element => {
         if (totalFromApi === null) {
           totalFromApi = res1.total_pages;
           setTmdbTotalPages(totalFromApi);
-          setTotalPages(Math.ceil(totalFromApi / 2)); // 2 page TMDB = 1 page UI
+          // 2 page TMDB = 1 page UI
+          setTotalPages(Math.ceil(totalFromApi / 2));
         }
 
-        page1Results = (res1.results ?? []) as unknown as UITvShow[];
+        page1Results = res1.results ?? [];
       }
 
       // --- Call page 2 ---
       if (totalFromApi !== null && tmdbPage2 <= totalFromApi) {
         const res2 = await tmdbDiscoverApi.discoverTvShows(tmdbPage2, language);
-        page2Results = (res2.results ?? []) as unknown as UITvShow[];
+        page2Results = res2.results ?? [];
       }
 
       const combined: UITvShow[] = [...page1Results, ...page2Results];
@@ -237,14 +232,30 @@ const AllTvShowsPage = (): JSX.Element => {
 
         {/* GRID + FADE (responsive 3–3–4–5 cột) */}
         <div
-          className={`grid grid-cols-3 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4
-          transition-opacity duration-300 ${
-            gridVisible ? "opacity-100" : "opacity-0"
-          }`}
+          className={`
+            grid grid-cols-3 xs:grid-cols-3 md:grid-cols-4 lg:grid-cols-5
+            gap-3 sm:gap-4
+            transition-opacity duration-300
+            ${gridVisible ? "opacity-100" : "opacity-0"}
+          `}
         >
-          {showsForGrid.map((show) => (
-            <Card key={show.id} data={show} media_type="tv" />
-          ))}
+          {showsForGrid.map((show) => {
+            const year = show.first_air_date
+              ? show.first_air_date.slice(0, 4)
+              : undefined;
+
+            return (
+              <BigPosterCard
+                key={show.id}
+                posterPath={show.poster_path}
+                title={show.name}
+                topText={undefined} // có thể set "TV SERIES" nếu thích
+                runtimeMinutes={undefined} // TV không có runtime tổng => bỏ trống
+                genreLabel={year ? `${year} • TV Show` : "TV Show"}
+                detailPath={`/tv/${show.id}`}
+              />
+            );
+          })}
         </div>
 
         {/* Loading nhỏ */}

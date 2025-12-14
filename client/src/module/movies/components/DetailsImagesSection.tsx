@@ -34,7 +34,7 @@ const ImagesRow: React.FC<{
               className="relative h-32 w-56 shrink-0 overflow-hidden rounded-lg bg-neutral-900"
             >
               <img
-                src={`${imageBaseUrl}/w300${img.file_path}`}
+                src={`${imageBaseUrl}/w500${img.file_path}`}
                 alt=""
                 className="h-full w-full object-cover"
                 loading="lazy"

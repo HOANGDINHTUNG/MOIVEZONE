@@ -1,11 +1,12 @@
-// src/auth/features/pages/LoginPage.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAppDispatch } from "../../../../hooks/UseCustomeRedux";
-import { getAllUsers } from "../../../../api/server/User.api";
-import type { IUser } from "../../database/interface/users";
-import { login } from "../../store/authSlice";
-import { initAccountConfig } from "../../../accounts/store/accountSlice";
+import { Eye, EyeOff } from "lucide-react";
+
+import { useAppDispatch } from "../../../hooks/UseCustomeRedux";
+import { getAllUsers, updateUserDirect } from "../../../api/server/User.api";
+import type { IUser } from "../database/interface/users";
+import { login } from "../store/authSlice";
+import { initAccountConfig } from "../../accounts/store/accountSlice";
 
 type AlertState =
   | { type: "success"; message: string }
@@ -19,6 +20,8 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberEmail, setRememberEmail] = useState(false);
+  const [showPass, setShowPass] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState<AlertState>(null);
 
@@ -51,6 +54,7 @@ const LoginPage: React.FC = () => {
     setLoading(true);
     try {
       const users = await getAllUsers();
+
       const matched: IUser | undefined = users.find(
         (u) =>
           u.email.toLowerCase() === email.trim().toLowerCase() &&
@@ -66,9 +70,49 @@ const LoginPage: React.FC = () => {
         return;
       }
 
+      // normalize role/status (tương thích dữ liệu cũ)
+      const normalizedRole: IUser["role"] =
+        matched.role ??
+        (matched.email.trim().toLowerCase() === "admin@moviezone.com" ||
+        matched.username.trim().toLowerCase() === "admin"
+          ? "admin"
+          : "user");
+
+      const normalizedStatus: IUser["status"] = matched.status ?? "active";
+
+      // Nếu bị block thì không cho đăng nhập
+      if (normalizedStatus === "blocked") {
+        setAlert({
+          type: "error",
+          message:
+            "Tài khoản của bạn đã bị chặn. Vui lòng liên hệ quản trị viên.",
+        });
+        setLoading(false);
+        return;
+      }
+
+      const normalizedUser: IUser = {
+        ...matched,
+        role: normalizedRole,
+        status: normalizedStatus,
+      };
+
+      // patch nhẹ nếu db cũ chưa có role/status
+      if (!matched.role || !matched.status) {
+        try {
+          await updateUserDirect({
+            id: matched.id,
+            role: normalizedRole,
+            status: normalizedStatus,
+          });
+        } catch {
+          // ignore
+        }
+      }
+
       // lưu token (id user)
       try {
-        localStorage.setItem("token", JSON.stringify(matched.id));
+        localStorage.setItem("token", JSON.stringify(normalizedUser.id));
       } catch {
         // ignore
       }
@@ -88,15 +132,19 @@ const LoginPage: React.FC = () => {
       }
 
       // login vào Redux auth
-      dispatch(login(matched));
+      dispatch(login(normalizedUser));
 
       // init account config cho accountSlice
-      if (matched.apiKey && matched.sessionId && matched.accountId) {
+      if (
+        normalizedUser.apiKey &&
+        normalizedUser.sessionId &&
+        normalizedUser.accountId
+      ) {
         dispatch(
           initAccountConfig({
-            apiKey: matched.apiKey,
-            sessionId: matched.sessionId,
-            accountId: matched.accountId,
+            apiKey: normalizedUser.apiKey,
+            sessionId: normalizedUser.sessionId,
+            accountId: normalizedUser.accountId,
           })
         );
       }
@@ -106,7 +154,10 @@ const LoginPage: React.FC = () => {
         message: "Đăng nhập thành công! Đang chuyển hướng...",
       });
 
-      setTimeout(() => navigate("/"), 800);
+      setTimeout(() => {
+        if (normalizedRole === "admin") navigate("/admin");
+        else navigate("/");
+      }, 800);
     } catch (err) {
       console.error(err);
       setAlert({
@@ -119,14 +170,14 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="mt-5 space-y-4">
       {/* Alert */}
       {alert && (
         <div
           className={`rounded-xl border px-3 py-2.5 text-xs sm:text-sm ${
             alert.type === "error"
-              ? "border-red-500/70 bg-red-950/70 text-red-200"
-              : "border-emerald-500/70 bg-emerald-950/70 text-emerald-200"
+              ? "border-rose-500/70 bg-rose-950/60 text-rose-200"
+              : "border-emerald-500/70 bg-emerald-950/60 text-emerald-200"
           }`}
         >
           {alert.message}
@@ -135,12 +186,10 @@ const LoginPage: React.FC = () => {
 
       {/* Email */}
       <div className="space-y-1.5">
-        <label className="block text-xs font-medium text-slate-200">
-          Email
-        </label>
+        <label className="block text-xs font-medium text-slate-200">Email</label>
         <input
           type="email"
-          className="w-full rounded-xl border border-red-900/50 bg-black/60 px-3 py-2 text-sm text-slate-50 outline-none ring-0 transition focus:border-red-500 focus:bg-black/80 focus:ring-2 focus:ring-red-700/70"
+          className="w-full rounded-xl border border-red-900/50 bg-black/60 px-3 py-2 text-sm text-slate-50 outline-none transition focus:border-rose-400 focus:bg-black/80 focus:ring-2 focus:ring-rose-600/60"
           placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -148,19 +197,36 @@ const LoginPage: React.FC = () => {
         />
       </div>
 
-      {/* Password */}
+      {/* Password + Eye */}
       <div className="space-y-1.5">
         <label className="block text-xs font-medium text-slate-200">
           Mật khẩu
         </label>
-        <input
-          type="password"
-          className="w-full rounded-xl border border-red-900/50 bg-black/60 px-3 py-2 text-sm text-slate-50 outline-none ring-0 transition focus:border-red-500 focus:bg-black/80 focus:ring-2 focus:ring-red-700/70"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          autoComplete="current-password"
-        />
+
+        <div className="relative">
+          <input
+            type={showPass ? "text" : "password"}
+            className="w-full rounded-xl border border-red-900/50 bg-black/60 px-3 py-2 pr-11 text-sm text-slate-50 outline-none transition focus:border-rose-400 focus:bg-black/80 focus:ring-2 focus:ring-rose-600/60"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPass((v) => !v)}
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg p-2 text-rose-200/95 hover:bg-white/5 hover:text-amber-200 focus:outline-none focus:ring-2 focus:ring-rose-500/60"
+            aria-label={showPass ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+            aria-pressed={showPass}
+          >
+            {showPass ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Remember & Forgot */}
@@ -170,13 +236,11 @@ const LoginPage: React.FC = () => {
             type="checkbox"
             checked={rememberEmail}
             onChange={(e) => setRememberEmail(e.target.checked)}
-            className="h-3.5 w-3.5 rounded border border-red-700/70 bg-black/60 text-red-500 focus:ring-red-700"
+            className="h-3.5 w-3.5 rounded border border-rose-700/70 bg-black/60 text-rose-500 focus:ring-rose-600"
           />
           <span>Ghi nhớ email</span>
         </label>
-        <span className="cursor-not-allowed text-slate-600">
-          Quên mật khẩu?
-        </span>
+        <span className="cursor-not-allowed text-slate-600">Quên mật khẩu?</span>
       </div>
 
       {/* Submit */}
@@ -200,7 +264,7 @@ const LoginPage: React.FC = () => {
         Chưa có tài khoản?{" "}
         <Link
           to="/register"
-          className="font-medium text-red-400 hover:text-red-300"
+          className="font-medium text-rose-300 hover:text-amber-200"
         >
           Đăng ký ngay
         </Link>

@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState, type JSX } from "react";
 import BannerHome from "../../../components/common/ui/BannerHome";
-import HorizontalScollCard from "../../../components/HorizontalScollCard";
 import { useAppSelector, useAppDispatch } from "../../../hooks/UseCustomeRedux";
 import { useFetch } from "../../../hooks/useFetch";
 import LatestTrailersSection, {
   type TrailerItem,
 } from "../components/LatestTrailersSection";
 
-import VideoPlay from "../../../components/VideoPlay";
+import VideoPlay from "../../../components/home/VideoPlay";
 import axiosTMDB from "../../../app/axiosTMDB";
 
 import type { TMDBMovieSummary } from "../../movies/database/interface/movie";
@@ -29,6 +28,8 @@ import type {
   TMDBTrendingAllItem,
   TMDBTrendingMovieItem,
 } from "../../trending/database/interface/trending";
+import HorizontalScollCard from "../../../components/home/HorizontalScollCard";
+import { selectAdminState, type AdminFeatureKey } from "../../admin/store/adminSlice";
 
 // TMDB video type đơn giản cho /videos
 interface TMDBVideo {
@@ -46,6 +47,13 @@ const HomePage = (): JSX.Element => {
   // Banner hero dùng data trending từ store riêng
   const bannerData = useAppSelector((state) => state.moviesData.bannerData);
   const language = useAppSelector((state) => state.language.current);
+  const { sections, features } = useAppSelector(selectAdminState);
+
+  const isSectionVisible = (id: string) =>
+    sections.find((s) => s.id === id)?.visible !== false;
+
+  const isFeatureOn = (key: AdminFeatureKey) =>
+    features.find((f) => f.key === key)?.value !== false;
 
   // Lấy state trending từ trendingSlice (dùng chung với TrendingPage)
   const {
@@ -95,6 +103,7 @@ const HomePage = (): JSX.Element => {
             vote_count: m.vote_count ?? 0,
             // nếu TMDBMediaBase có media_type
             media_type: "movie" as MediaType,
+            release_date: m.release_date,
           };
 
           return base;
@@ -152,26 +161,33 @@ const HomePage = (): JSX.Element => {
   return (
     <>
       {/* Banner dùng Redux (trending movies cho hero) */}
-      <BannerHome data={bannerData} />
+      {isFeatureOn("showHomeBanner") && isSectionVisible("home-banner") && (
+        <BannerHome data={bannerData} />
+      )}
 
       {/* Trending Movies – dùng Redux timeWindow giống TrendingPage */}
-      <HorizontalScollCard
-        data={trendingForCard}
-        heading="Trending Movies"
-        headingTo="/trending"
-        trending
-        media_type="movie"
-        showTimeToggle
-        timeWindow={timeWindow ?? "day"}
-        onTimeWindowChange={(tw) => dispatch(setTimeWindow(tw))}
-      />
+      {isFeatureOn("showHomeTrending") && isSectionVisible("home-trending") && (
+        <HorizontalScollCard
+          data={trendingForCard}
+          heading="Trending Movies"
+          headingTo="/trending"
+          trending
+          media_type="movie"
+          showTimeToggle
+          timeWindow={timeWindow ?? "day"}
+          onTimeWindowChange={(tw) => dispatch(setTimeWindow(tw))}
+        />
+      )}
 
       {/* Latest Trailers (Popular / In Theaters) */}
-      <LatestTrailersSection
-        popular={popularMoviesData}
-        inTheaters={nowPlayingData}
-        onPlay={handlePlay}
-      />
+      {isFeatureOn("showHomeLatestTrailers") &&
+        isSectionVisible("home-latest-trailers") && (
+          <LatestTrailersSection
+            popular={popularMoviesData}
+            inTheaters={nowPlayingData}
+            onPlay={handlePlay}
+          />
+        )}
 
       {/* Now Playing */}
       <HorizontalScollCard

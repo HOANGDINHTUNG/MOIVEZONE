@@ -5,8 +5,6 @@ import moment from "moment";
 import { useFetchDetails } from "../../../hooks/useFetchDetails";
 import { useAppDispatch, useAppSelector } from "../../../hooks/UseCustomeRedux";
 
-import VideoPlay from "../../../components/VideoPlay";
-
 import DetailsHero, { type MovieCollection } from "../components/DetailsHero";
 import DetailsTopCastSection from "../components/DetailsTopCastSection";
 import DetailsKeywordsSection from "../components/DetailsKeywordsSection";
@@ -93,8 +91,14 @@ import type {
   TMDBTvListSummary,
   TMDBWatchProviderRegion,
 } from "../database/interface/tv";
+import { selectAuth, setCurrentUser } from "../../auth/store/authSlice";
+import { updateUserDirect } from "../../../api/server/User.api";
+import { buildUserMediaItem } from "../../auth/feature/utils/buildUserMediaItem";
+import VideoPlay from "../../../components/home/VideoPlay";
+import { selectAdminState } from "../../admin/store/adminSlice";
+import RestrictedContentBlock from "../../../components/error/RestrictedContentBlock";
 
-const TMDB_IMAGE = "https://image.tmdb.org/t/p";
+export const TMDB_IMAGE = "https://image.tmdb.org/t/p";
 
 // =======================
 // Kiểu dùng trong trang
@@ -248,13 +252,20 @@ const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
 
   const imageURL = useAppSelector((state) => state.moviesData.imageURL);
   const genresState = useAppSelector((state) => state.tmdbGenres);
+  const { currentUser } = useAppSelector(selectAuth);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [liked, setLiked] = useState(false);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
   const [activeVideoKey, setActiveVideoKey] = useState<string | null>(null);
+
+  const numericId = Number(id);
+  const { restrictedTitles } = useAppSelector(selectAdminState);
+
+  const restriction = restrictedTitles.find(
+    (r) => r.mediaType === mediaType && r.id === numericId
+  );
 
   const activeGenreMap =
     (mediaType ?? explore) === "tv" ? genresState.tvMap : genresState.movieMap;
@@ -300,6 +311,45 @@ const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
   const { data, loading } = useFetchDetails<MediaDetail>(endpoint, {
     append_to_response: appendParts.join(","),
   });
+
+  useEffect(() => {
+    if (!currentUser || !data) return;
+
+    const list = currentUser.history || [];
+
+    // Nếu phần tử đầu tiên đã là film hiện tại → khỏi update nữa
+    if (
+      list.length > 0 &&
+      list[0].id === data.id &&
+      list[0].mediaType === resolvedMediaType
+    ) {
+      return;
+    }
+
+    const newItem = buildUserMediaItem(resolvedMediaType, data);
+
+    // Bỏ bản cũ của film này trong history
+    const rest = list.filter(
+      (item) => !(item.id === data.id && item.mediaType === resolvedMediaType)
+    );
+
+    // Đưa lên đầu, giới hạn lịch sử (vd: 50 item)
+    const MAX_HISTORY = 50;
+    const nextHistory = [newItem, ...rest].slice(0, MAX_HISTORY);
+
+    (async () => {
+      try {
+        const updatedUser = await updateUserDirect({
+          id: currentUser.id,
+          history: nextHistory,
+        });
+
+        dispatch(setCurrentUser(updatedUser));
+      } catch (error) {
+        console.error("Failed to update history", error);
+      }
+    })();
+  }, [currentUser, data, resolvedMediaType, dispatch]);
 
   const isMovie = useCallback(
     (d: MediaDetail): d is MovieDetailsWithAppend =>
@@ -923,6 +973,123 @@ const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
     return data.homepage || "";
   }, [data]);
 
+  const liked = useMemo(() => {
+    if (!currentUser || !data) return false;
+
+    return (currentUser.favorites || []).some(
+      (item) => item.id === data.id && item.mediaType === resolvedMediaType
+    );
+  }, [currentUser, data, resolvedMediaType]);
+
+  const inWatchlist = useMemo(() => {
+    if (!currentUser || !data) return false;
+    const list = currentUser.watchlist || [];
+    return list.some(
+      (item) => item.id === data.id && item.mediaType === resolvedMediaType
+    );
+  }, [currentUser, data, resolvedMediaType]);
+
+  const handleToggleWatchlist = useCallback(async () => {
+    if (!currentUser || !data) {
+      console.log("Bạn cần đăng nhập trước để dùng Watchlist");
+      return;
+    }
+
+    const list = currentUser.watchlist || [];
+    const exists = list.some(
+      (item) => item.id === data.id && item.mediaType === resolvedMediaType
+    );
+
+    let nextWatchlist;
+    if (exists) {
+      // Đang nằm trong watchlist → bỏ ra
+      nextWatchlist = list.filter(
+        (item) => !(item.id === data.id && item.mediaType === resolvedMediaType)
+      );
+    } else {
+      // Chưa có → thêm
+      const newItem = buildUserMediaItem(resolvedMediaType, data);
+      nextWatchlist = [...list, newItem];
+    }
+
+    try {
+      const updatedUser = await updateUserDirect({
+        id: currentUser.id,
+        watchlist: nextWatchlist,
+      });
+
+      dispatch(setCurrentUser(updatedUser));
+    } catch (error) {
+      console.error("Failed to toggle watchlist", error);
+    }
+  }, [currentUser, data, resolvedMediaType, dispatch]);
+
+  const handleToggleFavorite = useCallback(async () => {
+    if (!currentUser || !data) {
+      // TODO: bật toast "Bạn cần đăng nhập"
+      console.log("Bạn cần đăng nhập trước");
+      return;
+    }
+
+    const list = currentUser.favorites || [];
+
+    const exists = list.some(
+      (item) => item.id === data.id && item.mediaType === resolvedMediaType
+    );
+
+    let nextFavorites;
+
+    if (exists) {
+      // Đã có → xoá khỏi favorites
+      nextFavorites = list.filter(
+        (item) => !(item.id === data.id && item.mediaType === resolvedMediaType)
+      );
+    } else {
+      // Chưa có → thêm mới
+      const newItem = buildUserMediaItem(resolvedMediaType, data);
+      nextFavorites = [...list, newItem];
+    }
+
+    try {
+      // Cập nhật lên JSON server
+      const updatedUser = await updateUserDirect({
+        id: currentUser.id,
+        favorites: nextFavorites,
+      });
+
+      // Cập nhật lại Redux
+      dispatch(setCurrentUser(updatedUser));
+    } catch (err) {
+      console.error("Failed to toggle favorite", err);
+    }
+  }, [currentUser, data, resolvedMediaType, dispatch]);
+
+  // chọn 1 logo đẹp nhất cho Hero
+  const heroLogoPath = useMemo(() => {
+    if (!mediaImages) return null;
+
+    // giống cách bạn làm ở DetailsImagesSection
+    const logos = mediaImages.logos ?? [];
+    if (!logos.length) return null;
+
+    // ưu tiên ngôn ngữ gốc của phim, rồi "en", cuối cùng là bất kỳ logo nào
+    let preferredLang = "en";
+    if (data && "original_language" in data && data.original_language) {
+      preferredLang = data.original_language;
+    }
+
+    const byOriginalLang = logos.find((img) => img.iso_639_1 === preferredLang);
+    const byEnglish = logos.find((img) => img.iso_639_1 === "en");
+
+    const chosen = byOriginalLang || byEnglish || logos[0];
+
+    return chosen.file_path || null;
+  }, [mediaImages, data]);
+
+  if (restriction) {
+    return <RestrictedContentBlock reason={restriction.reason} />;
+  }
+
   // ========== Loading / Error ==========
   if (loading || !data) {
     return (
@@ -965,7 +1132,9 @@ const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
           setIsTrailerOpen(true);
         }}
         liked={liked}
-        onToggleLike={() => setLiked((prev) => !prev)}
+        onToggleLike={handleToggleFavorite}
+        inWatchlist={inWatchlist}
+        onToggleWatchlist={handleToggleWatchlist}
         overview={overview}
         directorOrCreator={directorOrCreator}
         writer={writer}
@@ -974,6 +1143,7 @@ const DetailsPage: FC<DetailsPageProps> = ({ mediaType }) => {
         resolvedMediaType={resolvedMediaType}
         currentGenres={currentGenres}
         activeGenreMap={activeGenreMap}
+        logoPath={heroLogoPath}
       />
 
       {/* MODAL VIDEO */}

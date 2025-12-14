@@ -43,7 +43,7 @@ export default function MovieTvCard({ item, onClick }: MovieTvCardProps) {
     <button
       type="button"
       onClick={onClick}
-      className="group flex flex-col overflow-hidden rounded-2xl bg-neutral-900/70 ring-1 ring-neutral-800/80 hover:ring-emerald-500/90 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/30"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950/85 shadow transition-all hover:-translate-y-1.5 hover:border-amber-400/80 hover:shadow-2xl hover:shadow-red-700/40"
     >
       <div className="relative aspect-2/3 w-full overflow-hidden">
         {posterPath ? (
@@ -58,19 +58,19 @@ export default function MovieTvCard({ item, onClick }: MovieTvCardProps) {
           </div>
         )}
         {vote && (
-          <div className="absolute left-2 top-2 rounded-full bg-black/70 px-2 py-1 text-[10px] font-semibold text-emerald-400 shadow">
+          <div className="absolute left-2 top-2 rounded-full bg-black/80 px-2 py-1 text-[10px] font-semibold text-amber-300 shadow shadow-black/80">
             ★ {vote}
           </div>
         )}
       </div>
       <div className="flex flex-1 flex-col gap-1 p-3 text-left">
-        <h3 className="line-clamp-2 text-sm font-semibold text-white group-hover:text-emerald-400">
+        <h3 className="line-clamp-2 text-sm font-semibold text-white group-hover:text-amber-300">
           {title}
         </h3>
         <p className="line-clamp-1 text-[11px] text-neutral-400">{subTitle}</p>
         <div className="mt-auto flex items-center justify-between text-[11px] text-neutral-400">
           <span>{date || "Unknown"}</span>
-          <span className="rounded-full border border-emerald-500/40 px-2 py-0.5 text-[10px] uppercase tracking-wide text-emerald-400">
+          <span className="rounded-full border border-red-600/60 bg-red-900/40 px-2 py-0.5 text-[10px] uppercase tracking-wide text-amber-200">
             {isMovie(item) ? "Movie" : "TV"}
           </span>
         </div>

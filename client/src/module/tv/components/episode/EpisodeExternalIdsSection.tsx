@@ -9,11 +9,17 @@ const EpisodeExternalIdsSection = ({
 }: EpisodeExternalIdsSectionProps) => {
   if (!externalIds) {
     return (
-      <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-        <p className="mb-2 text-xs uppercase tracking-wide text-slate-400">
+      <div
+        className="
+          rounded-2xl border border-white/10 
+          bg-linear-to-br from-[#050816]/90 via-[#020617]/90 to-black/90
+          p-4 backdrop-blur-md shadow-xl
+        "
+      >
+        <p className="mb-2 text-xs uppercase tracking-[0.18em] text-fuchsia-300/80">
           External IDs
         </p>
-        <p className="text-[11px] text-slate-400">No external IDs.</p>
+        <p className="text-[11px] text-slate-300">No external IDs.</p>
       </div>
     );
   }
@@ -22,6 +28,7 @@ const EpisodeExternalIdsSection = ({
     label: string;
     value: string | number | null;
     url?: string;
+    colorClass?: string;
   }[] = [
     {
       label: "IMDb",
@@ -29,6 +36,8 @@ const EpisodeExternalIdsSection = ({
       url: externalIds.imdb_id
         ? `https://www.imdb.com/title/${externalIds.imdb_id}`
         : undefined,
+      colorClass:
+        "border-amber-400/80 bg-amber-500/15 text-amber-100 hover:bg-amber-400/25 hover:shadow-[0_0_12px_#fbbf2488]",
     },
     {
       label: "TVDB",
@@ -36,6 +45,8 @@ const EpisodeExternalIdsSection = ({
       url: externalIds.tvdb_id
         ? `https://thetvdb.com/?id=${externalIds.tvdb_id}&tab=series`
         : undefined,
+      colorClass:
+        "border-cyan-400/80 bg-cyan-500/15 text-cyan-100 hover:bg-cyan-400/25 hover:shadow-[0_0_12px_#22d3ee88]",
     },
     {
       label: "Wikidata",
@@ -43,6 +54,8 @@ const EpisodeExternalIdsSection = ({
       url: externalIds.wikidata_id
         ? `https://www.wikidata.org/wiki/${externalIds.wikidata_id}`
         : undefined,
+      colorClass:
+        "border-violet-400/80 bg-violet-500/15 text-violet-100 hover:bg-violet-400/25 hover:shadow-[0_0_12px_#a855f788]",
     },
     {
       label: "Freebase MID",
@@ -62,20 +75,33 @@ const EpisodeExternalIdsSection = ({
 
   if (!hasAny) {
     return (
-      <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-        <p className="mb-2 text-xs uppercase tracking-wide text-slate-400">
+      <div
+        className="
+          rounded-2xl border border-white/10 
+          bg-linear-to-br from-[#050816]/90 via-[#020617]/90 to-black/90
+          p-4 backdrop-blur-md shadow-xl
+        "
+      >
+        <p className="mb-2 text-xs uppercase tracking-[0.18em] text-fuchsia-300/80">
           External IDs
         </p>
-        <p className="text-[11px] text-slate-400">No external IDs.</p>
+        <p className="text-[11px] text-slate-300">No external IDs.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-2 rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-      <p className="text-xs uppercase tracking-wide text-slate-400">
+    <div
+      className="
+        space-y-2 rounded-2xl border border-white/10 
+        bg-linear-to-br from-[#050816]/90 via-[#020617]/90 to-black/90
+        p-4 backdrop-blur-md shadow-xl
+      "
+    >
+      <p className="text-xs uppercase tracking-[0.18em] text-fuchsia-300/80">
         External IDs
       </p>
+
       <div className="flex flex-wrap gap-2">
         {items.map((item) =>
           item.value ? (
@@ -85,14 +111,22 @@ const EpisodeExternalIdsSection = ({
                 href={item.url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-[11px] rounded-full border border-slate-700 bg-slate-900/80 px-3 py-1 transition-colors hover:border-sky-400 hover:text-sky-200"
+                className={`
+                  text-[11px] rounded-full border px-3 py-1 
+                  transition-shadow duration-200
+                  ${item.colorClass ??
+                    "border-slate-400/60 bg-slate-700/40 text-slate-100 hover:bg-slate-500/50 hover:shadow-[0_0_10px_#94a3b899]"}
+                `}
               >
                 {item.label}
               </a>
             ) : (
               <span
                 key={item.label}
-                className="text-[11px] rounded-full border border-slate-700 bg-slate-900/80 px-3 py-1"
+                className="
+                  text-[11px] rounded-full border border-slate-500/60 
+                  bg-slate-800/60 px-3 py-1 text-slate-100
+                "
               >
                 {item.label}
               </span>

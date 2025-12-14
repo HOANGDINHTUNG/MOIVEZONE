@@ -1,8 +1,10 @@
-// src/auth/features/pages/RegisterPage.tsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { createUser, getAllUsers } from "../../../../api/server/User.api";
-import { generateMovieZoneCredentials } from "../utils/generateMovieZoneCredentials";
+import { Eye, EyeOff } from "lucide-react";
+
+import { createUser, getAllUsers } from "../../../api/server/User.api";
+import { generateMovieZoneCredentials } from "../feature/utils/generateMovieZoneCredentials";
+import type { CreateUserPayload, IUser } from "../database/interface/users";
 
 type AlertState =
   | { type: "success"; message: string }
@@ -16,14 +18,19 @@ const RegisterPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [showPass, setShowPass] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState<AlertState>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setAlert(null);
 
-    if (!email.trim() || !username.trim() || !password.trim()) {
+    const trimmedEmail = email.trim();
+    const trimmedUsername = username.trim();
+
+    if (!trimmedEmail || !trimmedUsername || !password.trim()) {
       setAlert({
         type: "error",
         message: "Vui lòng nhập đầy đủ email, username và mật khẩu.",
@@ -42,10 +49,12 @@ const RegisterPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const users = await getAllUsers();
+      const users: IUser[] = await getAllUsers();
+
       const existed = users.find(
-        (u) => u.email.toLowerCase() === email.trim().toLowerCase()
+        (u) => u.email.toLowerCase() === trimmedEmail.toLowerCase()
       );
+
       if (existed) {
         setAlert({
           type: "error",
@@ -57,14 +66,16 @@ const RegisterPage: React.FC = () => {
 
       const creds = generateMovieZoneCredentials();
 
-      await createUser({
-        email: email.trim(),
-        username: username.trim(),
-        password, // TODO: thực tế nên hash
+      const payload: CreateUserPayload = {
+        email: trimmedEmail,
+        username: trimmedUsername,
+        password, // thực tế nên hash
         apiKey: creds.apiKey,
         sessionId: creds.sessionId,
         accountId: creds.accountId,
-      });
+      };
+
+      await createUser(payload);
 
       setAlert({
         type: "success",
@@ -84,14 +95,14 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="mt-5 space-y-4">
       {/* Alert */}
       {alert && (
         <div
           className={`rounded-xl border px-3 py-2.5 text-xs sm:text-sm ${
             alert.type === "error"
-              ? "border-red-500/70 bg-red-950/70 text-red-200"
-              : "border-emerald-500/70 bg-emerald-950/70 text-emerald-200"
+              ? "border-rose-500/70 bg-rose-950/60 text-rose-200"
+              : "border-emerald-500/70 bg-emerald-950/60 text-emerald-200"
           }`}
         >
           {alert.message}
@@ -100,12 +111,10 @@ const RegisterPage: React.FC = () => {
 
       {/* Email */}
       <div className="space-y-1.5">
-        <label className="block text-xs font-medium text-slate-200">
-          Email
-        </label>
+        <label className="block text-xs font-medium text-slate-200">Email</label>
         <input
           type="email"
-          className="w-full rounded-xl border border-red-900/50 bg-black/60 px-3 py-2 text-sm text-slate-50 outline-none ring-0 transition focus:border-red-500 focus:bg-black/80 focus:ring-2 focus:ring-red-700/70"
+          className="w-full rounded-xl border border-red-900/50 bg-black/60 px-3 py-2 text-sm text-slate-50 outline-none transition focus:border-rose-400 focus:bg-black/80 focus:ring-2 focus:ring-rose-600/60"
           placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -120,7 +129,7 @@ const RegisterPage: React.FC = () => {
         </label>
         <input
           type="text"
-          className="w-full rounded-xl border border-red-900/50 bg-black/60 px-3 py-2 text-sm text-slate-50 outline-none ring-0 transition focus:border-red-500 focus:bg-black/80 focus:ring-2 focus:ring-red-700/70"
+          className="w-full rounded-xl border border-red-900/50 bg-black/60 px-3 py-2 text-sm text-slate-50 outline-none transition focus:border-rose-400 focus:bg-black/80 focus:ring-2 focus:ring-rose-600/60"
           placeholder="movie_fan_123"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -128,19 +137,37 @@ const RegisterPage: React.FC = () => {
         />
       </div>
 
-      {/* Password */}
+      {/* Password + Eye */}
       <div className="space-y-1.5">
         <label className="block text-xs font-medium text-slate-200">
           Mật khẩu
         </label>
-        <input
-          type="password"
-          className="w-full rounded-xl border border-red-900/50 bg-black/60 px-3 py-2 text-sm text-slate-50 outline-none ring-0 transition focus:border-red-500 focus:bg-black/80 focus:ring-2 focus:ring-red-700/70"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          autoComplete="new-password"
-        />
+
+        <div className="relative">
+          <input
+            type={showPass ? "text" : "password"}
+            className="w-full rounded-xl border border-red-900/50 bg-black/60 px-3 py-2 pr-11 text-sm text-slate-50 outline-none transition focus:border-rose-400 focus:bg-black/80 focus:ring-2 focus:ring-rose-600/60"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="new-password"
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPass((v) => !v)}
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg p-2 text-rose-200/95 hover:bg-white/5 hover:text-amber-200 focus:outline-none focus:ring-2 focus:ring-rose-500/60"
+            aria-label={showPass ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+            aria-pressed={showPass}
+          >
+            {showPass ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
+          </button>
+        </div>
+
         <p className="text-[11px] text-slate-500">
           Tối thiểu 8 ký tự. Nên dùng chữ hoa, chữ thường, số hoặc ký tự đặc
           biệt để bảo mật hơn.
@@ -166,10 +193,7 @@ const RegisterPage: React.FC = () => {
       {/* Link sang Login */}
       <div className="text-center text-xs text-slate-400">
         Đã có tài khoản?{" "}
-        <Link
-          to="/login"
-          className="font-medium text-red-400 hover:text-red-300"
-        >
+        <Link to="/login" className="font-medium text-rose-300 hover:text-amber-200">
           Đăng nhập
         </Link>
       </div>
