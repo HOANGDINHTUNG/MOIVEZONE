@@ -12,19 +12,29 @@
       "createdAt": "2025-01-01T00:00:00.000Z",
       "history": [
         {
-          "id": 812583,
+          "id": 66732,
+          "mediaType": "tv",
+          "title": "Stranger Things",
+          "posterPath": "/cVxVGwHce6xnW8UaVUggaPXbmoE.jpg",
+          "backdropPath": "/56v2KjBlU4XaOv9rVYEQypROD7P.jpg",
+          "overview": "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces, and one strange little girl.",
+          "voteAverage": 8.599,
+          "voteCount": 19503,
+          "releaseDate": "2016-07-15",
+          "addedAt": "2025-12-14T13:40:06.669Z"
+        },
+        {
+          "id": 278,
           "mediaType": "movie",
-          "title": "Wake Up Dead Man: A Knives Out Mystery",
-          "posterPath": "/qCOGGi8JBVEZMc3DVby8rUivyXz.jpg",
-          "backdropPath": "/aANEJh0COcHKG6pBw9qnO4wZRRC.jpg",
-          "overview": "When young priest Jud Duplenticy is sent to assist charismatic firebrand Monsignor Jefferson Wicks, it’s clear that all is not well in the pews. After a sudden and seemingly impossible murder rocks the town, the lack of an obvious suspect prompts local police chief Geraldine Scott to join forces with renowned detective Benoit Blanc to unravel a mystery that defies all logic.",
-          "voteAverage": 7.5,
-          "voteCount": 320,
-          "releaseDate": "2025-11-26",
-          "addedAt": "2025-12-14T12:47:17.860Z"
-        }
-      ],
-      "favorites": [
+          "title": "The Shawshank Redemption",
+          "posterPath": "/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg",
+          "backdropPath": "/zfbjgQE1uSd9wiPTX4VzsLi0rGG.jpg",
+          "overview": "Imprisoned in the 1940s for the double murder of his wife and her lover, upstanding banker Andy Dufresne begins a new life at the Shawshank prison, where he puts his accounting skills to work for an amoral warden. During his long stretch in prison, Dufresne comes to be admired by the other inmates -- including an older prisoner named Red -- for his integrity and unquenchable sense of hope.",
+          "voteAverage": 8.713,
+          "voteCount": 29343,
+          "releaseDate": "1994-09-23",
+          "addedAt": "2025-12-14T13:39:51.471Z"
+        },
         {
           "id": 812583,
           "mediaType": "movie",
@@ -35,7 +45,83 @@
           "voteAverage": 7.5,
           "voteCount": 320,
           "releaseDate": "2025-11-26",
-          "addedAt": "2025-12-14T12:47:22.025Z"
+          "addedAt": "2025-12-14T13:38:18.135Z"
+        },
+        {
+          "id": 1078446,
+          "mediaType": "movie",
+          "title": "Violent Night 2",
+          "posterPath": "/sI9m5PUoZT6upungDXVTSPTtfgX.jpg",
+          "backdropPath": "/78dChJs7doULSEhIiOvGUcXQRGU.jpg",
+          "overview": "The sequel to the 2022 film. Plot TBA.",
+          "voteAverage": 0,
+          "voteCount": 0,
+          "releaseDate": "2026-12-03",
+          "addedAt": "2025-12-14T13:35:47.214Z"
+        },
+        {
+          "id": 22,
+          "mediaType": "movie",
+          "title": "Pirates of the Caribbean: The Curse of the Black Pearl",
+          "posterPath": "/poHwCZeWzJCShH7tOjg8RIoyjcw.jpg",
+          "backdropPath": "/uRNgkJSkNBFbbn9fPsEjDIy8Sh3.jpg",
+          "overview": "After Port Royal is attacked and pillaged by a mysterious pirate crew, capturing the governor's daughter Elizabeth Swann in the process, William Turner asks free-willing pirate Jack Sparrow to help him locate the crew's ship—The Black Pearl—so that he can rescue the woman he loves.",
+          "voteAverage": 7.817,
+          "voteCount": 21646,
+          "releaseDate": "2003-07-09",
+          "addedAt": "2025-12-14T13:33:35.556Z"
+        },
+        {
+          "id": 285,
+          "mediaType": "movie",
+          "title": "Pirates of the Caribbean: At World's End",
+          "posterPath": "/jGWpG4YhpQwVmjyHEGkxEkeRf0S.jpg",
+          "backdropPath": "/xWXTfnmQZhdYyqEPCCKL1IQKUxj.jpg",
+          "overview": "Will Turner and Elizabeth Swann join forces with the revived Captain Barbossa to free Jack Sparrow from Davy Jones' locker. The group must navigate dangerous waters, confront many foes and, ultimately, choose sides in a battle wherein piracy itself hangs in the balance.",
+          "voteAverage": 7.266,
+          "voteCount": 15069,
+          "releaseDate": "2007-05-19",
+          "addedAt": "2025-12-14T13:33:11.729Z"
+        },
+        {
+          "id": 1084242,
+          "mediaType": "movie",
+          "title": "Zootopia 2",
+          "posterPath": "/oJ7g2CifqpStmoYQyaLQgEU32qO.jpg",
+          "backdropPath": "/5h2EsPKNDdB3MAtOk9MB9Ycg9Rz.jpg",
+          "overview": "After cracking the biggest case in Zootopia's history, rookie cops Judy Hopps and Nick Wilde find themselves on the twisting trail of a great mystery when Gary De’Snake arrives and turns the animal metropolis upside down. To crack the case, Judy and Nick must go undercover to unexpected new parts of town, where their growing partnership is tested like never before.",
+          "voteAverage": 7.683,
+          "voteCount": 562,
+          "releaseDate": "2025-11-26",
+          "addedAt": "2025-12-14T13:32:47.518Z"
+        }
+      ],
+      "favorites": [
+        {
+          "id": 1078446,
+          "mediaType": "movie",
+          "title": "Violent Night 2",
+          "posterPath": "/sI9m5PUoZT6upungDXVTSPTtfgX.jpg",
+          "backdropPath": "/78dChJs7doULSEhIiOvGUcXQRGU.jpg",
+          "overview": "The sequel to the 2022 film. Plot TBA.",
+          "voteAverage": 0,
+          "voteCount": 0,
+          "releaseDate": "2026-12-03",
+          "addedAt": "2025-12-14T13:38:02.958Z"
+        }
+      ],
+      "watchlist": [
+        {
+          "id": 812583,
+          "mediaType": "movie",
+          "title": "Wake Up Dead Man: A Knives Out Mystery",
+          "posterPath": "/qCOGGi8JBVEZMc3DVby8rUivyXz.jpg",
+          "backdropPath": "/aANEJh0COcHKG6pBw9qnO4wZRRC.jpg",
+          "overview": "When young priest Jud Duplenticy is sent to assist charismatic firebrand Monsignor Jefferson Wicks, it’s clear that all is not well in the pews. After a sudden and seemingly impossible murder rocks the town, the lack of an obvious suspect prompts local police chief Geraldine Scott to join forces with renowned detective Benoit Blanc to unravel a mystery that defies all logic.",
+          "voteAverage": 7.5,
+          "voteCount": 320,
+          "releaseDate": "2025-11-26",
+          "addedAt": "2025-12-14T13:38:30.218Z"
         }
       ]
     },
